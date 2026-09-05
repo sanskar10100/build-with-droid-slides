@@ -44,14 +44,16 @@ layout: section
 Where the UI toolkit is now
 
 ---
-layout: two-cols-header
+clicks: 3
 ---
 
 # Quick refresher: what is Compose?
 
 You describe **what the screen should look like**, not the steps to update it. Change the data, the UI redraws itself.
 
-::left::
+<div class="cmp" :class="'cmp-' + Math.min($clicks, 3)">
+
+<div class="pane pane-view">
 
 **The old way (View system)**
 
@@ -66,7 +68,9 @@ val label = findViewById<TextView>(R.id.label)
 label.text = "Hi, $name"
 ```
 
-::right::
+</div>
+
+<div class="pane pane-compose">
 
 **The Compose way**
 
@@ -77,7 +81,11 @@ fun Greeting(name: String) {
 }
 ```
 
-<div v-click class="mt-4 opacity-80 text-sm">
+</div>
+
+</div>
+
+<div class="cmp-note" :class="{ 'cmp-note-on': $clicks >= 3 }">
 
 No manual "find the view and update it" — just call the function again with new data.
 
@@ -85,7 +93,90 @@ No manual "find the view and update it" — just call the function again with ne
 
 <!--
 Keep this to ~90 seconds. This is a reminder for anyone new, not a lesson.
-If everyone already knows Compose, skip to the next slide.
+
+[click] The old way: find the view by id, then mutate it yourself.
+
+[click] The Compose way: one function, data in, UI out.
+
+[click] Side by side — the point is how much of the first column is bookkeeping.
+-->
+
+---
+clicks: 3
+---
+
+# Now do it for a list
+
+One label is a small difference. A **scrolling list** is where it gets loud.
+
+<div class="cmp cmp-lists" :class="'cmp-' + Math.min($clicks, 3)">
+
+<div class="pane pane-view">
+
+**RecyclerView**
+
+```xml
+<!-- res/layout/row_item.xml -->
+<TextView
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/label"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content" />
+```
+
+```kotlin
+class ItemAdapter(val items: List<String>) :
+  RecyclerView.Adapter<ItemAdapter.VH>() {
+  class VH(view: View) : RecyclerView.ViewHolder(view) {
+    val label: TextView = view.findViewById(R.id.label)
+  }
+  override fun onCreateViewHolder(parent: ViewGroup, type: Int) =
+    VH(LayoutInflater.from(parent.context)
+      .inflate(R.layout.row_item, parent, false))
+  override fun onBindViewHolder(holder: VH, position: Int) {
+    holder.label.text = items[position]
+  }
+  override fun getItemCount() = items.size
+}
+```
+
+```kotlin
+// …and then, in the Activity
+recyclerView.layoutManager = LinearLayoutManager(this)
+recyclerView.adapter = ItemAdapter(names)
+```
+
+<div class="pane-aside">Still missing: DiffUtil, so the list can animate when the data changes.</div>
+
+</div>
+
+<div class="pane pane-compose">
+
+**LazyColumn**
+
+```kotlin
+LazyColumn {
+  items(names) { name ->
+    Text(name)
+  }
+}
+```
+
+<div class="pane-aside">Way better DX on the right side</div>
+
+</div>
+
+</div>
+
+<!--
+This is the slide that usually lands. Ask the room who has written an adapter.
+
+[click] Walk the RecyclerView side briefly — don't read it, just let the volume speak.
+
+[click] Then LazyColumn. Pause here.
+
+[click] Side by side. The point isn't "less typing", it's that all that code was
+bookkeeping the framework can do itself.
 -->
 
 ---
@@ -242,6 +333,8 @@ The background isn't a flat colour or a blurred image — it's a **mesh gradient
 - Here, the mesh gradient is directly derived from the cover image on top.
 - Each image is divided into a 4x4 grid. Dominant color is derived from each grid slot.
 - Mesh gradient is then constructed using the dominant colors
+
+This was not possible on Compose before the mesh gradient modifier. At least not without a whole lot of effort.
 
 </v-clicks>
 

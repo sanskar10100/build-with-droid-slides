@@ -16,6 +16,102 @@
   margin-top: 0;
 }
 
+/* Staged comparison: one pane centred, then the other, then both side by side.
+   Driven by $clicks rather than v-click so the panes can swap places. */
+.cmp {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 2.5rem;
+  margin-top: 1.5rem;
+  min-height: 15rem;
+}
+
+.pane {
+  flex: 0 1 26rem;
+  transition: opacity 300ms cubic-bezier(0.2, 0.6, 0.2, 1);
+}
+
+.cmp-0 .pane,
+.cmp-1 .pane-compose,
+.cmp-2 .pane-view {
+  display: none;
+}
+
+.cmp-3 .pane {
+  flex: 1 1 0;
+  max-width: 24rem;
+}
+
+/* The RecyclerView side is long on purpose — the volume is the argument. It only
+   fits at a smaller size than the Compose side, which is a few lines either way.
+
+   @slidev/client/styles/code.css sets font-size, line-height, padding and margin
+   with !important from CSS variables, so setting those properties directly does
+   nothing however specific the selector is. Set the variables instead. */
+.cmp-lists .pane-view .slidev-code {
+  --slidev-code-font-size: 7px;
+  --slidev-code-line-height: 9.5px;
+  --slidev-code-padding: 8px 10px;
+  --slidev-code-margin: 6px 0;
+}
+
+.cmp-lists .pane-compose .slidev-code {
+  --slidev-code-font-size: 11px;
+  --slidev-code-line-height: 15px;
+}
+
+.cmp-lists .pane > p:first-child {
+  margin-bottom: 0.2rem;
+}
+
+.cmp-lists {
+  margin-top: 0.75rem;
+  min-height: 0;
+}
+
+.cmp-lists .pane {
+  flex: 0 1 32rem;
+}
+
+.cmp-lists .pane-aside {
+  margin-top: 0.3rem;
+}
+
+/* The adapter needs the wider half, or its longest lines get clipped. */
+.cmp-lists.cmp-3 .pane {
+  max-width: none;
+}
+
+.cmp-lists.cmp-3 .pane-view {
+  flex: 1.55 1 0;
+}
+
+.cmp-lists.cmp-3 .pane-compose {
+  flex: 1 1 0;
+}
+
+.pane-aside {
+  margin-top: 0.5rem;
+  font-size: 0.7rem;
+  opacity: 0.6;
+}
+
+.cmp-note {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity 300ms cubic-bezier(0.2, 0.6, 0.2, 1),
+    transform 300ms cubic-bezier(0.2, 0.6, 0.2, 1);
+}
+
+.cmp-note-on {
+  opacity: 0.8;
+  transform: none;
+}
+
 /* Click-reveals fade and rise into place instead of popping in. */
 .slidev-vclick-target {
   transition:
