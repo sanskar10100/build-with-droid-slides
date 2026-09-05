@@ -757,3 +757,509 @@ Assume permissions get denied, assume your app gets resized, assume you can't op
 Most of modern Android development is working *with* those assumptions instead of against them.
 
 </div>
+
+---
+layout: section
+---
+
+# 03 · Kotlin Multiplatform
+
+One language, many targets
+
+---
+
+# What is KMP?
+
+<div class="text-xl mt-2">
+
+An open-source technology from JetBrains for **sharing code across Android, iOS, desktop, web and server** — while keeping the advantages of native development.
+
+</div>
+
+<v-clicks>
+
+- You write the shared parts **once, in Kotlin**
+- You decide **how much** to share — a single function, all your logic, or the UI too
+- The shared code compiles into whatever each platform normally consumes: a `.jar`/`.aar` for Android, a real framework for iOS
+
+</v-clicks>
+
+<div v-click class="mt-6 text-sm opacity-70">
+
+Shipping in production at **Google Workspace, Duolingo, McDonald's, Forbes, Booking.com, Sony** — JetBrains reports KMP's presence among the top 10K apps doubled year over year.
+
+</div>
+
+<div class="text-xs opacity-50 mt-3">
+Source: kotlinlang.org/multiplatform
+</div>
+
+<!--
+Frame it as: this isn't a new language or a new UI framework. It's the Kotlin you
+already write, pointed at more than one platform.
+-->
+
+---
+
+# Why Kotlin can do this at all
+
+Kotlin isn't one compiler — it's **one front end with several back ends.**
+
+<div class="grid grid-cols-2 gap-x-10 gap-y-3 mt-4">
+<div>
+
+**Kotlin/JVM** → JVM bytecode
+<div class="text-sm opacity-70">Android, and every server framework you know</div>
+
+</div>
+<div>
+
+**Kotlin/Native** → machine code, via **LLVM**
+<div class="text-sm opacity-70">iOS, macOS, Linux, Windows — no VM involved</div>
+
+</div>
+<div>
+
+**Kotlin/JS** → JavaScript
+<div class="text-sm opacity-70">Browsers and Node</div>
+
+</div>
+<div>
+
+**Kotlin/Wasm** → WebAssembly
+<div class="text-sm opacity-70">The newest target — how Compose runs on the web</div>
+
+</div>
+</div>
+
+<div v-click class="mt-6">
+
+**That's the whole trick.** The same `.kt` file goes through a different back end per platform. KMP is the build system organising that, not a runtime sitting underneath your app.
+
+</div>
+
+<!--
+This is the slide that makes KMP click for people. Everything else follows from it.
+Kotlin/Native produces a real Apple framework — Xcode treats it like any other one.
+-->
+
+---
+
+# It's not Flutter, and it's not React Native
+
+<div class="grid grid-cols-3 gap-5 mt-4 text-sm">
+<div class="p-3 rounded-lg" style="background: rgba(255,255,255,0.05);">
+
+**React Native**
+
+Your code is **JavaScript**, running in a JS engine you ship with the app. It asks the platform to draw native components.
+
+<div class="mt-2 opacity-60">Runtime in the middle</div>
+
+</div>
+<div class="p-3 rounded-lg" style="background: rgba(255,255,255,0.05);">
+
+**Flutter**
+
+Your code is **Dart**, compiled ahead of time. Flutter brings its **own rendering engine** and draws every pixel itself.
+
+<div class="mt-2 opacity-60">Own UI, not the platform's</div>
+
+</div>
+<div class="p-3 rounded-lg" style="background: rgba(99,102,241,0.18);">
+
+**Kotlin Multiplatform**
+
+Your code is **Kotlin**, compiled to each platform's native format. No VM, no bridge, no shipped runtime.
+
+<div class="mt-2 opacity-60">UI is your choice</div>
+
+</div>
+</div>
+
+<v-clicks>
+
+- The other two are **UI frameworks first** — adopting them means adopting their way of drawing screens
+- KMP is a **code-sharing tool first**. Sharing UI is opt-in, via Compose Multiplatform
+- So you can call `UIKit`, `Camera2`, or any platform API **directly**, with no wrapper to wait for
+
+</v-clicks>
+
+<div v-click class="mt-4 text-sm opacity-75">
+
+**Fair warning:** if you *do* use Compose Multiplatform for UI on iOS, it renders with **Skia onto a Metal layer** — it draws its own pixels, much like Flutter. The difference is that KMP doesn't make you.
+
+</div>
+
+<!--
+Students will have heard of Flutter and RN. Anchor KMP against them or it sounds
+like a third thing doing the same job. The honest trade-off: KMP gives you native
+fidelity and incremental adoption; Flutter gives you one UI everywhere.
+
+Don't skip the last line. If someone in the room knows Compose Multiplatform is
+Skia-based, glossing over it costs you the whole section's credibility.
+-->
+
+---
+
+# You choose how much to share
+
+<div class="flex justify-center mt-2">
+
+<img
+  src="/images/kmp/kmp-graphic.png"
+  alt="Three levels of Kotlin Multiplatform adoption: share a piece of logic, share logic and keep the UI native, or share up to 100% of the code"
+  style="width: 100%; max-height: 300px; object-fit: contain;"
+  class="rounded-lg"
+/>
+
+</div>
+
+<div class="text-sm opacity-70 mt-4">
+
+You are not signing up for all of it on day one. Most teams start in the left box — one module, one problem — and move right only if it pays off.
+
+</div>
+
+<div class="text-xs opacity-50 mt-2">
+Graphic: kotlinlang.org — Kotlin Multiplatform overview
+</div>
+
+<!--
+This is the most reassuring slide in the section. "Try it on one file" is a much
+easier sell to a student than "rewrite your app".
+-->
+
+---
+
+# Starting a project
+
+<div class="grid gap-10 mt-2" style="grid-template-columns: 1.1fr 1fr;">
+<div>
+
+<v-clicks>
+
+- **IntelliJ IDEA** or **Android Studio** with the Kotlin Multiplatform plugin: `File → New → Project → Kotlin Multiplatform`
+- Pick your targets (Android, iOS, desktop, web) and whether you want to **share the UI**
+- You need a **Mac with Xcode** to build and run the iOS side — that requirement doesn't go away
+- The wizard hands you a working two-platform app to start editing
+
+</v-clicks>
+
+</div>
+<div>
+
+```text
+GreetingKMP/
+├── composeApp/       shared code
+│   └── src/
+│       ├── commonMain/    ← shared
+│       ├── androidMain/   ← Android only
+│       └── iosMain/       ← iOS only
+├── iosApp/           Xcode project
+└── build.gradle.kts
+```
+
+<div class="text-xs opacity-60 mt-2">
+The Xcode project is a real Xcode project. iOS developers keep their tools.
+</div>
+
+</div>
+</div>
+
+<!--
+Worth saying out loud: the Mac requirement is the practical blocker for students.
+If they only have Windows, they can still do Android + desktop + web targets.
+-->
+
+---
+
+# How you write code: source sets
+
+<div class="grid gap-8 items-center mt-2" style="grid-template-columns: 1fr 1fr;">
+<div>
+
+<img
+  src="/images/kmp/multiplatform-executables-diagram.svg"
+  alt="Diagram: commonMain compiles to all targets, appleMain to Apple targets, iosArm64Main to iPhone only, together producing native executables"
+  style="width: 100%; max-height: 260px; object-fit: contain;"
+  class="rounded-lg bg-white p-2"
+/>
+
+</div>
+<div>
+
+A **source set** is just a folder with rules about which targets it compiles for.
+
+<v-clicks>
+
+- `commonMain` — compiled for **every** target. Only Kotlin and multiplatform libraries here
+- `androidMain` — Android only. `Context`, `Build`, any Java library
+- `iosMain` — iOS only. `UIKit`, `NSUserDefaults`, Foundation
+- Platform folders can see `commonMain`. **`commonMain` cannot see them** — that's what keeps shared code portable
+
+</v-clicks>
+
+</div>
+</div>
+
+<div class="text-xs opacity-50 mt-2">
+Diagram: kotlinlang.org — Understand the project structure
+</div>
+
+---
+
+# When shared code needs a platform API: `expect` / `actual`
+
+<div class="grid gap-6 mt-2" style="grid-template-columns: 1fr 1fr;">
+<div>
+
+**commonMain** — declare the shape, no body
+
+```kotlin
+expect fun platformName(): String
+```
+
+<div class="text-sm opacity-70 mt-3">
+
+The compiler now **requires** every target to supply one. Miss it and the build fails — not the app.
+
+</div>
+
+</div>
+<div>
+
+**androidMain**
+
+```kotlin
+actual fun platformName() =
+  "Android ${Build.VERSION.SDK_INT}"
+```
+
+**iosMain**
+
+```kotlin
+actual fun platformName() =
+  UIDevice.currentDevice.systemName()
+```
+
+</div>
+</div>
+
+<div v-click class="mt-4 text-sm opacity-80">
+
+Same idea as an interface, enforced at compile time across platforms. JetBrains' own advice: reach for **plain interfaces and dependency injection** first, and keep `expect`/`actual` for the places you genuinely need it.
+
+</div>
+
+<div class="text-xs opacity-50 mt-2">
+Source: kotlinlang.org — Expected and actual declarations
+</div>
+
+---
+
+# Level 1 — share a piece of logic
+
+The smallest useful thing: one function, no UI, no architecture change.
+
+```kotlin
+// shared/src/commonMain/kotlin/Validation.kt
+fun isValidUpiId(input: String): Boolean {
+  val parts = input.split("@")
+  return parts.size == 2 && parts.all { it.isNotBlank() }
+}
+```
+
+<div class="grid grid-cols-2 gap-6 mt-4">
+<div>
+
+**Android calls it as Kotlin**
+
+```kotlin
+if (isValidUpiId(text)) submit()
+```
+
+</div>
+<div>
+
+**iOS calls it as Swift**
+
+```swift
+if ValidationKt.isValidUpiId(input: text) {
+    submit()
+}
+```
+
+</div>
+</div>
+
+<div v-click class="mt-4 text-sm opacity-80">
+
+Validation rules, pricing maths, date handling — the code where **the two platforms silently disagreeing is a real bug.**
+
+</div>
+
+---
+
+# Level 2 — share all the logic, keep the UI native
+
+```kotlin
+// commonMain — one view model, both platforms
+class CounterViewModel : ViewModel() {
+  private val _count = MutableStateFlow(0)
+  val count: StateFlow<Int> = _count.asStateFlow()
+
+  fun increment() { _count.value += 1 }
+}
+```
+
+<div class="grid grid-cols-2 gap-6 mt-3">
+<div>
+
+**Android — Jetpack Compose**
+
+```kotlin
+val count by vm.count.collectAsState()
+Text("Count: $count")
+Button(onClick = vm::increment) { Text("+") }
+```
+
+</div>
+<div>
+
+**iOS — SwiftUI**
+
+```swift
+Text("Count: \(model.count)")
+Button("+") { model.increment() }
+```
+
+</div>
+</div>
+
+<div v-click class="mt-3 text-sm opacity-80">
+
+Networking, storage, state — written once. Every screen still looks and behaves exactly like its platform, because it *is* its platform.
+
+</div>
+
+---
+
+# Level 3 — share the UI too, with Compose Multiplatform
+
+```kotlin
+// commonMain — this screen runs on Android, iOS, desktop and web
+@Composable
+fun CounterScreen(vm: CounterViewModel) {
+  val count by vm.count.collectAsState()
+
+  Column(horizontalAlignment = Alignment.CenterHorizontally) {
+    Text("Count: $count", style = MaterialTheme.typography.headlineMedium)
+    Button(onClick = vm::increment) { Text("Add one") }
+  }
+}
+```
+
+<v-clicks>
+
+- It's the **same Compose** you learned earlier in this talk — `Column`, `Text`, `Button`, state and all
+- On iOS it renders through **Kotlin/Native**, not a web view and not a bridge
+- You can still drop to a native view for any single screen that needs it
+
+</v-clicks>
+
+<!--
+Tie it back to section 01 explicitly — the Compose knowledge transfers, which is
+the strongest argument for a student to learn Compose properly.
+-->
+
+---
+
+# "But isn't cross-platform slow?"
+
+<div class="flex justify-center mt-1">
+
+<img
+  src="/images/kmp/cmp-ios-performance.png"
+  alt="JetBrains benchmark: scrolling FPS for SwiftUI versus Compose Multiplatform on iPhone 13 and iPhone 16, automatic and manual scrolling, showing near-identical results"
+  style="width: 100%; max-height: 240px; object-fit: contain;"
+  class="rounded-lg"
+/>
+
+</div>
+
+<v-clicks class="text-sm">
+
+- Scrolling FPS on iPhone 13 and 16 — every pair **overlaps inside the error bars**. The claim is *comparable*, not faster
+- It's fast because Compose on iOS skips the UIKit view tree entirely and draws through **Skia → Metal**
+- Read it as "no longer the reason to say no", not as proof of a win
+
+</v-clicks>
+
+<div class="text-xs opacity-50 mt-3">
+Chart: JetBrains, via kotlinlang.org. Vendor's own benchmark — no published methodology or raw numbers.
+</div>
+
+<!--
+If someone asks "isn't this marketing?" — yes, partly, and say so:
+- JetBrains benchmarking JetBrains, published as a chart with no methodology
+- Their public benchmark suite on GitHub has no SwiftUI comparison in it at all
+- Both bars sit under 60fps, so the test scene was heavy by design
+- "Automatic scroll" is a programmatic fling — no touch handling, best-case pacing
+
+The technical reason it holds up: Compose draws its own pixels via Skia on Metal,
+so it never pays for UIKit view lifecycle or Auto Layout on a long list.
+-->
+
+---
+
+# Where this is going
+
+<div class="grid gap-8 mt-4" style="grid-template-columns: 1fr 1fr;">
+<div>
+
+**Tooling caught up**
+
+<v-clicks>
+
+- Google ships **Room, DataStore, ViewModel and Lifecycle** as multiplatform libraries
+- Compose Multiplatform covers iOS, desktop and web
+- JetBrains points **Junie**, its AI coding agent, at KMP tasks — scaffolding targets, writing `actual` implementations
+
+</v-clicks>
+
+</div>
+<div>
+
+**What to actually do**
+
+<v-clicks>
+
+- Learn **Kotlin and Compose** properly first — both transfer directly
+- Then try sharing **one** thing: a validator, a parser, an API client
+- Don't start by trying to share a whole app
+
+</v-clicks>
+
+</div>
+</div>
+
+<div class="text-xs opacity-50 mt-4">
+Sources: kotlinlang.org/multiplatform · kotlinlang.org — KMP overview
+</div>
+
+---
+layout: center
+---
+
+# Takeaway
+
+Kotlin compiles to more than one thing. KMP is what you get when you take that seriously.
+
+<div class="mt-4 opacity-80">
+
+Share what's genuinely the same on both platforms, keep native what should feel native.
+<br>
+The escape hatch is always there — that's the part Flutter and React Native can't offer.
+
+</div>
