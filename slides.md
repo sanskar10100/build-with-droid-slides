@@ -107,7 +107,7 @@ clicks: 3
 
 # Now do it for a list
 
-One label is a small difference. A **scrolling list** is where it gets loud.
+You may still think Views are not that bad. What about a lazy list though?
 
 <div class="cmp cmp-lists" :class="'cmp-' + Math.min($clicks, 3)">
 
@@ -146,7 +146,7 @@ recyclerView.layoutManager = LinearLayoutManager(this)
 recyclerView.adapter = ItemAdapter(names)
 ```
 
-<div class="pane-aside">Still missing: DiffUtil, so the list can animate when the data changes.</div>
+<div class="pane-aside">Still missing: DiffUtil, so the list can animate when the data changes and you don't have to notify dataset change</div>
 
 </div>
 
@@ -162,7 +162,7 @@ LazyColumn {
 }
 ```
 
-<div class="pane-aside">Way better DX on the right side</div>
+<div class="pane-aside">Significantly better DX here. Also note how it's far easier to build a heterogenous list here compared to Views.</div>
 
 </div>
 
