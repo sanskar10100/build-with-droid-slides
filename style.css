@@ -15,3 +15,27 @@
 .col-right .slidev-code:first-child {
   margin-top: 0;
 }
+
+/* Click-reveals fade and rise into place instead of popping in. */
+.slidev-vclick-target {
+  transition:
+    opacity 300ms cubic-bezier(0.2, 0.6, 0.2, 1),
+    transform 300ms cubic-bezier(0.2, 0.6, 0.2, 1),
+    filter 300ms ease;
+}
+
+.slidev-vclick-hidden {
+  opacity: 0;
+  transform: translateY(10px);
+  filter: blur(2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slidev-vclick-target {
+    transition: opacity 120ms linear;
+  }
+  .slidev-vclick-hidden {
+    transform: none;
+    filter: none;
+  }
+}
