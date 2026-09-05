@@ -1,0 +1,17 @@
+/* Slidev's two-column layouts ship with no gutter — columns touch by default. */
+.two-cols-header,
+.two-cols {
+  column-gap: 2.5rem;
+}
+
+/* Stacked code blocks in a column need breathing room between them. */
+.col-left .slidev-code,
+.col-right .slidev-code {
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.col-left .slidev-code:first-child,
+.col-right .slidev-code:first-child {
+  margin-top: 0;
+}
