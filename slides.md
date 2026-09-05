@@ -593,122 +593,153 @@ This is exactly what Compose's adaptive layouts and `Grid` exist for — the two
 
 ---
 
-# Two changes you'll see immediately
+# Edge-to-edge is mandatory
 
-<div class="grid grid-cols-2 gap-8 mt-6">
+<div class="grid gap-10 items-center mt-2" style="grid-template-columns: 1.25fr 1fr;">
 <div>
 
-### Edge-to-edge is mandatory
-
-Your app draws **behind** the status and navigation bars, full screen.
-
-Android 16 removed the opt-out.
-
-If you don't handle insets, your buttons end up underneath the system bars.
+<img
+  src="/images/edge-to-edge-contrast.gif"
+  alt="An app drawing behind the system bars, with and without enough contrast behind the status bar"
+  style="max-height: 340px; width: auto; object-fit: contain;"
+  class="rounded-lg shadow-xl"
+/>
 
 </div>
 <div>
 
-### Predictive back
+Your app draws **behind** the status and navigation bars. Android 16 removed the opt-out.
 
-Users can **peek at the previous screen** mid-swipe before committing to going back.
+<v-clicks>
 
-Makes navigation feel physical instead of instant.
+- Handle **window insets**, or your buttons end up underneath the system bars
+- Watch **contrast**: system icons sit on top of your content, so light content needs dark icons and vice versa
+- `enableEdgeToEdge()` plus `WindowInsets` padding covers most cases
 
-You hook into it via `onBackInvokedCallback`.
+</v-clicks>
 
 </div>
 </div>
 
-<div v-click class="mt-8 opacity-80">
-
-Both are small code changes that make an app instantly look current — or instantly look neglected.
-
+<div class="text-xs opacity-50 mt-3">
+Source: developer.android.com — Android design guidance
 </div>
 
 <!--
-DEMO / VISUAL: show a before-and-after of an app that ignores insets vs one that handles them.
-Predictive back is best shown as a short screen recording — the gesture doesn't read in a screenshot.
-Fallback video: public/videos/demo-predictive-back.mp4
+Point at the status bar area: the same layout with and without a contrast scrim behind the icons.
+This is the failure mode students will actually hit — not a crash, just an app that looks broken.
+-->
+
+---
+
+# Predictive back
+
+Users can **peek at the previous screen** mid-swipe, before committing to going back.
+
+<div class="grid gap-10 items-center mt-3" style="grid-template-columns: auto 1fr;">
+<div>
+
+<video
+  src="/videos/demo-predictive-back.mp4"
+  autoplay
+  loop
+  muted
+  playsinline
+  style="max-height: 330px; width: auto;"
+  class="rounded-xl shadow-2xl"></video>
+
+</div>
+<div>
+
+<v-clicks>
+
+- Makes navigation feel physical instead of instant — you see where you're going
+- Also drives the system's cross-activity and cross-app back animations
+- You hook into it via `onBackInvokedCallback` (or `PredictiveBackHandler` in Compose)
+- Opt in with `android:enableOnBackInvokedCallback="true"` in the manifest
+
+</v-clicks>
+
+<div v-click class="mt-4 text-sm opacity-80">
+
+Like edge-to-edge, a small change that makes an app instantly look current — or instantly look neglected.
+
+</div>
+
+</div>
+</div>
+
+<!--
+The video loops on its own — let it run while you talk through the points.
+The gesture is the whole point, so give the room a moment to watch before you start.
 -->
 
 ---
 
 # Live Updates
 
-A notification type for things **happening right now**.
+A notification type for things **happening right now** — food delivery, ride tracking, a workout in progress.
 
-- Food delivery, ride tracking, a workout in progress
-- Shows live progress on the **lock screen and status bar**, not buried in the shade
-- Arrived in Android 16's quarterly update, alongside a system-wide Material 3 Expressive visual refresh
+<div class="grid gap-6 mt-4" style="grid-template-columns: 1fr 1fr;">
+<div>
+
+<img
+  src="/images/live-update-shade.png"
+  alt="A food delivery Live Update in the notification shade, showing an order progress bar and a Track Order button"
+  style="width: 100%; max-height: 235px; object-fit: contain;"
+  class="rounded-lg shadow-xl"
+/>
+
+<div class="text-xs opacity-60 mt-2">In the shade: progress, ETA, and an action</div>
+
+</div>
+<div>
+
+<img
+  src="/images/live-update-chip.jpg"
+  alt="The same Live Update collapsed into a status bar chip reading 28 mins"
+  style="width: 100%; max-height: 235px; object-fit: contain;"
+  class="rounded-lg shadow-xl"
+/>
+
+<div class="text-xs opacity-60 mt-2">Collapsed into a status bar chip — visible from any screen</div>
+
+</div>
+</div>
 
 <div class="text-sm opacity-70 mt-4">
 
-The OS is carving out space for "ongoing activity" as a first-class concept.
+Promoted to the **lock screen and status bar** instead of buried in the shade. Shipped in Android 16's quarterly update, alongside the Material 3 Expressive refresh — the OS is making "ongoing activity" a first-class concept.
 
 </div>
 
-<!-- TODO: screenshot of a Live Update on the lock screen → public/images/live-updates.png -->
+<!--
+These are real screenshots from my own phone — a food delivery order in progress.
+Tap the chip and it expands back into the full notification.
+-->
 
 ---
 
-# Android 17: privacy keeps tightening
+# Privacy keeps tightening
+
+Not one release — a direction. Each of these lands across Android 16 and 17.
 
 <v-clicks>
 
-- **Local network access is blocked by default** — if your app wants to talk to other devices on the same Wi-Fi, it now needs permission. (Casting, smart-home, local servers.)
-- **OTP text messages are delayed for 3 hours** for most apps — reading someone's one-time code out of their inbox was too easy to abuse. Use the **SMS Retriever** or **SMS User Consent** APIs instead.
-- **Encrypted Client Hello (ECH)** — hides which site you're connecting to from the network, at the platform level
+- **Local network access needs permission** — the new `ACCESS_LOCAL_NETWORK` runtime permission. Opt-in in Android 16; **required** once you target Android 17. (Casting, smart-home, local servers.)
+- **OTP texts are held back for 3 hours** — started in Android 16 QPR2 (Dec 2025) for SMS Retriever messages; Android 17 extends it to WebOTP and ordinary OTP texts. Use **SMS Retriever** or **SMS User Consent** instead of reading the inbox.
+- **Encrypted Client Hello (ECH)** — hides which site you're connecting to from the network. Automatic at targetSdk 37, *if* your HTTP library and the server both support it.
 
 </v-clicks>
 
-<div v-click class="mt-6 opacity-80">
+<div v-click class="mt-4 opacity-80">
 
 The pattern across every release: **permissions get narrower, and granted later.** Design assuming the user says no.
 
 </div>
 
----
-
-# Android 17: things that quietly break old code
-
-Worth recognising if you hit them — you don't need to memorise these:
-
-<v-clicks>
-
-- **`static final` fields are now truly final** — libraries that used reflection to patch constants at runtime will crash
-- **Widgets have a memory budget** — oversized bitmaps in a widget now throw a fatal error instead of silently struggling
-- **Fewer activity restarts** — keyboard, UI mode, and colour-mode changes no longer recreate your screen; you get a callback instead. Faster, but surprising if you relied on the restart.
-- **New lock-free message queue** — a free performance win, unless you were reaching into private framework internals
-
-</v-clicks>
-
-<div v-click class="text-sm opacity-70 mt-6">
-
-Theme: the platform is closing doors that apps were sneaking through.
-
-</div>
-
----
-
-# One more, and it sets up the next section
-
-<div class="text-xl mt-8">
-
-Apps targeting Android 17 must **declare that they use the NPU** — the neural processing unit — before they can touch it directly.
-
-</div>
-
-<div v-click class="mt-8 opacity-80">
-
-The fact that the *operating system* now has a permission-shaped concept for "AI chip access" tells you where this is going.
-
-</div>
-
-<div v-click class="mt-6">
-
-Google's own framing for Android 17: the start of a transition to an **intelligence system**, and an **adaptive-first** development standard.
-
+<div class="text-xs opacity-50 mt-3">
+Source: developer.android.com — Android 17 behavior changes
 </div>
 
 ---
