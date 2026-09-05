@@ -211,7 +211,7 @@ Box(Modifier.fillMaxSize().paint(painter))
 
 # What it looks like
 
-<MeshGradient height="240px" class="mt-4" />
+<MeshGradient height="360px" class="mt-4" />
 
 <div class="text-sm opacity-70 mt-4">
 
@@ -226,6 +226,37 @@ and it can't fail on stage.
 If you want the real thing: record a screen capture from an emulator running the
 Compose 1.12 MeshGradientPainter API and swap this for a <video> tag.
 -->
+
+---
+layout: two-cols
+---
+
+# In a real app
+
+<div class="mt-6 pr-4">
+
+The background isn't a flat colour or a blurred image — it's a **mesh gradient built from the cover art's own colours**.
+
+<v-clicks>
+
+- Here, the mesh gradient is directly derived from the cover image on top.
+- Each image is divided into a 4x4 grid. Dominant color is derived from each grid slot.
+- Mesh gradient is then constructed using the dominant colors
+
+</v-clicks>
+
+</div>
+
+::right::
+
+<div class="flex justify-center items-center h-full">
+  <img
+    src="/images/mesh-gradient-app.png"
+    alt="A reading-list app whose background is a mesh gradient derived from the cover image"
+    style="max-height: 430px; width: auto; object-fit: contain;"
+    class="rounded-xl shadow-2xl"
+  />
+</div>
 
 ---
 layout: section
