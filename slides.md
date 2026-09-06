@@ -1100,6 +1100,73 @@ Validation rules, pricing maths, date handling — the code where **the two plat
 </div>
 
 ---
+layout: two-cols
+---
+
+# "I could've just copy-pasted that"
+
+Fair — for a five-line validator. The argument only lands once the shared code has **dependencies**.
+
+```kotlin
+// commonMain
+@Serializable
+data class Rate(val base: String, val inr: Double)
+
+class RatesApi(private val http: HttpClient) {
+  suspend fun latest(): Rate =
+    http.get("$API/latest").body()
+}
+```
+
+<div class="text-sm opacity-75 mt-3">
+
+Ktor and kotlinx.serialization are **multiplatform libraries** — they compile for iOS too. No Retrofit, no Moshi, no Swift rewrite.
+
+</div>
+
+::right::
+
+<div class="pl-6">
+
+The only per-platform part is the **engine**, and the library already did that `expect`/`actual` for you:
+
+```kotlin
+// androidMain
+actual fun engine() = OkHttp.create()
+
+// iosMain
+actual fun engine() = Darwin.create()
+```
+
+<v-clicks>
+
+- **Ktor** — HTTP client · **kotlinx.serialization** — JSON
+- **Room**, **DataStore**, **ViewModel**, **Lifecycle** — Google ships these multiplatform now
+- **coroutines**, **Koin** / **kotlin-inject** — concurrency and DI
+
+</v-clicks>
+
+<div v-click class="text-sm opacity-80 mt-4">
+
+This is the actual sales pitch. Not "share a function" — **"stop maintaining two networking layers that drift apart."**
+
+</div>
+
+</div>
+
+<div class="text-xs opacity-50 mt-2">
+Ktor 3.5 · kotlinx.serialization · developer.android.com — Room and DataStore for KMP
+</div>
+
+<!--
+The counter to "just copy-paste it" is dependencies, not volume. A student can
+copy a validator between two files. They cannot copy Retrofit into Swift.
+
+If asked why Google ships Room as multiplatform: they use KMP internally in
+Workspace, so the Jetpack libraries had to follow.
+-->
+
+---
 
 # Level 2 — share all the logic, keep the UI native
 
@@ -1171,6 +1238,238 @@ fun CounterScreen(vm: CounterViewModel) {
 <!--
 Tie it back to section 01 explicitly — the Compose knowledge transfers, which is
 the strongest argument for a student to learn Compose properly.
+-->
+
+---
+layout: section
+---
+
+# Compose Multiplatform
+
+The UI arm of Kotlin Multiplatform
+
+---
+
+# One system, two arms
+
+KMP by itself only shares **logic**. Compose Multiplatform is the piece that lets you share the **screens** too — same project, same Gradle build, opt in per module.
+
+<div class="grid grid-cols-2 gap-5 mt-4 text-sm">
+<div class="p-3 rounded-lg" style="background: rgba(255,255,255,0.05);">
+
+**KMP — the logic arm**
+
+Ktor · kotlinx.serialization · coroutines · Room · DataStore · ViewModel
+
+<div class="mt-2 opacity-60">Ships as an <code>.aar</code> on Android, a real framework on iOS</div>
+
+</div>
+<div class="p-3 rounded-lg" style="background: rgba(99,102,241,0.18);">
+
+**Compose Multiplatform — the UI arm**
+
+`@Composable` · `Modifier` · Material 3 · animation · Navigation
+
+<div class="mt-2 opacity-60">Optional. Drop it and you write SwiftUI on iOS instead</div>
+
+</div>
+</div>
+
+<v-clicks>
+
+- It is **not a fork** of Jetpack Compose. Same compiler, same runtime, same API surface — JetBrains extends Google's toolkit to non-Android targets
+- On Android it literally resolves to Google's artifacts: `compose.material3` becomes `androidx.compose.material3` on Android and `org.jetbrains.compose.material3` everywhere else, chosen automatically from Gradle module metadata
+- So there is **no Android penalty** for adopting it — Android keeps running the exact Compose you already know
+
+</v-clicks>
+
+<div class="text-xs opacity-50 mt-3">
+Source: kotlinlang.org — Compose Multiplatform and Jetpack Compose
+</div>
+
+<!--
+The single sentence to land: KMP shares logic, Compose Multiplatform shares UI,
+and they're the same project — not competing choices.
+
+If asked "who maintains what": Google builds Jetpack Compose for Android,
+JetBrains publishes the multiplatform artifacts for iOS / desktop / web from the
+same upstream source. They work upstream together, which is why the API doesn't drift.
+-->
+
+---
+
+# Where it runs, and how far you can trust it
+
+<div class="grid gap-8 mt-3" style="grid-template-columns: 1.15fr 1fr;">
+<div>
+
+| Target | Renders through | Status |
+|---|---|---|
+| **Android** | Jetpack Compose itself | Stable |
+| **iOS** | Skia → Metal, in a `UIViewController` | **Stable** |
+| **Desktop** | Skia, on the JVM (Win/macOS/Linux) | Stable |
+| **Web** | Kotlin/Wasm → canvas | Beta |
+
+<div class="text-sm opacity-70 mt-3">
+
+iOS went Stable in **1.8** (May 2025) — that's the line that changed this from a demo into something teams ship.
+
+</div>
+
+</div>
+<div>
+
+**Recently landed**
+
+<v-clicks>
+
+- **1.10** — one `@Preview` annotation that works in `commonMain`, Navigation 3 off Android, Compose Hot Reload stable
+- **1.11** — concurrent rendering on by default; experimental **native iOS text input** (real selection handles, system context menu, Autofill/Translate)
+- **1.12** *(Aug 2026, current)* — `MeshGradientPainter`, iOS accessibility work, an MCP server so AI agents can poke a running app through Hot Reload
+
+</v-clicks>
+
+</div>
+</div>
+
+<div class="text-xs opacity-50 mt-3">
+Sources: kotlinlang.org — Stability of supported platforms · JetBrains/compose-multiplatform releases (v1.12.0, 25 Aug 2026)
+</div>
+
+<!--
+Note the callback: the mesh gradients from section 01 landed in Compose
+Multiplatform this August. The gap between "Android gets it" and "everywhere gets
+it" is now measured in months, not years.
+
+Web is Beta because Kotlin/Wasm is Beta — the Compose API on top of it is the
+stable part. Fine for internal tools, not what you'd bet a launch on.
+
+Be honest on the iOS text input line: it's still experimental in 1.12. Text
+editing was the last big "it doesn't feel like iOS" complaint, and it's being
+fixed rather than already fixed.
+-->
+
+---
+
+# The code you already know, with two seams
+
+<div class="grid gap-6 mt-2" style="grid-template-columns: 1fr 1fr;">
+<div>
+
+**`commonMain` — the screen itself**
+
+```kotlin
+@Composable
+fun App() = MaterialTheme {
+  Column(Modifier.fillMaxSize()) {
+    // Res, not R — one resource system
+    Image(painterResource(Res.drawable.logo), null)
+    Text(stringResource(Res.string.greeting))
+  }
+}
+```
+
+<div class="text-sm opacity-75 mt-2">
+
+**Seam 1 — resources.** Android's `R` is an Android thing, so Compose Multiplatform generates a typed `Res` from `composeResources/` instead.
+
+</div>
+
+</div>
+<div>
+
+**Each platform just hosts it**
+
+```kotlin
+// androidMain
+setContent { App() }
+```
+
+```kotlin
+// iosMain — a plain UIViewController
+fun MainViewController() =
+  ComposeUIViewController { App() }
+```
+
+<div class="text-sm opacity-75 mt-2">
+
+**Seam 2 — the entry point.** Every target hands Compose one native container. From there it's your Compose tree.
+
+</div>
+
+</div>
+</div>
+
+<div v-click class="mt-3 text-sm opacity-80">
+
+Because it's a real `UIViewController`, SwiftUI can embed one Compose screen — and a Compose screen can embed a native view with `UIKitView { MKMapView() }`. **The interop goes both ways**, which is what makes "one screen at a time" adoption possible.
+
+</div>
+
+<!--
+Only two things are genuinely new to an Android dev: `Res` instead of `R`, and
+the entry point. Everything between them is the Compose from section 01.
+
+The two-way interop is the answer to "what if Compose can't do X on iOS" — you
+drop in the UIKit view for that one thing and keep going.
+-->
+
+---
+
+# It's not a demo anymore
+
+<div class="grid grid-cols-2 gap-x-10 gap-y-3 mt-4 text-sm">
+<div>
+
+**Physics Wallah** — 17M active users
+<div class="opacity-70">UI and logic unified across iOS and Android</div>
+
+</div>
+<div>
+
+**Markaz** — 5M+ downloads
+<div class="opacity-70">100+ screens, 100% Compose Multiplatform</div>
+
+</div>
+<div>
+
+**Wrike**
+<div class="opacity-70">Calendars, Boards, Dashboards, Charts in production</div>
+
+</div>
+<div>
+
+**Instabee**
+<div class="opacity-70">Shipped their iOS app by reusing the Android one</div>
+
+</div>
+<div>
+
+**Bilibili**
+<div class="opacity-70">Instant messaging feature</div>
+
+</div>
+<div>
+
+**Feres** — 1M+ downloads
+<div class="opacity-70">~90% of the UI shared</div>
+
+</div>
+</div>
+
+<div v-click class="mt-5 text-sm opacity-80">
+
+Notice the shape of the list: mostly **content-and-forms apps**, and mostly teams that already had Android and wanted iOS. That's where the trade is cleanly worth it. Nobody on this list shipped a camera app or a game with it.
+
+</div>
+
+<div class="text-xs opacity-50 mt-3">
+Source: kotlinlang.org/compose-multiplatform — production users
+</div>
+
+<!--
+Vendor-published case studies, so read them as "this is possible", not as "this
+is typical". The honest counterweight is the shape of the list, not a caveat slide.
 -->
 
 ---

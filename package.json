@@ -2,6 +2,9 @@
   "name": "android-state-of-the-union",
   "type": "module",
   "private": true,
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "dev": "slidev --open",
     "build": "slidev build",
