@@ -20,6 +20,59 @@ Compose · Platform · KMP · On-Device AI
 </div>
 
 ---
+layout: two-cols
+---
+
+# Hi, I'm Sanskar
+
+**Senior Software Engineer at [Roro](https://roro.io)**, a product studio.
+I've shipped Android apps used by millions of people.
+
+<v-clicks>
+
+- **2016** — my first Android app. Java, `RelativeLayout`, endless `findViewById`
+- **Today** — Kotlin and Jetpack Compose
+- **Lately** — Kotlin Multiplatform, and whatever on-device AI turns into
+
+</v-clicks>
+
+<div v-click class="mt-6">
+
+That decade is basically this talk. Almost nothing I learned in 2016 is how you'd build the same app now — and that's the *good* news.
+
+</div>
+
+::right::
+
+<div class="flex flex-col items-center justify-center h-full pl-6">
+
+<img
+  src="/images/qr-linkedin.svg"
+  alt="QR code linking to linkedin.com/in/sanskar10100"
+  style="width: 190px; height: 190px;"
+  class="rounded-lg"
+/>
+
+<div class="mt-3 text-sm opacity-80">linkedin.com/in/sanskar10100</div>
+
+<div class="mt-5 text-sm opacity-70 text-center">
+github.com/sanskar10100
+<br>
+roro.io
+</div>
+
+</div>
+
+<!--
+Keep this to about 30 seconds. The only line that matters is the 2016 one — it
+sets up the whole talk's premise, that the Android you'd learn from an old
+tutorial is not the Android people build today.
+
+Don't dwell on the "millions of users" line. It's there so the room knows this is
+from shipping, not from reading. Say it and move on.
+-->
+
+---
 transition: fade-out
 ---
 
@@ -1560,5 +1613,328 @@ Kotlin compiles to more than one thing. KMP is what you get when you take that s
 Share what's genuinely the same on both platforms, keep native what should feel native.
 <br>
 The escape hatch is always there — that's the part Flutter and React Native can't offer.
+
+</div>
+---
+layout: section
+---
+
+# 04 · On-Device AI
+
+AICore, LiteRT-LM and AppFunctions
+
+---
+
+# Two directions, not one feature
+
+<div class="flex justify-center mt-2">
+
+<img
+  src="/images/ai/two-directions.svg"
+  alt="Left: your app calls ML Kit GenAI, which runs on AICore and Gemini Nano, or calls LiteRT-LM with a model file you ship. Right: Gemini or an agent calls your app through AppFunctions."
+  style="width: 100%; max-height: 300px; object-fit: contain;"
+/>
+
+</div>
+
+<v-clicks class="text-sm mt-2">
+
+- Almost every "AI on Android" talk only covers the **left** half — your app asking a model for text
+- The **right** half is the newer, stranger idea: your app registers what it can *do*, and the assistant calls it
+- Same section, opposite arrows. Keep them straight and the rest of this is easy
+
+</v-clicks>
+
+<!--
+This slide is the spine of the section. If they remember one thing, it's that
+"on-device AI" now means two unrelated jobs with two unrelated APIs.
+-->
+
+---
+
+# Where the model actually lives
+
+**AICore** is an Android system service. Gemini Nano is **not in your APK** — the OS holds one copy and every app shares it.
+
+<v-clicks>
+
+- You never download, version or ship a model. AICore does distribution and updates
+- It runs under **Private Compute Core**: no internet except through Private Compute Services, and requests aren't retained after they're answered
+- It applies **safety filtering** and per-app LoRA adapters on top of the base model
+- Your APK stays the size it was. That is the entire reason this path exists
+
+</v-clicks>
+
+<div class="text-xs opacity-50 mt-4">
+Source: developer.android.com/ai/gemini-nano
+</div>
+
+---
+
+# "Supports Gemini Nano" is not one switch
+
+Availability is not a single boolean. It varies by **feature**, and by **which Nano the device actually has.**
+
+<v-clicks>
+
+- The **task APIs** — summarize, proofread, rewrite, describe an image — reach the widest set: Pixel 9 and newer, plus a range of Samsung, OnePlus, OPPO and Xiaomi devices
+- The **Prompt API** depends on the model version. **nano-v2, v3 and v4 each ship to a different device list** — v4 is Pixel 11 and Galaxy Z only — and Google warns the *same prompt can return different output* across versions
+- **Speech recognition** splits again: **basic** mode on most API 31+ devices, **advanced** mode on Pixel 10 and 11 only
+
+</v-clicks>
+
+<div v-click class="mt-5">
+
+So "does this phone support Nano?" is the wrong question. The real one is **"does this phone support *this* feature, at *this* quality?"** — and the answer changes as devices update underneath you.
+
+</div>
+
+<div class="text-xs opacity-50 mt-3">
+Source: developers.google.com/ml-kit/genai — supported devices
+</div>
+
+<!--
+This is the slide that stops someone shipping a Nano feature and being surprised
+in the Play Console. Two things to say out loud:
+
+- v4 being Pixel 11 / Galaxy Z only means the newest capabilities are effectively
+  a demo audience today
+- "same prompt, different output across versions" is Google's own warning — it
+  means your prompt is not portable, and you have to test per version
+-->
+
+<!--
+The "shared system model" design is genuinely different from iOS-style bundling
+and worth pausing on: it's why the APIs are all about *checking availability*
+rather than *loading a model*.
+
+Latest Nano shipped on Pixel 10; Gemini Nano 4 was a developer preview at I/O '26
+with production later in the year. Don't promise dates on stage.
+-->
+
+---
+layout: two-cols
+---
+
+# The easy layer: ML Kit GenAI
+
+Fixed jobs, tuned by Google, a few lines each — **summarize, proofread, rewrite, describe an image, transcribe speech.** No ML knowledge required.
+
+```kotlin
+val model = Generation.getClient()
+
+when (model.checkStatus()) {
+  FeatureStatus.UNAVAILABLE -> hideTheFeature()
+
+  FeatureStatus.DOWNLOADABLE ->
+    model.download().collect { /* progress UI */ }
+
+  FeatureStatus.AVAILABLE -> {
+    val reply = model.generateContent(
+      "Summarise this note in one line: $note"
+    )
+  }
+}
+```
+
+::right::
+
+<div class="pl-6">
+
+Streaming is a `Flow`, so it drops straight into Compose:
+
+```kotlin
+model.generateContentStream(prompt)
+  .collect { chunk ->
+    text += chunk.candidates[0].text
+  }
+```
+
+<v-clicks>
+
+- **`checkStatus()` is the API.** Availability is the hard part, not generation — notice the code is mostly branching on it
+- The model downloads **on first use**, not at install. Budget a progress state
+- `genai-prompt` is at **1.0.0-beta4**; the task APIs — summarization, rewriting, proofreading, image description — are **1.0.0-beta1**
+
+</v-clicks>
+
+</div>
+
+<div class="text-xs opacity-50 mt-2">
+com.google.mlkit:genai-* · versions checked on Google's Maven, Sept 2026
+</div>
+
+<!--
+Emphasise the shape: three branches, and only one of them does AI. That ratio is
+the honest picture of shipping an on-device feature.
+-->
+
+---
+layout: two-cols
+---
+
+# When you need your own model: LiteRT-LM
+
+Gemini Nano is one model, chosen for you. **LiteRT-LM** is the runtime for when you need a *different* one — Gemma, Llama, Phi-4, Qwen, or something you fine-tuned.
+
+```kotlin
+val engine = Engine(
+  EngineConfig(
+    modelPath = "/data/.../gemma.litertlm",
+    backend = Backend.GPU(),
+  )
+)
+engine.initialize()
+
+engine.createConversation().use { chat ->
+  chat.sendMessageAsync("Summarise this note")
+      .collect { print(it) }
+}
+```
+
+::right::
+
+<div class="pl-6">
+
+<v-clicks>
+
+- **You own the file.** No AICore, no device allowlist — it runs anywhere you can fit it
+- Which is the catch: **Gemma-4-E2B is ~2.6 GB.** That's a download and a storage conversation with your user, not a dependency
+- GPU and NPU acceleration, vision and audio models, and **function calling with constrained decoding** for agent-style work
+- Same runtime behind Chrome, ChromeOS, Pixel Watch and the AI Edge Gallery app
+- `litertlm-android` is at **0.17.0** — a fast-moving pre-1.0 library
+
+</v-clicks>
+
+</div>
+
+<div class="text-xs opacity-50 mt-2">
+Sources: developers.google.com/edge/litert-lm · google-ai-edge/LiteRT-LM
+</div>
+
+<!--
+The size number is the point. Students hear "on-device model" and picture
+something small; 2.6 GB reframes the whole decision. Gemini Nano's appeal is that
+the OS already paid that cost.
+-->
+
+---
+layout: two-cols
+---
+
+# AppFunctions: your app as a tool
+
+Now the other arrow. You annotate what your app can do; the system indexes it; **Gemini calls it** when a user asks for something your app handles.
+
+```kotlin
+/** The parameter to create the task. */
+@AppFunctionSerializable(isDescribedByKDoc = true)
+data class CreateTaskParams(
+  /** The title of the task. */
+  val title: String?,
+  /** The content of the task. */
+  val content: String?,
+)
+```
+
+<div class="text-sm opacity-75 mt-2">
+
+Your **KDoc is the prompt.** `isDescribedByKDoc = true` feeds those comments to the model as the tool description.
+
+</div>
+
+::right::
+
+<div class="pl-6">
+
+```kotlin
+@RequiresApi(36)
+@AppFunctionServiceEntryPoint(/* … */)
+abstract class TaskFunctions :
+  AppFunctionService() {
+
+  /**
+   * Creates a task based on [params].
+   * @param params How to create the task.
+   */
+  @AppFunction(isDescribedByKDoc = true)
+  suspend fun createTask(
+    params: CreateTaskParams,
+  ): Task = withContext(Dispatchers.IO) {
+    repo.createTask(params.title, params.content)
+  }
+}
+```
+
+<v-clicks>
+
+- Effectively **MCP, on-device** — your app is the server, the assistant is the client
+- Android **16+**; callers need `EXECUTE_APP_FUNCTIONS`
+
+</v-clicks>
+
+</div>
+
+<div class="text-xs opacity-50 mt-2">
+Source: developer.android.com/ai/appfunctions
+</div>
+
+<!--
+The KDoc detail lands well with students — it's the first time a comment is
+load-bearing. Write a vague KDoc and the model calls your function wrongly.
+
+Status matters here: you can implement and unit-test AppFunctions right now, but
+the Gemini end of the pipeline was still private preview with trusted testers as
+of I/O '26. Say that out loud rather than implying it works end to end.
+-->
+
+---
+
+# Read the version numbers before you believe the demo
+
+| What | Artifact | Today | Really means |
+|---|---|---|---|
+| Prompt API | `genai-prompt` | `1.0.0-beta4` | usable, API mostly settled |
+| Task APIs | `genai-summarization`, `-rewriting` | `1.0.0-beta1` | usable, expect churn |
+| Structured output | `genai-schema` | `1.0.0-alpha1` | prototype only |
+| Own model | `litertlm-android` | `0.17.0` | pre-1.0, moves weekly |
+| Agent tools | `androidx.appfunctions` | `1.0.0-alpha11` | Gemini side still private |
+
+<v-clicks>
+
+- **Nothing here has shipped 1.0** — know which parts you'd bet a release on
+- The boring choice today: **an ML Kit task API, with the feature hidden when the device says no**
+
+</v-clicks>
+
+<div class="text-xs opacity-50 mt-2">
+Versions read from Google's Maven repository, 6 Sept 2026
+</div>
+
+<style>
+/* Five rows plus two takeaways only fit at a smaller scale. */
+.slidev-page table { font-size: 0.72rem; }
+.slidev-page table :is(th, td) { padding: 0.3rem 0.6rem; }
+.slidev-page li { font-size: 0.86rem; }
+</style>
+
+<!--
+This is the slide that earns trust. Every other conference talk shows the demo
+and skips the version number. Say the quiet part: most of this is pre-1.0.
+-->
+
+---
+layout: center
+---
+
+# Takeaway
+
+AI stopped being a research project and became an Android API — with an Android API's paperwork.
+
+<div class="mt-4 opacity-80">
+
+Check availability, design for its absence, watch the download size.
+<br>
+And remember the second arrow: soon your app's job is to <em>be callable</em>, not just to call.
 
 </div>
