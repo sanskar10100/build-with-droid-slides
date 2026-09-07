@@ -26,20 +26,18 @@ layout: two-cols
 # Hi, I'm Sanskar
 
 **Senior Software Engineer at [Roro](https://roro.io)**, a product studio.
-I've shipped Android apps used by millions of people.
+I've shipped Android apps used by millions of people across fintech, consumer, and health.
 
 <v-clicks>
 
-- **2016** — my first Android app. Java, `RelativeLayout`, endless `findViewById`
-- **Today** — Kotlin and Jetpack Compose
-- **Lately** — Kotlin Multiplatform, and whatever on-device AI turns into
+- **2016** — Built my first Android app in Java with XML layouts, `RelativeLayout`, and runtime crashes on screen rotation.
+- **Today** — Pure Kotlin, declarative Jetpack Compose, and reactive unidirectional data flow.
+- **Lately** — Sharing production code across platforms with KMP, and exploring on-device AI capabilities.
 
 </v-clicks>
 
-<div v-click class="mt-6">
-
-That decade is basically this talk. Almost nothing I learned in 2016 is how you'd build the same app now — and that's the *good* news.
-
+<div v-click class="mt-5 text-sm opacity-85 leading-relaxed">
+If you are learning Android today, you are stepping in at the best possible time. The modern stack is expressive, clean, and genuinely fun to build with. This talk is the practical map I wish I had when starting out.
 </div>
 
 ::right::
@@ -49,43 +47,63 @@ That decade is basically this talk. Almost nothing I learned in 2016 is how you'
 <img
   src="/images/qr-linkedin.svg"
   alt="QR code linking to linkedin.com/in/sanskar10100"
-  style="width: 190px; height: 190px;"
-  class="rounded-lg"
+  style="width: 180px; height: 180px;"
+  class="rounded-lg shadow-md"
 />
 
-<div class="mt-3 text-sm opacity-80">linkedin.com/in/sanskar10100</div>
+<div class="mt-3 text-sm font-medium opacity-90">linkedin.com/in/sanskar10100</div>
 
-<div class="mt-5 text-sm opacity-70 text-center">
-github.com/sanskar10100
-<br>
+<div class="mt-4 text-xs opacity-70 text-center font-mono">
+github.com/sanskar10100<br>
 roro.io
 </div>
 
 </div>
 
 <!--
-Keep this to about 30 seconds. The only line that matters is the 2016 one — it
-sets up the whole talk's premise, that the Android you'd learn from an old
-tutorial is not the Android people build today.
-
-Don't dwell on the "millions of users" line. It's there so the room knows this is
-from shipping, not from reading. Say it and move on.
+Introduce yourself in ~30 seconds.
+The key point: highlight the shift from 2016 (manual boilerplate and fragility) to today.
+Reassure the college students: Android is no longer the intimidating, fragmented beast it used to be.
 -->
 
 ---
 transition: fade-out
 ---
 
-# Agenda
+# What We'll Cover Today
 
-- **Jetpack Compose** — where the toolkit is now
-- **The Android platform** — what shipped, what's changing
-- **Kotlin Multiplatform** — sharing beyond Android
-- **On-device AI** — Gemini Nano and friends
-- **Demos** — live, with video fallbacks
+<div class="grid grid-cols-2 gap-6 mt-6 text-sm">
+
+<div class="p-4 rounded-xl bg-zinc-950/60 border border-zinc-800/80">
+  <div class="font-bold text-indigo-400 text-base mb-1">01 · Jetpack Compose</div>
+  <div class="text-zinc-300">Modern declarative UI, state management, shared element animations, and 2D Grid layouts.</div>
+</div>
+
+<div class="p-4 rounded-xl bg-zinc-950/60 border border-zinc-800/80">
+  <div class="font-bold text-emerald-400 text-base mb-1">02 · The Android Platform</div>
+  <div class="text-zinc-300">Adaptive layouts for foldables and tablets, mandatory edge-to-edge, and predictive gestures.</div>
+</div>
+
+<div class="p-4 rounded-xl bg-zinc-950/60 border border-zinc-800/80">
+  <div class="font-bold text-purple-400 text-base mb-1">03 · Kotlin Multiplatform</div>
+  <div class="text-zinc-300">Sharing business logic, networking, and UI across Android, iOS, desktop, and web.</div>
+</div>
+
+<div class="p-4 rounded-xl bg-zinc-950/60 border border-zinc-800/80">
+  <div class="font-bold text-amber-400 text-base mb-1">04 · On-Device AI</div>
+  <div class="text-zinc-300">Running Gemini Nano and small models locally with AICore and ML Kit GenAI.</div>
+</div>
+
+</div>
+
+<div class="mt-6 p-3.5 rounded-xl bg-indigo-950/40 border border-indigo-800/40 text-xs text-indigo-200 flex justify-between items-center">
+  <span><strong>Bonus Sections:</strong> Modern Architecture (how it connects) &amp; A Practical Student Learning Roadmap</span>
+  <span class="font-mono opacity-80">~50 min + Q&amp;A</span>
+</div>
 
 <!--
-Speaker notes go here. Press `d` in presenter mode.
+Give a clear birds-eye view of the talk.
+Let the audience know: this is a conceptual and architectural map, not a dry syntax lecture.
 -->
 
 ---
@@ -100,39 +118,45 @@ Where the UI toolkit is now
 clicks: 3
 ---
 
-# Quick refresher: what is Compose?
+# Mental Model: Declarative UI
 
-You describe **what the screen should look like**, not the steps to update it. Change the data, the UI redraws itself.
+In the traditional View system, you wrote XML layouts and spent half your code writing manual step-by-step updates. Compose replaces that with **pure functions of state**.
 
 <div class="cmp" :class="'cmp-' + Math.min($clicks, 3)">
 
 <div class="pane pane-view">
 
-**The old way (View system)**
+**The Imperative Way (View System)**
 
 ```xml
+<!-- res/layout/activity_main.xml -->
 <TextView
   android:id="@+id/label"
   android:text="Hello" />
 ```
 
 ```kotlin
+// Manual mutation in Activity
 val label = findViewById<TextView>(R.id.label)
 label.text = "Hi, $name"
 ```
+
+<div class="pane-aside">You find the view and mutate it. If data and view get out of sync, you get UI bugs.</div>
 
 </div>
 
 <div class="pane pane-compose">
 
-**The Compose way**
+**The Declarative Way (Compose)**
 
 ```kotlin
 @Composable
 fun Greeting(name: String) {
-  Text("Hi, $name")
+  Text(text = "Hi, $name")
 }
 ```
+
+<div class="pane-aside">You describe what the screen looks like for a given state. When state changes, Compose redraws.</div>
 
 </div>
 
@@ -140,33 +164,30 @@ fun Greeting(name: String) {
 
 <div class="cmp-note" :class="{ 'cmp-note-on': $clicks >= 3 }">
 
-No manual "find the view and update it" — just call the function again with new data.
+**The golden rule of Compose:** <em>State goes down, events go up.</em> Your UI is simply <code>UI = f(State)</code>.
 
 </div>
 
 <!--
-Keep this to ~90 seconds. This is a reminder for anyone new, not a lesson.
-
-[click] The old way: find the view by id, then mutate it yourself.
-
-[click] The Compose way: one function, data in, UI out.
-
-[click] Side by side — the point is how much of the first column is bookkeeping.
+Keep this simple for students:
+1. XML + findViewById was imperative (giving instructions step-by-step).
+2. Compose is declarative (describing the final output based on state).
+3. If you update the state variable, Compose handles the redrawing automatically.
 -->
 
 ---
 clicks: 3
 ---
 
-# Now do it for a list
+# Why Developers Refused to Look Back: Lists
 
-You may still think Views are not that bad. What about a lazy list though?
+If you ever learned Android before 2021, you remember the boilerplate of building a scrolling list.
 
 <div class="cmp cmp-lists" :class="'cmp-' + Math.min($clicks, 3)">
 
 <div class="pane pane-view">
 
-**RecyclerView**
+**RecyclerView (The Old Boilerplate)**
 
 ```xml
 <!-- res/layout/row_item.xml -->
@@ -194,18 +215,18 @@ class ItemAdapter(val items: List<String>) :
 ```
 
 ```kotlin
-// …and then, in the Activity
+// In your Activity / Fragment
 recyclerView.layoutManager = LinearLayoutManager(this)
 recyclerView.adapter = ItemAdapter(names)
 ```
 
-<div class="pane-aside">Still missing: DiffUtil, so the list can animate when the data changes and you don't have to notify dataset change</div>
+<div class="pane-aside">And you still needed DiffUtil callbacks just to get smooth insert/delete animations!</div>
 
 </div>
 
 <div class="pane pane-compose">
 
-**LazyColumn**
+**LazyColumn (Compose)**
 
 ```kotlin
 LazyColumn {
@@ -215,51 +236,22 @@ LazyColumn {
 }
 ```
 
-<div class="pane-aside">Significantly better DX here. Also note how it's far easier to build a heterogenous list here compared to Views.</div>
+<div class="pane-aside">No adapters, no viewholders, no XML inflation. Heterogeneous layouts are just another Kotlin block.</div>
 
 </div>
 
 </div>
 
 <!--
-This is the slide that usually lands. Ask the room who has written an adapter.
-
-[click] Walk the RecyclerView side briefly — don't read it, just let the volume speak.
-
-[click] Then LazyColumn. Pause here.
-
-[click] Side by side. The point isn't "less typing", it's that all that code was
-bookkeeping the framework can do itself.
+Ask the audience: "How many of you have written a RecyclerView adapter?"
+Let the contrast speak for itself. All that old adapter code was plumbing that the framework can do for you.
 -->
 
 ---
-layout: section
----
 
-# New Shadow API
+# Expressive UI: Custom Shadows
 
-`Modifier.dropShadow()` & `Modifier.innerShadow()`
-
----
-
-# The old problem with shadows
-
-- Compose only shipped **elevation-based shadows** — tied to Material Design, one look, directionless
-- Matching a shadow from a Figma design meant hacks: extra `Box`es, manual blur, `drawBehind`
-- No easy way to do a soft colored glow, a pressed/inset look, or a precise designer spec
-
-<div v-click>
-
-**Compose 1.9 added a real shadow system**, built around two virtual light sources:
-
-- ☀️ **Ambient light** — soft, even, no direction → gentle shadow all around
-- 🔦 **Spot light** — directional, from above → a more defined, cast shadow
-
-</div>
-
----
-
-# `dropShadow` and `innerShadow`
+Compose 1.9 introduced a dedicated, customizable shadow framework with **`dropShadow`** and **`innerShadow`**.
 
 ```kotlin
 Box(
@@ -269,66 +261,50 @@ Box(
       shape = RoundedCornerShape(24.dp),
       shadow = Shadow(radius = 16.dp, color = Color.Black.copy(alpha = 0.25f))
     )
+    .innerShadow(
+      shape = RoundedCornerShape(24.dp),
+      shadow = Shadow(radius = 8.dp, color = Color.White.copy(alpha = 0.4f))
+    )
     .background(Color.White, RoundedCornerShape(24.dp))
 )
 ```
 
-- **`dropShadow`** — sits *behind* the composable → looks raised / elevated
-- **`innerShadow`** — sits *inside* the composable's border → looks pressed into the surface
-- Layer both together → neumorphism-style effects, glows, soft UI — with a single `Box`, no nesting tricks
+<v-clicks>
 
-<div class="text-xs opacity-60 mt-4">
-⚠️ Double-check exact parameter names against the current androidx.compose.ui docs before presenting.
-</div>
+- **Why it matters:** Previously, Compose only supported Material elevation shadows—rigid, one look, directionless.
+- **Figma fidelity:** Designers hand you precise Figma specs (soft colored glows, neumorphic bevels, inset pressed states).
+- **Zero hackiness:** You no longer need nested `Box` hierarchies or manual Canvas blur shaders to match design specs.
 
----
-
-# Play with it
-
-<ShadowPlayground class="mt-4" />
-
-<div class="mt-4 text-sm opacity-70">
-
-Resource: [sinasamaki.com/new-shadow-api-for-jetpack-compose](https://www.sinasamaki.com/new-shadow-api-for-jetpack-compose/)
-
-</div>
+</v-clicks>
 
 <!--
-LIVE DEMO — built into the deck, so it works with no wifi and nothing to install.
-Drag the sliders and the Kotlin on the right updates with it.
-
-Point to make while dragging: designers hand you these five numbers from Figma.
-Before Compose 1.9 there was no clean way to accept them. Now there is.
-
-Credit Sina Samaki out loud — his article is where this API got popularised:
-https://www.sinasamaki.com/new-shadow-api-for-jetpack-compose/
+Acknowledge that early Compose lacked visual nuance for non-Material designs.
+With dropShadow and innerShadow, you can implement exact Figma specs in a single modifier chain.
 -->
 
 ---
-layout: section
----
 
-# Mesh Gradients
+# Interactive: Custom Shadows in Action
 
-Gradients that aren't just a straight line
+<ShadowPlayground class="mt-4" />
 
----
-
-# The old problem with gradients
-
-- Compose only had **linear**, **radial**, and **sweep** gradients — all defined by a simple shape
-- Real designs (and SwiftUI, which got mesh gradients first) often want gradients that flow and blend in multiple directions — like colored light on fabric
-- Faking that meant layering multiple blurred shapes on top of each other
-
-<div v-click>
-
-**Mesh gradients** place a grid of colored points in space and blend smoothly between them — closer to painting with color than drawing a shape.
-
+<div class="mt-4 text-xs opacity-70">
+Credit: Sina Samaki (sinasamaki.com/new-shadow-api-for-jetpack-compose)
 </div>
 
+<!--
+LIVE DEMO: Built right into the slide.
+Drag the sliders to show how radius, spread, color, and blur map directly to Figma properties.
+Move through this in ~60 seconds to keep momentum.
+-->
+
+---
+layout: two-cols
 ---
 
-# Mesh gradients in Compose
+# Expressive UI: Mesh Gradients
+
+Gradients that blend across a 2D mesh, not just a straight line.
 
 ```kotlin
 val painter = rememberMeshGradientPainter {
@@ -341,53 +317,46 @@ val painter = rememberMeshGradientPainter {
 Box(Modifier.fillMaxSize().paint(painter))
 ```
 
-- Built on `drawVertices()` under the hood — the same primitive used to draw smooth 3D-style shading
-- Points and colors can be **animated over time** inside the draw scope — no re-allocating shaders per frame
-- Great for hero backgrounds, splash screens, loading states — anywhere a flat color feels boring
+<v-clicks class="text-sm mt-3">
 
-<div v-click class="mt-4">
+- Shipped officially in **Compose 1.12** via GPU-accelerated `drawVertices`.
+- Vertex coordinates and colors can be animated smoothly over time.
+- Ideal for hero cards, dynamic album art, and ambient backgrounds.
 
-**This is now official.** Mesh gradients shipped as a first-party API in **Compose 1.12** (August '26) — the community implementation came first, Google adopted the idea.
+</v-clicks>
 
-</div>
+::right::
 
----
-
-# What it looks like
-
-<MeshGradient height="360px" class="mt-4" />
-
-<div class="text-sm opacity-70 mt-4">
-
-Four colour points, blended and slowly drifting. Compose does this on the GPU with `drawVertices`.
-
+<div class="pl-4 pt-2">
+  <MeshGradient height="260px" class="mt-2" />
+  <div class="text-xs opacity-70 mt-3 text-center">
+    4 color points blended across a coordinate grid on the GPU
+  </div>
 </div>
 
 <!--
-This is a CSS approximation running live in the slide — good enough to make the point,
-and it can't fail on stage.
-
-If you want the real thing: record a screen capture from an emulator running the
-Compose 1.12 MeshGradientPainter API and swap this for a <video> tag.
+Mesh gradients give apps that modern, fluid lighting feel (like iOS Lock Screen or Spotify player backgrounds).
+Mention that this is now built into first-party Compose without third-party OpenGL hacks.
 -->
 
 ---
 layout: two-cols
 ---
 
-# In a real app
+# Mesh Gradients in Production
 
-<div class="mt-6 pr-4">
+<div class="mt-4 pr-4">
 
-The background isn't a flat colour or a blurred image — it's a **mesh gradient built from the cover art's own colours**.
+**Dynamic Ambient UI from Cover Art**
 
-<v-clicks>
+In this reading app, the background is not a static flat color or a blurry box.
 
-- Here, the mesh gradient is directly derived from the cover image on top.
-- Each image is divided into a 4x4 grid. Dominant color is derived from each grid slot.
-- Mesh gradient is then constructed using the dominant colors
+<v-clicks class="text-sm mt-4">
 
-This was not possible on Compose before the mesh gradient modifier. At least not without a whole lot of effort.
+- The book cover image is sampled across a 4x4 coordinate grid.
+- Dominant colors are extracted from each quadrant.
+- Compose constructs a live mesh gradient that matches the artwork seamlessly.
+- Produces an organic, magazine-quality aesthetic with minimal performance overhead.
 
 </v-clicks>
 
@@ -398,187 +367,221 @@ This was not possible on Compose before the mesh gradient modifier. At least not
 <div class="flex justify-center items-center h-full">
   <img
     src="/images/mesh-gradient-app.png"
-    alt="A reading-list app whose background is a mesh gradient derived from the cover image"
-    style="max-height: 430px; width: auto; object-fit: contain;"
+    alt="Reading app showing ambient mesh gradient derived from book cover"
+    style="max-height: 420px; width: auto; object-fit: contain;"
     class="rounded-xl shadow-2xl"
   />
 </div>
 
----
-layout: section
----
-
-# What else changed recently
-
-A fast lap around the rest of Compose
-
----
-
-# Performance: it got genuinely faster
-
-Two changes under the hood, no code required from you:
-
-<v-clicks>
-
-- **Pausable composition** — Compose can now stop halfway through building a screen, hand the frame to the system on time, and finish on the next frame. Result: dropped frames largely eliminated. On by default since Dec '25.
-
-- **SlotTable rewrite** — the internal data structure that tracks your UI was rebuilt to copy far less memory. Reordering a long list can recompose **over 2× faster**.
-
-</v-clicks>
-
-<div v-click class="mt-6">
-
-The takeaway for you: **"Compose is slow" is a 2021 complaint.** It isn't true anymore.
-
-</div>
-
 <!--
-This is the slide that kills the objection students will have heard secondhand
-from a senior dev or a Reddit thread. Worth saying explicitly.
+Show the real-world screenshot.
+Point out how dynamic styling helps apps stand out on the Play Store.
 -->
 
 ---
-
-# Navigation 3
-
-Navigation was the most-complained-about part of Compose. It got rebuilt.
-
-<v-clicks>
-
-- **Old way:** a navigation "graph" you declared up front, with string routes. The back stack was hidden inside the library — you asked it to do things and hoped.
-- **New way:** the back stack is **just a list that you own**. Navigate forward = add to the list. Go back = remove from the list.
-
-</v-clicks>
-
-<div v-click>
-
-```kotlin
-val backStack = rememberNavBackStack(HomeKey)
-
-// go somewhere
-backStack.add(DetailKey(id = 42))
-
-// go back
-backStack.removeLastOrNull()
-```
-
-</div>
-
-<div v-click class="mt-4 opacity-80">
-
-Because it's a plain list, things that used to be painful — conditional flows, multi-pane layouts, saving the stack — become ordinary list operations.
-
-</div>
-
+layout: two-cols
 ---
 
-# Shared element transitions
+# Shared Element Transitions
 
-The animation where an item **flies from one screen into the next** — a thumbnail growing into a full photo.
+Connecting screens with continuous visual motion
 
-<v-clicks>
+<div class="pr-3">
 
-- Used to require the View system, or a lot of manual work
-- Now: mark the same element on both screens with a shared key, and Compose animates between them
-- Went **stable in Compose 1.11** (April '26), with debug tooling to see what's matching
-
-</v-clicks>
-
-<div v-click>
+<p class="text-xs text-zinc-300 leading-relaxed mb-2">
+Instead of a jarring cut between screens, shared elements morph seamlessly across navigation routes.
+</p>
 
 ```kotlin
+// Inside SharedTransitionLayout
 Modifier.sharedElement(
-  rememberSharedContentState(key = "photo-$id"),
-  animatedVisibilityScope = scope,
+  state = rememberSharedContentState(key = "snack-${item.id}"),
+  animatedVisibilityScope = animatedVisibilityScope,
 )
 ```
 
+<v-clicks class="text-xs space-y-1.5 mt-2">
+
+- **Shared Key:** Pairs composables across routes (`"snack-${item.id}"`).
+- **Fluid Animation:** Bounds, scale, and clip shape animate continuously.
+- **Stable in Compose 1.11+** with layout inspection tooling.
+
+</v-clicks>
+
 </div>
 
-<div v-click class="mt-4 opacity-80 text-sm">
+::right::
 
-Pairs naturally with Navigation 3 — this is the "app feels polished" feature.
+<div class="flex flex-col items-center justify-center h-full pl-2">
+
+<img
+  src="/images/basic_shared_element_jetsnack.gif"
+  alt="Official Google Jetsnack shared element transition animation"
+  style="max-height: 275px; width: auto; object-fit: contain;"
+  class="rounded-xl shadow-xl border border-zinc-800"
+/>
+
+<div class="text-[10px] opacity-60 mt-1.5 text-center">
+Official Jetsnack sample — thumbnail expands into hero banner
+</div>
 
 </div>
 
 <!--
-DEMO OPPORTUNITY: this is the single most visually impressive thing in the whole
-Compose section. Show it, don't describe it.
-Fallback video: public/videos/demo-shared-element.mp4
+This is one of the most requested features in modern mobile UI.
+Notice the key: "item-${item.id}". When the user taps, Compose links the thumbnail on Screen A with the hero image on Screen B and smoothly morphs the bounds.
 -->
 
 ---
+layout: two-cols
+---
 
-# Grid
+# Navigation 3: Backstack as a Plain List
 
-A real two-dimensional layout, finally.
+Navigation was historically one of the most frustrating parts of Android. **Navigation 3** re-architected it around plain Kotlin collections.
 
-<v-clicks>
+<div class="pr-4 mt-2">
 
-- Compose had `Row`, `Column`, `Box` — and `LazyVerticalGrid` for scrolling lists. Nothing good for **laying out a whole screen** in two dimensions.
-- **`Grid`** (Compose 1.11) gives you tracks, gaps and cells — close to CSS Grid if you've done web
-- **Named areas** added in 1.12: describe the layout by name instead of by index
-- No longer experimental as of 1.13
+<v-clicks class="text-sm">
+
+- **The Old Pain:** XML navigation graphs, string-based URL routing, opaque fragment transactions, and hidden backstacks.
+- **The Navigation 3 Model:** Your backstack is simply a **list of keys that you own**.
+- Want to navigate forward? `add(DetailKey(id = 42))`.
+- Want to go back? `removeLastOrNull()`.
+- Want to clear to home? `clear(); add(HomeKey)`.
 
 </v-clicks>
 
-<div v-click class="mt-4 opacity-80">
-
-Why it matters: screen-level structure without nesting six `Row`s inside four `Column`s.
+<div v-click class="mt-4 p-3 rounded-lg bg-indigo-950/40 border border-indigo-800/40 text-xs text-indigo-200">
+Because it is a regular list, complex patterns like deep links, conditional login flows, and multi-pane tablets become standard Kotlin list operations.
+</div>
 
 </div>
 
+::right::
+
+```kotlin
+// Hold your navigation state
+val backStack = rememberNavBackStack(HomeKey)
+
+NavDisplay(
+  backStack = backStack,
+  onBack = { backStack.removeLastOrNull() },
+  entryProvider = entryProvider {
+    entry<HomeKey> {
+      HomeScreen(onOpenDetail = { id ->
+        backStack.add(DetailKey(id))
+      })
+    }
+    entry<DetailKey> { key ->
+      DetailScreen(id = key.id)
+    }
+  }
+)
+```
+
+<!--
+Emphasize this to students: you do not need to memorize complex graph APIs anymore.
+If you know how to add and remove items from a Kotlin List, you know how Navigation 3 works.
+-->
+
+---
+layout: two-cols
 ---
 
-# Compose Hot Reload
+# 2D Layouts: The Compose Grid
 
-<v-clicks>
+Real two-dimensional layouts without nested hierarchy hell
 
-- Change your UI code → **see it update in the running app**, no rebuild, no restart, no losing your place
-- Hit **1.0 stable** in early '26; bundled with Compose Multiplatform from 1.10
-- Two modes: trigger it manually, or let it watch your files and reload automatically
+<div class="pr-3">
+
+```kotlin
+Grid(columns = 3, rows = 3, gap = 8.dp) {
+  // Spans 3 columns for header
+  HeaderCard(Modifier.gridCell(columnSpan = 3))
+
+  // Spans 2 rows for sidebar
+  SidebarCard(Modifier.gridCell(rowSpan = 2))
+
+  // Remaining cells fill slots
+  MetricCard()
+  MetricCard()
+}
+```
+
+<v-clicks class="text-xs space-y-1 mt-2">
+
+- **2D Tracks & Gaps:** Define columns, rows, and gutters directly.
+- **Cell Spanning:** Span multiple rows and columns with `gridCell()`.
+- **Named Areas:** Place items into named layout areas, just like CSS Grid.
 
 </v-clicks>
 
-<div v-click class="mt-6">
+</div>
 
-This is the change students will feel most on day one. The edit → build → wait → navigate-back-to-the-screen loop is the single biggest tax on learning Android, and it mostly goes away.
+::right::
 
+<div class="pl-2">
+  <GridLayoutVisual />
 </div>
 
 <!--
-DEMO OPPORTUNITY: strong one. Change a color / padding live and let the audience
-watch it update. Very cheap to demo, very convincing.
-Fallback video: public/videos/demo-hot-reload.mp4
+Connect this with web knowledge: if students know CSS Grid, Compose Grid will feel immediately familiar.
+It completely removes the performance penalty of nested layout passes.
 -->
 
 ---
 
-# Also worth knowing
+# Tooling & Performance Under the Hood
 
-Not headline features, but they'll show up in tutorials you read:
+Compose is not just syntax; the runtime has matured tremendously.
 
-- **`TextFieldState`** — text fields rewritten around explicit state instead of callbacks; less boilerplate, fewer bugs
-- **`retain { }`** — keep state across screen rotation without a full ViewModel
-- **Credential Manager integration** — text fields can prompt for passkeys and saved logins directly
-- **Material 3 Expressive** — the current default look: bouncier motion, new shapes, expanded FAB/menu system
+<div class="grid grid-cols-3 gap-5 mt-6 text-sm">
 
-<div class="text-xs opacity-60 mt-6">
-⚠️ Verify version numbers against developer.android.com before the talk — these move fast.
+<div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
+  <div class="font-bold text-indigo-400 text-base mb-2">⚡ Pausable Composition</div>
+  <p class="text-zinc-300 text-xs leading-relaxed">
+    If rendering a complex screen takes longer than the 16ms frame deadline, Compose pauses, yields to the Android OS to deliver the frame on time, and resumes on the next frame. Dropped frames are drastically reduced.
+  </p>
 </div>
+
+<div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
+  <div class="font-bold text-emerald-400 text-base mb-2">📦 SlotTable Rewrite</div>
+  <p class="text-zinc-300 text-xs leading-relaxed">
+    The internal data structure tracking composables was re-architected to avoid unnecessary memory allocations. Reordering long lists and animated layouts recomposes up to <strong>2× faster</strong>.
+  </p>
+</div>
+
+<div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
+  <div class="font-bold text-purple-400 text-base mb-2">🔥 Compose Hot Reload</div>
+  <p class="text-zinc-300 text-xs leading-relaxed">
+    Edit UI code in Android Studio and watch it update immediately on your running emulator or phone—without restarting the app and without losing your navigation state or typed form inputs.
+  </p>
+</div>
+
+</div>
+
+<div v-click class="mt-6 p-3 rounded-xl bg-zinc-900 border border-zinc-800 text-xs text-center text-zinc-300">
+<strong>The takeaway:</strong> The outdated 2021 criticism that "Compose is slower than XML" is completely obsolete today.
+</div>
+
+<!--
+Address the elephant in the room: students often read outdated Reddit threads claiming Compose has performance issues.
+Explain that modern Compose with baseline profiles and pausable composition is exceptionally fast.
+-->
 
 ---
 layout: center
 ---
 
-# Takeaway
+# Compose Takeaway
 
-Google now calls Android UI development **"Compose first."**
+Jetpack Compose is now the default, undisputed standard for Android UI.
 
-<div class="mt-4 opacity-80">
-
-It's not just the new View system anymore — it's picking up capabilities the old one never had, and the tooling finally matches.
-
+<div class="mt-4 opacity-80 text-base max-w-xl mx-auto leading-relaxed">
+If you invest time into one concept, master <strong>State Management</strong> (<code>remember</code>, <code>mutableStateOf</code>, and <code>StateFlow</code>).
+<br><br>
+Once you understand how state drives the UI, building complex, expressive animations and responsive layouts becomes second nature.
 </div>
 
 ---
@@ -587,109 +590,200 @@ layout: section
 
 # 02 · The Android Platform
 
-Android 16 & 17 — what changed, and why you can't ignore it
+Adaptive screens, modern UX, and platform behavior
 
 ---
 
-# How Android ships now
+# How Android Ships Today
 
 <v-clicks>
 
-- **One big release a year** — Android 16 (June '25), Android 17 (June '26)
-- **Quarterly updates in between (QPRs)** — these now carry real features, not just bug fixes
-- **Google Play sets deadlines** — to publish or update an app, you must *target* a recent version. New apps and updates must target **API 37 (Android 17) by August 2027**.
+- **Predictable Annual Releases:** Android 15 (2024), Android 16 (2025), Android 17 (2026).
+- **Quarterly Platform Releases (QPRs):** Google now rolls out meaningful developer APIs and system enhancements throughout the year, not just in summer releases.
+- **Google Play Target SDK Policy:** Every year, Google Play mandates that updates target a recent API level to preserve user security and battery life.
 
 </v-clicks>
 
-<div v-click class="mt-6">
-
-That last one is the important bit: **you don't get to opt out.** "It works on my phone" stops being true when Play forces you forward and the new rules kick in.
-
+<div v-click class="mt-6 p-4 rounded-xl bg-zinc-950 border border-zinc-800 text-sm">
+  <div class="font-bold text-indigo-400 mb-1">What this means for you:</div>
+  <div class="text-zinc-300 leading-relaxed">
+    You cannot rely on old habits forever. The platform pushes apps forward on a strict schedule. Understanding modern platform behavior is what differentiates a junior coder from a professional engineer.
+  </div>
 </div>
 
 <!--
-Students often assume old tutorials still apply. This slide explains why they don't:
-the platform actively deprecates the old way and Play enforces it on a timer.
+Explain why targeting modern SDKs matters. It is not just about version numbers; it is about building apps that follow modern battery, privacy, and display rules.
 -->
 
 ---
-layout: section
----
 
-# The big one: adaptive-first
+# Beyond the 5-Inch Phone
 
-The phone-shaped assumption is dead
+The assumption that Android runs solely on a vertical 5-inch phone is gone.
 
----
+<v-clicks class="text-sm">
 
-# Your app doesn't get to be portrait-only anymore
-
-<v-clicks>
-
-- For years you could write `screenOrientation="portrait"` and lock your app to one shape. Foldables, tablets, and desktop mode made that look broken.
-- **Android 16** — started ignoring orientation, resizability and aspect-ratio restrictions on large screens
-- **Android 17** — **removes the developer opt-out entirely** on screens wider than 600dp. You can no longer ask to be exempt.
+- **Form Factors Everywhere:** Foldables (Galaxy Z Fold, Pixel Fold), tablets, ChromeOS laptops, and Samsung DeX / Desktop Mode are widespread.
+- **No More Orientation Locks:** Starting with Android 16 and 17, the OS actively **ignores** `screenOrientation="portrait"` and non-resizable flags on displays wider than 600dp.
+- **The User Can Resize Anytime:** Your app will be snapped into split-screen, unfolded mid-use, or floated in a desktop window.
 
 </v-clicks>
 
-<div v-click class="mt-6">
-
-**What this means for you:** assume your app will be resized, rotated, folded, and put in a window next to another app. Build layouts that respond to size, not layouts that assume a shape.
-
+<div v-click class="mt-5 p-3.5 rounded-xl bg-amber-950/40 border border-amber-800/40 text-xs text-amber-200 leading-relaxed">
+<strong>Key Mindset Shift:</strong> Never assume your screen has a fixed width or height. Build responsive layouts that adapt fluidly to whatever window size the user gives you.
 </div>
 
-<div v-click class="text-sm opacity-70 mt-4">
-
-This is exactly what Compose's adaptive layouts and `Grid` exist for — the two halves of the talk connect here.
-
-</div>
+<!--
+Explain that foldables and tablets aren't edge cases anymore.
+If someone unfolds a phone while your app is open, your layout must reflow cleanly without restarting or crashing.
+-->
 
 ---
 
-# Edge-to-edge is mandatory
+# Window Size Classes: The Responsive Standard
 
-<div class="grid gap-10 items-center mt-2" style="grid-template-columns: 1.25fr 1fr;">
-<div>
+Instead of checking device models or pixel densities, Android categorizes screen width into **three Window Size Classes**:
+
+<div class="mt-4 flex justify-center">
+  <img
+    src="/images/window_size_classes_width.png"
+    alt="Official Android Window Width Size Classes: Compact, Medium, Expanded"
+    style="max-height: 200px; width: auto; object-fit: contain;"
+    class="rounded-lg shadow-xl bg-white p-1"
+  />
+</div>
+
+<div class="grid grid-cols-3 gap-4 mt-4 text-xs">
+  <div class="p-3 rounded-lg bg-zinc-950 border border-zinc-800">
+    <div class="font-bold text-indigo-400">📱 Compact (&lt; 600dp)</div>
+    <div class="text-zinc-400 mt-1">Standard phone portrait. Single pane stack with bottom navigation bar.</div>
+  </div>
+  <div class="p-3 rounded-lg bg-zinc-950 border border-zinc-800">
+    <div class="font-bold text-emerald-400">📖 Medium (600–840dp)</div>
+    <div class="text-zinc-400 mt-1">Unfolded foldable, small tablet. Move bottom bar to a side Navigation Rail.</div>
+  </div>
+  <div class="p-3 rounded-lg bg-zinc-950 border border-zinc-800">
+    <div class="font-bold text-purple-400">💻 Expanded (&gt; 840dp)</div>
+    <div class="text-zinc-400 mt-1">Large tablet, desktop mode. Dual-pane List-Detail layout side by side.</div>
+  </div>
+</div>
+
+<div class="text-xs opacity-50 mt-2 text-center">
+Source: developer.android.com/develop/ui/compose/layouts/adaptive
+</div>
+
+<!--
+Walk through the graphic.
+Compact = phone portrait. Medium = foldable / 7-inch tablet. Expanded = 10-inch tablet / desktop.
+Designing for these three breakpoints covers 99% of Android devices.
+-->
+
+---
+layout: two-cols
+---
+
+# Adaptive Multi-Pane in Compose
+
+Compose provides built-in scaffolds to handle multi-pane reflow effortlessly.
+
+<div class="pr-3">
+
+```kotlin
+val navigator = rememberListDetailPaneScaffoldNavigator()
+
+ListDetailPaneScaffold(
+  directive = navigator.scaffoldDirective,
+  value = navigator.scaffoldValue,
+  listPane = {
+    AnimatedPane { ItemList { navigator.navigateTo(Detail, it) } }
+  },
+  detailPane = {
+    AnimatedPane { ItemDetail(navigator.currentDestination?.content) }
+  }
+)
+```
+
+<div class="text-[11px] opacity-75 mt-1.5 leading-tight">
+Phone: navigates to full screen. Foldable/Tablet: renders dual panes side-by-side automatically.
+</div>
+
+</div>
+
+::right::
+
+<div class="pl-2">
+  <AdaptiveVisual />
+  <div class="text-[10px] opacity-60 text-center mt-1">
+    Click the buttons above to preview how your UI reflows across breakpoints!
+  </div>
+</div>
+
+<!--
+Point out that you do NOT need to write separate apps or duplicate Activities.
+ListDetailPaneScaffold handles the transition and back navigation between single-pane and dual-pane automatically.
+-->
+
+---
+layout: two-cols
+---
+
+# Edge-to-Edge is Mandatory
+
+Your app now draws **behind** the status bar and gesture navigation bar by default.
+
+<div class="pr-4 mt-2">
+
+<v-clicks class="text-sm">
+
+- Android 15 and 16 made edge-to-edge rendering mandatory.
+- **The failure mode:** If you forget insets, your FloatingActionButton or TopAppBar gets obscured behind system icons or the home pill.
+- **The fix:** Call `enableEdgeToEdge()` in `onCreate()` and use Compose `WindowInsets` padding.
+
+</v-clicks>
+
+```kotlin
+Scaffold(
+  contentWindowInsets = WindowInsets.safeDrawing,
+  topBar = { TopAppBar(/* automatically padded */) }
+) { innerPadding ->
+  Box(modifier = Modifier.padding(innerPadding)) {
+    // Screen content safe from notches and gesture bars
+  }
+}
+```
+
+</div>
+
+::right::
+
+<div class="flex flex-col items-center justify-center h-full pl-2">
 
 <img
   src="/images/edge-to-edge-contrast.gif"
-  alt="An app drawing behind the system bars, with and without enough contrast behind the status bar"
-  style="max-height: 340px; width: auto; object-fit: contain;"
-  class="rounded-lg shadow-xl"
+  alt="Edge to edge status bar contrast demonstration"
+  style="max-height: 330px; width: auto; object-fit: contain;"
+  class="rounded-xl shadow-xl border border-zinc-800"
 />
 
-</div>
-<div>
-
-Your app draws **behind** the status and navigation bars. Android 16 removed the opt-out.
-
-<v-clicks>
-
-- Handle **window insets**, or your buttons end up underneath the system bars
-- Watch **contrast**: system icons sit on top of your content, so light content needs dark icons and vice versa
-- `enableEdgeToEdge()` plus `WindowInsets` padding covers most cases
-
-</v-clicks>
-
-</div>
+<div class="text-[11px] opacity-60 mt-2 text-center">
+Handling status bar contrast and safe drawing padding
 </div>
 
-<div class="text-xs opacity-50 mt-3">
-Source: developer.android.com — Android design guidance
 </div>
 
 <!--
-Point at the status bar area: the same layout with and without a contrast scrim behind the icons.
-This is the failure mode students will actually hit — not a crash, just an app that looks broken.
+Show the GIF.
+Point out what happens when insets are ignored: text collisions with the camera cutout or navigation bar.
+With Scaffold and WindowInsets.safeDrawing, it is solved cleanly.
 -->
 
 ---
 
-# Predictive back
+# Predictive Back Gestures
 
-Users can **peek at the previous screen** mid-swipe, before committing to going back.
+Navigation that feels physical and tactile
 
-<div class="grid gap-10 items-center mt-3" style="grid-template-columns: auto 1fr;">
+<div class="grid gap-8 items-center mt-3" style="grid-template-columns: auto 1fr;">
 <div>
 
 <video
@@ -701,114 +795,124 @@ Users can **peek at the previous screen** mid-swipe, before committing to going 
   style="max-height: 330px; width: auto;"
   class="rounded-xl shadow-2xl"></video>
 
+<div class="text-[11px] opacity-60 mt-2 text-center">
+User peeking at the previous screen
+</div>
+
 </div>
 <div>
 
-<v-clicks>
+<v-clicks class="text-sm">
 
-- Makes navigation feel physical instead of instant — you see where you're going
-- Also drives the system's cross-activity and cross-app back animations
-- You hook into it via `onBackInvokedCallback` (or `PredictiveBackHandler` in Compose)
-- Opt in with `android:enableOnBackInvokedCallback="true"` in the manifest
+- Users can **peek** at the previous screen mid-swipe before committing.
+- Eliminates accidental exits—just reverse the gesture to cancel.
+- Seamlessly supported in Compose with `PredictiveBackHandler`.
 
 </v-clicks>
 
-<div v-click class="mt-4 text-sm opacity-80">
-
-Like edge-to-edge, a small change that makes an app instantly look current — or instantly look neglected.
-
-</div>
+```kotlin
+PredictiveBackHandler { progressFlow ->
+  progressFlow.collect { backEvent ->
+    sheetOffset = backEvent.progress
+  }
+}
+```
 
 </div>
 </div>
 
 <!--
-The video loops on its own — let it run while you talk through the points.
-The gesture is the whole point, so give the room a moment to watch before you start.
+Let the video loop for a second so attendees see the fluid motion.
+Predictive back gives apps that premium, native feel that users instantly notice.
 -->
 
 ---
 
-# Live Updates
+# Live Updates: Ongoing Activities
 
-A notification type for things **happening right now** — food delivery, ride tracking, a workout in progress.
+A dedicated notification channel for things **happening right now** in the real world.
 
-<div class="grid gap-6 mt-4" style="grid-template-columns: 1fr 1fr;">
+<div class="grid grid-cols-2 gap-6 mt-4">
+
 <div>
-
-<img
-  src="/images/live-update-shade.png"
-  alt="A food delivery Live Update in the notification shade, showing an order progress bar and a Track Order button"
-  style="width: 100%; max-height: 235px; object-fit: contain;"
-  class="rounded-lg shadow-xl"
-/>
-
-<div class="text-xs opacity-60 mt-2">In the shade: progress, ETA, and an action</div>
-
+  <img
+    src="/images/live-update-shade.png"
+    alt="Food delivery order Live Update in notification shade"
+    style="width: 100%; max-height: 220px; object-fit: contain;"
+    class="rounded-lg shadow-xl"
+  />
+  <div class="text-xs opacity-70 mt-2 text-center">In the shade: Live progress bar, ETA, and actions</div>
 </div>
+
 <div>
-
-<img
-  src="/images/live-update-chip.jpg"
-  alt="The same Live Update collapsed into a status bar chip reading 28 mins"
-  style="width: 100%; max-height: 235px; object-fit: contain;"
-  class="rounded-lg shadow-xl"
-/>
-
-<div class="text-xs opacity-60 mt-2">Collapsed into a status bar chip — visible from any screen</div>
-
-</div>
+  <img
+    src="/images/live-update-chip.jpg"
+    alt="Live Update collapsed into status bar chip"
+    style="width: 100%; max-height: 220px; object-fit: contain;"
+    class="rounded-lg shadow-xl"
+  />
+  <div class="text-xs opacity-70 mt-2 text-center">In the status bar: Persistent chip visible across all apps</div>
 </div>
 
-<div class="text-sm opacity-70 mt-4">
+</div>
 
-Promoted to the **lock screen and status bar** instead of buried in the shade. Shipped in Android 16's quarterly update, alongside the Material 3 Expressive refresh — the OS is making "ongoing activity" a first-class concept.
+<div class="mt-4 p-3 rounded-xl bg-zinc-950 border border-zinc-800 text-xs text-zinc-300 leading-relaxed">
+Shipped in Android 16 QPR / Android 17. Instead of spamming users with 10 separate notifications, an ongoing activity (cab tracking, food delivery, workout, flight status) stays updated in-place on the lock screen and status bar.
+</div>
+
+<!--
+These are real screenshots from active food deliveries and rides.
+Notice the persistent chip in the status bar: tap it, and it expands directly back to the app.
+-->
+
+---
+
+# Modern Privacy: Respecting the User
+
+Android's security model has evolved from all-or-nothing permissions to fine-grained, contextual access.
+
+<div class="grid grid-cols-3 gap-5 mt-6 text-sm">
+
+<div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
+  <div class="font-bold text-indigo-400 mb-2">📸 Photo Picker</div>
+  <p class="text-zinc-300 text-xs leading-relaxed">
+    No need for `READ_MEDIA_IMAGES`! The system Photo Picker lets users grant access to only the 2 photos they picked, without exposing their entire camera roll.
+  </p>
+</div>
+
+<div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
+  <div class="font-bold text-emerald-400 mb-2">🌐 Local Network Access</div>
+  <p class="text-zinc-300 text-xs leading-relaxed">
+    Targeting Android 17 requires explicit user permission (`ACCESS_LOCAL_NETWORK`) before discovering IoT devices, smart TVs, or casting on local Wi-Fi.
+  </p>
+</div>
+
+<div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
+  <div class="font-bold text-purple-400 mb-2">🛡️ Defensive UX</div>
+  <p class="text-zinc-300 text-xs leading-relaxed">
+    Users can deny any permission or revoke it in settings. <strong>Never assume permission is granted.</strong> Always design a graceful fallback flow.
+  </p>
+</div>
 
 </div>
 
 <!--
-These are real screenshots from my own phone — a food delivery order in progress.
-Tap the chip and it expands back into the full notification.
+Teach the students good engineering hygiene: never write code that crashes if a permission is denied.
+Use modern system pickers wherever possible so you don't even need to ask for permissions in the manifest.
 -->
-
----
-
-# Privacy keeps tightening
-
-Not one release — a direction. Each of these lands across Android 16 and 17.
-
-<v-clicks>
-
-- **Local network access needs permission** — the new `ACCESS_LOCAL_NETWORK` runtime permission. Opt-in in Android 16; **required** once you target Android 17. (Casting, smart-home, local servers.)
-- **OTP texts are held back for 3 hours** — started in Android 16 QPR2 (Dec 2025) for SMS Retriever messages; Android 17 extends it to WebOTP and ordinary OTP texts. Use **SMS Retriever** or **SMS User Consent** instead of reading the inbox.
-- **Encrypted Client Hello (ECH)** — hides which site you're connecting to from the network. Automatic at targetSdk 37, *if* your HTTP library and the server both support it.
-
-</v-clicks>
-
-<div v-click class="mt-4 opacity-80">
-
-The pattern across every release: **permissions get narrower, and granted later.** Design assuming the user says no.
-
-</div>
-
-<div class="text-xs opacity-50 mt-3">
-Source: developer.android.com — Android 17 behavior changes
-</div>
 
 ---
 layout: center
 ---
 
-# Takeaway
+# Platform Takeaway
 
-The platform has opinions now.
+The Android platform has clear design and behavioral guidelines.
 
-<div class="mt-4 opacity-80">
-
-Assume permissions get denied, assume your app gets resized, assume you can't opt out.
-<br>
-Most of modern Android development is working *with* those assumptions instead of against them.
-
+<div class="mt-4 opacity-80 text-base max-w-xl mx-auto leading-relaxed">
+Stop assuming a fixed portrait rectangle. Assume your app will be resized, rotated, and put next to other windows.
+<br><br>
+Build responsive layouts with Window Size Classes, draw cleanly edge-to-edge, and design assuming permissions can be denied.
 </div>
 
 ---
@@ -817,1124 +921,663 @@ layout: section
 
 # 03 · Kotlin Multiplatform
 
-One language, many targets
+One language, native execution on every target
 
 ---
 
-# What is KMP?
+# The Cross-Platform Problem
 
-<div class="text-xl mt-2">
+Picture a typical product team building an Android and an iOS app:
 
-An open-source technology from JetBrains for **sharing code across Android, iOS, desktop, web and server** — while keeping the advantages of native development.
+<v-clicks class="text-sm">
 
-</div>
-
-<v-clicks>
-
-- You write the shared parts **once, in Kotlin**
-- You decide **how much** to share — a single function, all your logic, or the UI too
-- The shared code compiles into whatever each platform normally consumes: a `.jar`/`.aar` for Android, a real framework for iOS
+- **The Old Reality:** You write the networking layer, JSON serialization, SQLite caching, and validation rules in Kotlin for Android.
+- Then another developer (or you, wearing a second hat) writes the **exact same logic** in Swift for iOS.
+- **The Pain:** Two codebases to maintain, bugs fixed on Android that remain broken on iOS, and subtle behavioral drift between platforms.
 
 </v-clicks>
 
-<div v-click class="mt-6 text-sm opacity-70">
-
-Shipping in production at **Google Workspace, Duolingo, McDonald's, Forbes, Booking.com, Sony** — JetBrains reports KMP's presence among the top 10K apps doubled year over year.
-
-</div>
-
-<div class="text-xs opacity-50 mt-3">
-Source: kotlinlang.org/multiplatform
+<div v-click class="mt-6 p-4 rounded-xl bg-zinc-950 border border-zinc-800 text-sm">
+  <div class="font-bold text-indigo-400 mb-1">Enter Kotlin Multiplatform (KMP):</div>
+  <div class="text-zinc-300 leading-relaxed">
+    What if you could write your shared logic <strong>once in Kotlin</strong>, compile it directly to a native iOS framework, and keep 100% native UI on both sides?
+  </div>
 </div>
 
 <!--
-Frame it as: this isn't a new language or a new UI framework. It's the Kotlin you
-already write, pointed at more than one platform.
+Frame KMP through real product pain.
+Every startup and team hates writing API models and business calculations twice.
 -->
 
 ---
 
-# Why Kotlin can do this at all
+# The 3 Levels of KMP Adoption
 
-Kotlin isn't one compiler — it's **one front end with several back ends.**
+You don't have to rewrite your entire app on day one. JetBrains designed KMP for **incremental adoption**:
 
-<div class="grid grid-cols-2 gap-x-10 gap-y-3 mt-4">
-<div>
-
-**Kotlin/JVM** → JVM bytecode
-<div class="text-sm opacity-70">Android, and every server framework you know</div>
-
-</div>
-<div>
-
-**Kotlin/Native** → machine code, via **LLVM**
-<div class="text-sm opacity-70">iOS, macOS, Linux, Windows — no VM involved</div>
-
-</div>
-<div>
-
-**Kotlin/JS** → JavaScript
-<div class="text-sm opacity-70">Browsers and Node</div>
-
-</div>
-<div>
-
-**Kotlin/Wasm** → WebAssembly
-<div class="text-sm opacity-70">The newest target — how Compose runs on the web</div>
-
-</div>
+<div class="mt-4 flex justify-center">
+  <img
+    src="/images/kmp/kmp-graphic.png"
+    alt="Three levels of Kotlin Multiplatform adoption"
+    style="max-height: 250px; width: auto; object-fit: contain;"
+    class="rounded-lg shadow-xl"
+  />
 </div>
 
-<div v-click class="mt-6">
-
-**That's the whole trick.** The same `.kt` file goes through a different back end per platform. KMP is the build system organising that, not a runtime sitting underneath your app.
-
+<div class="grid grid-cols-3 gap-4 mt-4 text-xs">
+  <div class="p-3 rounded-lg bg-zinc-950 border border-zinc-800">
+    <div class="font-bold text-indigo-400">Level 1: Share a Piece of Logic</div>
+    <div class="text-zinc-400 mt-1">Share complex validation, pricing algorithms, or encryption helpers in a single shared file.</div>
+  </div>
+  <div class="p-3 rounded-lg bg-zinc-950 border border-zinc-800">
+    <div class="font-bold text-emerald-400">Level 2: Share Data &amp; Logic</div>
+    <div class="text-zinc-400 mt-1">Share Ktor networking, Room database, and ViewModels. Keep native Compose on Android &amp; SwiftUI on iOS.</div>
+  </div>
+  <div class="p-3 rounded-lg bg-zinc-950 border border-zinc-800">
+    <div class="font-bold text-purple-400">Level 3: Share the UI (CMP)</div>
+    <div class="text-zinc-400 mt-1">Use Compose Multiplatform to share screens across Android, iOS, desktop, and web.</div>
+  </div>
 </div>
 
 <!--
-This is the slide that makes KMP click for people. Everything else follows from it.
-Kotlin/Native produces a real Apple framework — Xcode treats it like any other one.
+This is the most comforting slide for students and devs.
+You do not have to commit to 100% cross-platform. You can start with a single shared helper module.
 -->
-
----
-
-# It's not Flutter, and it's not React Native
-
-<div class="grid grid-cols-3 gap-5 mt-4 text-sm">
-<div class="p-3 rounded-lg" style="background: rgba(255,255,255,0.05);">
-
-**React Native**
-
-Your code is **JavaScript**, running in a JS engine you ship with the app. It asks the platform to draw native components.
-
-<div class="mt-2 opacity-60">Runtime in the middle</div>
-
-</div>
-<div class="p-3 rounded-lg" style="background: rgba(255,255,255,0.05);">
-
-**Flutter**
-
-Your code is **Dart**, compiled ahead of time. Flutter brings its **own rendering engine** and draws every pixel itself.
-
-<div class="mt-2 opacity-60">Own UI, not the platform's</div>
-
-</div>
-<div class="p-3 rounded-lg" style="background: rgba(99,102,241,0.18);">
-
-**Kotlin Multiplatform**
-
-Your code is **Kotlin**, compiled to each platform's native format. No VM, no bridge, no shipped runtime.
-
-<div class="mt-2 opacity-60">UI is your choice</div>
-
-</div>
-</div>
-
-<v-clicks>
-
-- The other two are **UI frameworks first** — adopting them means adopting their way of drawing screens
-- KMP is a **code-sharing tool first**. Sharing UI is opt-in, via Compose Multiplatform
-- So you can call `UIKit`, `Camera2`, or any platform API **directly**, with no wrapper to wait for
-
-</v-clicks>
-
-<div v-click class="mt-4 text-sm opacity-75">
-
-**Fair warning:** if you *do* use Compose Multiplatform for UI on iOS, it renders with **Skia onto a Metal layer** — it draws its own pixels, much like Flutter. The difference is that KMP doesn't make you.
-
-</div>
-
-<!--
-Students will have heard of Flutter and RN. Anchor KMP against them or it sounds
-like a third thing doing the same job. The honest trade-off: KMP gives you native
-fidelity and incremental adoption; Flutter gives you one UI everywhere.
-
-Don't skip the last line. If someone in the room knows Compose Multiplatform is
-Skia-based, glossing over it costs you the whole section's credibility.
--->
-
----
-
-# You choose how much to share
-
-<div class="flex justify-center mt-2">
-
-<img
-  src="/images/kmp/kmp-graphic.png"
-  alt="Three levels of Kotlin Multiplatform adoption: share a piece of logic, share logic and keep the UI native, or share up to 100% of the code"
-  style="width: 100%; max-height: 300px; object-fit: contain;"
-  class="rounded-lg"
-/>
-
-</div>
-
-<div class="text-sm opacity-70 mt-4">
-
-You are not signing up for all of it on day one. Most teams start in the left box — one module, one problem — and move right only if it pays off.
-
-</div>
-
-<div class="text-xs opacity-50 mt-2">
-Graphic: kotlinlang.org — Kotlin Multiplatform overview
-</div>
-
-<!--
-This is the most reassuring slide in the section. "Try it on one file" is a much
-easier sell to a student than "rewrite your app".
--->
-
----
-
-# Starting a project
-
-<div class="grid gap-10 mt-2" style="grid-template-columns: 1.1fr 1fr;">
-<div>
-
-<v-clicks>
-
-- **IntelliJ IDEA** or **Android Studio** with the Kotlin Multiplatform plugin: `File → New → Project → Kotlin Multiplatform`
-- Pick your targets (Android, iOS, desktop, web) and whether you want to **share the UI**
-- You need a **Mac with Xcode** to build and run the iOS side — that requirement doesn't go away
-- The wizard hands you a working two-platform app to start editing
-
-</v-clicks>
-
-</div>
-<div>
-
-```text
-GreetingKMP/
-├── composeApp/       shared code
-│   └── src/
-│       ├── commonMain/    ← shared
-│       ├── androidMain/   ← Android only
-│       └── iosMain/       ← iOS only
-├── iosApp/           Xcode project
-└── build.gradle.kts
-```
-
-<div class="text-xs opacity-60 mt-2">
-The Xcode project is a real Xcode project. iOS developers keep their tools.
-</div>
-
-</div>
-</div>
-
-<!--
-Worth saying out loud: the Mac requirement is the practical blocker for students.
-If they only have Windows, they can still do Android + desktop + web targets.
--->
-
----
-
-# How you write code: source sets
-
-<div class="grid gap-8 items-center mt-2" style="grid-template-columns: 1fr 1fr;">
-<div>
-
-<img
-  src="/images/kmp/multiplatform-executables-diagram.svg"
-  alt="Diagram: commonMain compiles to all targets, appleMain to Apple targets, iosArm64Main to iPhone only, together producing native executables"
-  style="width: 100%; max-height: 260px; object-fit: contain;"
-  class="rounded-lg bg-white p-2"
-/>
-
-</div>
-<div>
-
-A **source set** is just a folder with rules about which targets it compiles for.
-
-<v-clicks>
-
-- `commonMain` — compiled for **every** target. Only Kotlin and multiplatform libraries here
-- `androidMain` — Android only. `Context`, `Build`, any Java library
-- `iosMain` — iOS only. `UIKit`, `NSUserDefaults`, Foundation
-- Platform folders can see `commonMain`. **`commonMain` cannot see them** — that's what keeps shared code portable
-
-</v-clicks>
-
-</div>
-</div>
-
-<div class="text-xs opacity-50 mt-2">
-Diagram: kotlinlang.org — Understand the project structure
-</div>
-
----
-
-# When shared code needs a platform API: `expect` / `actual`
-
-<div class="grid gap-6 mt-2" style="grid-template-columns: 1fr 1fr;">
-<div>
-
-**commonMain** — declare the shape, no body
-
-```kotlin
-expect fun platformName(): String
-```
-
-<div class="text-sm opacity-70 mt-3">
-
-The compiler now **requires** every target to supply one. Miss it and the build fails — not the app.
-
-</div>
-
-</div>
-<div>
-
-**androidMain**
-
-```kotlin
-actual fun platformName() =
-  "Android ${Build.VERSION.SDK_INT}"
-```
-
-**iosMain**
-
-```kotlin
-actual fun platformName() =
-  UIDevice.currentDevice.systemName()
-```
-
-</div>
-</div>
-
-<div v-click class="mt-4 text-sm opacity-80">
-
-Same idea as an interface, enforced at compile time across platforms. JetBrains' own advice: reach for **plain interfaces and dependency injection** first, and keep `expect`/`actual` for the places you genuinely need it.
-
-</div>
-
-<div class="text-xs opacity-50 mt-2">
-Source: kotlinlang.org — Expected and actual declarations
-</div>
-
----
-
-# Level 1 — share a piece of logic
-
-The smallest useful thing: one function, no UI, no architecture change.
-
-```kotlin
-// shared/src/commonMain/kotlin/Validation.kt
-fun isValidUpiId(input: String): Boolean {
-  val parts = input.split("@")
-  return parts.size == 2 && parts.all { it.isNotBlank() }
-}
-```
-
-<div class="grid grid-cols-2 gap-6 mt-4">
-<div>
-
-**Android calls it as Kotlin**
-
-```kotlin
-if (isValidUpiId(text)) submit()
-```
-
-</div>
-<div>
-
-**iOS calls it as Swift**
-
-```swift
-if ValidationKt.isValidUpiId(input: text) {
-    submit()
-}
-```
-
-</div>
-</div>
-
-<div v-click class="mt-4 text-sm opacity-80">
-
-Validation rules, pricing maths, date handling — the code where **the two platforms silently disagreeing is a real bug.**
-
-</div>
 
 ---
 layout: two-cols
 ---
 
-# "I could've just copy-pasted that"
+# How It Works Under the Hood
 
-Fair — for a five-line validator. The argument only lands once the shared code has **dependencies**.
+Kotlin isn't just one compiler—it has **multiple native backends**:
 
-```kotlin
-// commonMain
-@Serializable
-data class Rate(val base: String, val inr: Double)
+<div class="pr-4 mt-2">
 
-class RatesApi(private val http: HttpClient) {
-  suspend fun latest(): Rate =
-    http.get("$API/latest").body()
-}
-```
+<v-clicks class="text-sm">
 
-<div class="text-sm opacity-75 mt-3">
+- **Kotlin/JVM:** Compiles to JVM bytecode for Android & backend microservices.
+- **Kotlin/Native:** Compiles directly to machine code via **LLVM** for iOS, macOS, Windows, and Linux.
+- **Kotlin/Wasm:** Compiles to WebAssembly for high-performance web canvas execution.
 
-Ktor and kotlinx.serialization are **multiplatform libraries** — they compile for iOS too. No Retrofit, no Moshi, no Swift rewrite.
+</v-clicks>
+
+<div v-click class="mt-4 p-3 rounded-lg bg-indigo-950/40 border border-indigo-800/40 text-xs text-indigo-200">
+<strong>The crucial distinction:</strong> To Xcode, your shared Kotlin code is compiled into an ordinary <code>.framework</code>. The iOS app calls it just like any native Swift dependency—no JavaScript bridge and no VM overhead!
+</div>
 
 </div>
 
 ::right::
 
-<div class="pl-6">
+<div class="flex flex-col items-center justify-center h-full pl-2">
 
-The only per-platform part is the **engine**, and the library already did that `expect`/`actual` for you:
+<img
+  src="/images/kmp/multiplatform-executables-diagram.svg"
+  alt="Kotlin multiplatform compilation diagram"
+  style="max-height: 290px; width: auto; object-fit: contain;"
+  class="rounded-xl shadow-xl bg-white p-2"
+/>
 
-```kotlin
-// androidMain
-actual fun engine() = OkHttp.create()
-
-// iosMain
-actual fun engine() = Darwin.create()
-```
-
-<v-clicks>
-
-- **Ktor** — HTTP client · **kotlinx.serialization** — JSON
-- **Room**, **DataStore**, **ViewModel**, **Lifecycle** — Google ships these multiplatform now
-- **coroutines**, **Koin** / **kotlin-inject** — concurrency and DI
-
-</v-clicks>
-
-<div v-click class="text-sm opacity-80 mt-4">
-
-This is the actual sales pitch. Not "share a function" — **"stop maintaining two networking layers that drift apart."**
-
+<div class="text-[11px] opacity-60 mt-2 text-center">
+Source: kotlinlang.org — Multiplatform project architecture
 </div>
 
-</div>
-
-<div class="text-xs opacity-50 mt-2">
-Ktor 3.5 · kotlinx.serialization · developer.android.com — Room and DataStore for KMP
 </div>
 
 <!--
-The counter to "just copy-paste it" is dependencies, not volume. A student can
-copy a validator between two files. They cannot copy Retrofit into Swift.
-
-If asked why Google ships Room as multiplatform: they use KMP internally in
-Workspace, so the Jetpack libraries had to follow.
+Contrast this with Flutter and React Native.
+React Native ships a JavaScript engine. Flutter ships a complete C++ engine.
+KMP compiles down to native CPU instructions via LLVM for iOS.
 -->
 
 ---
+layout: two-cols
+---
 
-# Level 2 — share all the logic, keep the UI native
+# Level 2: Shared Logic, Native UI
+
+Write your data layer once, render with Compose on Android and SwiftUI on iOS.
+
+<div class="pr-4 mt-1">
 
 ```kotlin
-// commonMain — one view model, both platforms
-class CounterViewModel : ViewModel() {
-  private val _count = MutableStateFlow(0)
-  val count: StateFlow<Int> = _count.asStateFlow()
+// commonMain (Shared Kotlin)
+class WeatherRepository(private val api: KtorClient) {
+  suspend fun getForecast(city: String): Forecast =
+    api.fetch(city)
+}
 
-  fun increment() { _count.value += 1 }
+class WeatherViewModel(
+  private val repo: WeatherRepository
+) : ViewModel() {
+  val state = MutableStateFlow<WeatherUiState>(Loading)
+  fun refresh(city: String) { /* coroutine */ }
 }
 ```
 
-<div class="grid grid-cols-2 gap-6 mt-3">
-<div>
+<div class="text-xs opacity-75 mt-2">
+Ktor (HTTP), kotlinx.serialization (JSON), and Room (Database) are all official multiplatform libraries!
+</div>
+
+</div>
+
+::right::
+
+<div class="pl-2 mt-1">
 
 **Android — Jetpack Compose**
 
 ```kotlin
-val count by vm.count.collectAsState()
-Text("Count: $count")
-Button(onClick = vm::increment) { Text("+") }
+val uiState by viewModel.state.collectAsState()
+when (val state = uiState) {
+  is Success -> WeatherCard(state.temp)
+}
 ```
-
-</div>
-<div>
 
 **iOS — SwiftUI**
 
 ```swift
-Text("Count: \(model.count)")
-Button("+") { model.increment() }
-```
-
-</div>
-</div>
-
-<div v-click class="mt-3 text-sm opacity-80">
-
-Networking, storage, state — written once. Every screen still looks and behaves exactly like its platform, because it *is* its platform.
-
-</div>
-
----
-
-# Level 3 — share the UI too, with Compose Multiplatform
-
-```kotlin
-// commonMain — this screen runs on Android, iOS, desktop and web
-@Composable
-fun CounterScreen(vm: CounterViewModel) {
-  val count by vm.count.collectAsState()
-
-  Column(horizontalAlignment = Alignment.CenterHorizontally) {
-    Text("Count: $count", style = MaterialTheme.typography.headlineMedium)
-    Button(onClick = vm::increment) { Text("Add one") }
+// Consumed natively in Swift!
+@ObservedObject var vm: WeatherViewModel
+var body: some View {
+  if let data = vm.state.success {
+    WeatherView(temp: data.temp)
   }
 }
 ```
 
-<v-clicks>
-
-- It's the **same Compose** you learned earlier in this talk — `Column`, `Text`, `Button`, state and all
-- On iOS it renders through **Kotlin/Native**, not a web view and not a bridge
-- You can still drop to a native view for any single screen that needs it
-
-</v-clicks>
-
-<!--
-Tie it back to section 01 explicitly — the Compose knowledge transfers, which is
-the strongest argument for a student to learn Compose properly.
--->
-
----
-layout: section
----
-
-# Compose Multiplatform
-
-The UI arm of Kotlin Multiplatform
-
----
-
-# One system, two arms
-
-KMP by itself only shares **logic**. Compose Multiplatform is the piece that lets you share the **screens** too — same project, same Gradle build, opt in per module.
-
-<div class="grid grid-cols-2 gap-5 mt-4 text-sm">
-<div class="p-3 rounded-lg" style="background: rgba(255,255,255,0.05);">
-
-**KMP — the logic arm**
-
-Ktor · kotlinx.serialization · coroutines · Room · DataStore · ViewModel
-
-<div class="mt-2 opacity-60">Ships as an <code>.aar</code> on Android, a real framework on iOS</div>
-
-</div>
-<div class="p-3 rounded-lg" style="background: rgba(99,102,241,0.18);">
-
-**Compose Multiplatform — the UI arm**
-
-`@Composable` · `Modifier` · Material 3 · animation · Navigation
-
-<div class="mt-2 opacity-60">Optional. Drop it and you write SwiftUI on iOS instead</div>
-
-</div>
-</div>
-
-<v-clicks>
-
-- It is **not a fork** of Jetpack Compose. Same compiler, same runtime, same API surface — JetBrains extends Google's toolkit to non-Android targets
-- On Android it literally resolves to Google's artifacts: `compose.material3` becomes `androidx.compose.material3` on Android and `org.jetbrains.compose.material3` everywhere else, chosen automatically from Gradle module metadata
-- So there is **no Android penalty** for adopting it — Android keeps running the exact Compose you already know
-
-</v-clicks>
-
-<div class="text-xs opacity-50 mt-3">
-Source: kotlinlang.org — Compose Multiplatform and Jetpack Compose
 </div>
 
 <!--
-The single sentence to land: KMP shares logic, Compose Multiplatform shares UI,
-and they're the same project — not competing choices.
-
-If asked "who maintains what": Google builds Jetpack Compose for Android,
-JetBrains publishes the multiplatform artifacts for iOS / desktop / web from the
-same upstream source. They work upstream together, which is why the API doesn't drift.
+This is where the real commercial ROI is for companies.
+The data layer, business rules, caching, and network models are written and unit-tested once.
+The UI can still be 100% native if your team prefers SwiftUI on iOS.
 -->
 
 ---
-
-# Where it runs, and how far you can trust it
-
-<div class="grid gap-8 mt-3" style="grid-template-columns: 1.15fr 1fr;">
-<div>
-
-| Target | Renders through | Status |
-|---|---|---|
-| **Android** | Jetpack Compose itself | Stable |
-| **iOS** | Skia → Metal, in a `UIViewController` | **Stable** |
-| **Desktop** | Skia, on the JVM (Win/macOS/Linux) | Stable |
-| **Web** | Kotlin/Wasm → canvas | Beta |
-
-<div class="text-sm opacity-70 mt-3">
-
-iOS went Stable in **1.8** (May 2025) — that's the line that changed this from a demo into something teams ship.
-
-</div>
-
-</div>
-<div>
-
-**Recently landed**
-
-<v-clicks>
-
-- **1.10** — one `@Preview` annotation that works in `commonMain`, Navigation 3 off Android, Compose Hot Reload stable
-- **1.11** — concurrent rendering on by default; experimental **native iOS text input** (real selection handles, system context menu, Autofill/Translate)
-- **1.12** *(Aug 2026, current)* — `MeshGradientPainter`, iOS accessibility work, an MCP server so AI agents can poke a running app through Hot Reload
-
-</v-clicks>
-
-</div>
-</div>
-
-<div class="text-xs opacity-50 mt-3">
-Sources: kotlinlang.org — Stability of supported platforms · JetBrains/compose-multiplatform releases (v1.12.0, 25 Aug 2026)
-</div>
-
-<!--
-Note the callback: the mesh gradients from section 01 landed in Compose
-Multiplatform this August. The gap between "Android gets it" and "everywhere gets
-it" is now measured in months, not years.
-
-Web is Beta because Kotlin/Wasm is Beta — the Compose API on top of it is the
-stable part. Fine for internal tools, not what you'd bet a launch on.
-
-Be honest on the iOS text input line: it's still experimental in 1.12. Text
-editing was the last big "it doesn't feel like iOS" complaint, and it's being
-fixed rather than already fixed.
--->
-
+layout: two-cols
 ---
 
-# The code you already know, with two seams
+# Level 3: Compose Multiplatform
 
-<div class="grid gap-6 mt-2" style="grid-template-columns: 1fr 1fr;">
-<div>
+When you want to share the user interface too
 
-**`commonMain` — the screen itself**
-
-```kotlin
-@Composable
-fun App() = MaterialTheme {
-  Column(Modifier.fillMaxSize()) {
-    // Res, not R — one resource system
-    Image(painterResource(Res.drawable.logo), null)
-    Text(stringResource(Res.string.greeting))
-  }
-}
-```
-
-<div class="text-sm opacity-75 mt-2">
-
-**Seam 1 — resources.** Android's `R` is an Android thing, so Compose Multiplatform generates a typed `Res` from `composeResources/` instead.
-
-</div>
-
-</div>
-<div>
-
-**Each platform just hosts it**
-
-```kotlin
-// androidMain
-setContent { App() }
-```
-
-```kotlin
-// iosMain — a plain UIViewController
-fun MainViewController() =
-  ComposeUIViewController { App() }
-```
-
-<div class="text-sm opacity-75 mt-2">
-
-**Seam 2 — the entry point.** Every target hands Compose one native container. From there it's your Compose tree.
-
-</div>
-
-</div>
-</div>
-
-<div v-click class="mt-3 text-sm opacity-80">
-
-Because it's a real `UIViewController`, SwiftUI can embed one Compose screen — and a Compose screen can embed a native view with `UIKitView { MKMapView() }`. **The interop goes both ways**, which is what makes "one screen at a time" adoption possible.
-
-</div>
-
-<!--
-Only two things are genuinely new to an Android dev: `Res` instead of `R`, and
-the entry point. Everything between them is the Compose from section 01.
-
-The two-way interop is the answer to "what if Compose can't do X on iOS" — you
-drop in the UIKit view for that one thing and keep going.
--->
-
----
-
-# It's not a demo anymore
-
-<div class="grid grid-cols-2 gap-x-10 gap-y-3 mt-4 text-sm">
-<div>
-
-**Physics Wallah** — 17M active users
-<div class="opacity-70">UI and logic unified across iOS and Android</div>
-
-</div>
-<div>
-
-**Markaz** — 5M+ downloads
-<div class="opacity-70">100+ screens, 100% Compose Multiplatform</div>
-
-</div>
-<div>
-
-**Wrike**
-<div class="opacity-70">Calendars, Boards, Dashboards, Charts in production</div>
-
-</div>
-<div>
-
-**Instabee**
-<div class="opacity-70">Shipped their iOS app by reusing the Android one</div>
-
-</div>
-<div>
-
-**Bilibili**
-<div class="opacity-70">Instant messaging feature</div>
-
-</div>
-<div>
-
-**Feres** — 1M+ downloads
-<div class="opacity-70">~90% of the UI shared</div>
-
-</div>
-</div>
-
-<div v-click class="mt-5 text-sm opacity-80">
-
-Notice the shape of the list: mostly **content-and-forms apps**, and mostly teams that already had Android and wanted iOS. That's where the trade is cleanly worth it. Nobody on this list shipped a camera app or a game with it.
-
-</div>
-
-<div class="text-xs opacity-50 mt-3">
-Source: kotlinlang.org/compose-multiplatform — production users
-</div>
-
-<!--
-Vendor-published case studies, so read them as "this is possible", not as "this
-is typical". The honest counterweight is the shape of the list, not a caveat slide.
--->
-
----
-
-# "But isn't cross-platform slow?"
-
-<div class="flex justify-center mt-1">
-
-<img
-  src="/images/kmp/cmp-ios-performance.png"
-  alt="JetBrains benchmark: scrolling FPS for SwiftUI versus Compose Multiplatform on iPhone 13 and iPhone 16, automatic and manual scrolling, showing near-identical results"
-  style="width: 100%; max-height: 240px; object-fit: contain;"
-  class="rounded-lg"
-/>
-
-</div>
+<div class="pr-4 mt-1">
 
 <v-clicks class="text-sm">
 
-- Scrolling FPS on iPhone 13 and 16 — every pair **overlaps inside the error bars**. The claim is *comparable*, not faster
-- It's fast because Compose on iOS skips the UIKit view tree entirely and draws through **Skia → Metal**
-- Read it as "no longer the reason to say no", not as proof of a win
+- **Compose Multiplatform (CMP)** brings Google's Jetpack Compose to iOS, desktop, and web.
+- On iOS, it renders directly onto a **Metal layer using the Skia graphics engine**.
+- **Shared Codebase:** You write your `@Composable` screens in `commonMain`, and they run on Android and iOS simultaneously.
+- **Two-Way Interop:** You can embed native UIKit / SwiftUI views inside Compose, or embed a Compose screen inside an iOS app.
 
 </v-clicks>
 
-<div class="text-xs opacity-50 mt-3">
-Chart: JetBrains, via kotlinlang.org. Vendor's own benchmark — no published methodology or raw numbers.
+<div v-click class="mt-3 text-xs opacity-80">
+Shipped in production by: <strong>Physics Wallah (17M users), Cash App, McDonald's, Duolingo, and Forbes.</strong>
+</div>
+
+</div>
+
+::right::
+
+<div class="pl-2">
+
+```kotlin
+// commonMain — Runs on Android & iOS!
+@Composable
+fun UserProfileScreen(user: User) {
+  Column(
+    modifier = Modifier.fillMaxSize().padding(16.dp),
+    horizontalAlignment = Alignment.CenterHorizontally,
+  ) {
+    AsyncImage(
+      model = user.avatarUrl,
+      contentDescription = "Avatar",
+      modifier = Modifier.size(96.dp).clip(CircleShape)
+    )
+    Text(
+      text = user.name,
+      style = MaterialTheme.typography.titleLarge
+    )
+    Button(onClick = { /* shared logic */ }) {
+      Text("Send Message")
+    }
+  }
+}
+```
+
 </div>
 
 <!--
-If someone asks "isn't this marketing?" — yes, partly, and say so:
-- JetBrains benchmarking JetBrains, published as a chart with no methodology
-- Their public benchmark suite on GitHub has no SwiftUI comparison in it at all
-- Both bars sit under 60fps, so the test scene was heavy by design
-- "Automatic scroll" is a programmatic fling — no touch handling, best-case pacing
-
-The technical reason it holds up: Compose draws its own pixels via Skia on Metal,
-so it never pays for UIKit view lifecycle or Auto Layout on a long list.
+Tie this back to Section 01: every single thing students learn about Jetpack Compose transfers directly to iOS, Desktop, and Web with CMP!
 -->
-
----
-
-# Where this is going
-
-<div class="grid gap-8 mt-4" style="grid-template-columns: 1fr 1fr;">
-<div>
-
-**Tooling caught up**
-
-<v-clicks>
-
-- Google ships **Room, DataStore, ViewModel and Lifecycle** as multiplatform libraries
-- Compose Multiplatform covers iOS, desktop and web
-- JetBrains points **Junie**, its AI coding agent, at KMP tasks — scaffolding targets, writing `actual` implementations
-
-</v-clicks>
-
-</div>
-<div>
-
-**What to actually do**
-
-<v-clicks>
-
-- Learn **Kotlin and Compose** properly first — both transfer directly
-- Then try sharing **one** thing: a validator, a parser, an API client
-- Don't start by trying to share a whole app
-
-</v-clicks>
-
-</div>
-</div>
-
-<div class="text-xs opacity-50 mt-4">
-Sources: kotlinlang.org/multiplatform · kotlinlang.org — KMP overview
-</div>
 
 ---
 layout: center
 ---
 
-# Takeaway
+# KMP Takeaway
 
-Kotlin compiles to more than one thing. KMP is what you get when you take that seriously.
+Kotlin is no longer just "the Android language."
 
-<div class="mt-4 opacity-80">
-
-Share what's genuinely the same on both platforms, keep native what should feel native.
-<br>
-The escape hatch is always there — that's the part Flutter and React Native can't offer.
-
+<div class="mt-4 opacity-80 text-base max-w-xl mx-auto leading-relaxed">
+KMP allows you to share what makes sense (networking, databases, viewmodels) while preserving complete native access to platform APIs.
+<br><br>
+Start small: share a validation helper or a Ktor API client for your next team project.
 </div>
+
 ---
 layout: section
 ---
 
 # 04 · On-Device AI
 
-AICore, LiteRT-LM and AppFunctions
+AICore, Gemini Nano, and local intelligence
 
 ---
 
-# Two directions, not one feature
+# Why On-Device AI?
 
-<div class="flex justify-center mt-2">
+Everyone wants to add intelligence to their apps, but cloud-only models carry real trade-offs:
 
-<img
-  src="/images/ai/two-directions.svg"
-  alt="Left: your app calls ML Kit GenAI, which runs on AICore and Gemini Nano, or calls LiteRT-LM with a model file you ship. Right: Gemini or an agent calls your app through AppFunctions."
-  style="width: 100%; max-height: 300px; object-fit: contain;"
-/>
+<div class="grid grid-cols-2 gap-6 mt-6 text-sm">
+
+<div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
+  <div class="font-bold text-rose-400 text-base mb-2">☁️ Cloud LLMs (Cloud API)</div>
+  <ul class="text-zinc-300 text-xs space-y-2">
+    <li>• <strong>Latency:</strong> 1 to 3 seconds per round trip over network.</li>
+    <li>• <strong>Cost:</strong> Continuous recurring API bills per token.</li>
+    <li>• <strong>Privacy:</strong> User data must leave the device and hit servers.</li>
+    <li>• <strong>Offline:</strong> Completely fails in airplane mode or spotty signal.</li>
+  </ul>
+</div>
+
+<div class="p-4 rounded-xl bg-zinc-950 border border-indigo-500/40 bg-indigo-950/20">
+  <div class="font-bold text-emerald-400 text-base mb-2">📱 On-Device Models (Gemini Nano)</div>
+  <ul class="text-zinc-300 text-xs space-y-2">
+    <li>• <strong>Instant:</strong> Local inference on NPU/GPU with sub-second response.</li>
+    <li>• <strong>Free:</strong> Zero cloud server costs per user query.</li>
+    <li>• <strong>Private:</strong> Sensitive personal data never leaves the hardware.</li>
+    <li>• <strong>Offline:</strong> Works 100% offline in airplane mode.</li>
+  </ul>
+</div>
 
 </div>
 
-<v-clicks class="text-sm mt-2">
-
-- Almost every "AI on Android" talk only covers the **left** half — your app asking a model for text
-- The **right** half is the newer, stranger idea: your app registers what it can *do*, and the assistant calls it
-- Same section, opposite arrows. Keep them straight and the rest of this is easy
-
-</v-clicks>
-
 <!--
-This slide is the spine of the section. If they remember one thing, it's that
-"on-device AI" now means two unrelated jobs with two unrelated APIs.
+Frame this clearly for college students:
+Cloud models are great for huge knowledge tasks.
+On-device models are ideal for personal, local tasks: summarizing a private note, proofreading a text, smart replies, or transcribing voice.
 -->
 
 ---
 
-# Where the model actually lives
+# Two Directions of On-Device AI
 
-**AICore** is an Android system service. Gemini Nano is **not in your APK** — the OS holds one copy and every app shares it.
+Most developers think "AI on Android" just means asking a model for text. In modern Android, it is **two opposite directions**:
 
-<v-clicks>
-
-- You never download, version or ship a model. AICore does distribution and updates
-- It runs under **Private Compute Core**: no internet except through Private Compute Services, and requests aren't retained after they're answered
-- It applies **safety filtering** and per-app LoRA adapters on top of the base model
-- Your APK stays the size it was. That is the entire reason this path exists
-
-</v-clicks>
-
-<div class="text-xs opacity-50 mt-4">
-Source: developer.android.com/ai/gemini-nano
+<div class="mt-4 flex justify-center">
+  <img
+    src="/images/ai/two-directions.svg"
+    alt="Two directions of on-device AI: App calling ML Kit/LiteRT, and Gemini assistant calling AppFunctions"
+    style="max-height: 270px; width: auto; object-fit: contain;"
+    class="rounded-lg shadow-xl"
+  />
 </div>
 
----
-
-# "Supports Gemini Nano" is not one switch
-
-Availability is not a single boolean. It varies by **feature**, and by **which Nano the device actually has.**
-
-<v-clicks>
-
-- The **task APIs** — summarize, proofread, rewrite, describe an image — reach the widest set: Pixel 9 and newer, plus a range of Samsung, OnePlus, OPPO and Xiaomi devices
-- The **Prompt API** depends on the model version. **nano-v2, v3 and v4 each ship to a different device list** — v4 is Pixel 11 and Galaxy Z only — and Google warns the *same prompt can return different output* across versions
-- **Speech recognition** splits again: **basic** mode on most API 31+ devices, **advanced** mode on Pixel 10 and 11 only
-
-</v-clicks>
-
-<div v-click class="mt-5">
-
-So "does this phone support Nano?" is the wrong question. The real one is **"does this phone support *this* feature, at *this* quality?"** — and the answer changes as devices update underneath you.
-
-</div>
-
-<div class="text-xs opacity-50 mt-3">
-Source: developers.google.com/ml-kit/genai — supported devices
+<div class="grid grid-cols-2 gap-6 mt-4 text-xs">
+  <div class="p-3 rounded-lg bg-zinc-950 border border-zinc-800">
+    <div class="font-bold text-indigo-400">Direction 1: App Calls Model</div>
+    <div class="text-zinc-400 mt-1">Your app passes text or images to local Gemini Nano to summarize, proofread, or categorize.</div>
+  </div>
+  <div class="p-3 rounded-lg bg-zinc-950 border border-zinc-800">
+    <div class="font-bold text-purple-400">Direction 2: System Calls App (AppFunctions)</div>
+    <div class="text-zinc-400 mt-1">Your app registers callable tools. The system Gemini assistant invokes your app to perform user actions!</div>
+  </div>
 </div>
 
 <!--
-This is the slide that stops someone shipping a Nano feature and being surprised
-in the Play Console. Two things to say out loud:
-
-- v4 being Pixel 11 / Galaxy Z only means the newest capabilities are effectively
-  a demo audience today
-- "same prompt, different output across versions" is Google's own warning — it
-  means your prompt is not portable, and you have to test per version
--->
-
-<!--
-The "shared system model" design is genuinely different from iOS-style bundling
-and worth pausing on: it's why the APIs are all about *checking availability*
-rather than *loading a model*.
-
-Latest Nano shipped on Pixel 10; Gemini Nano 4 was a developer preview at I/O '26
-with production later in the year. Don't promise dates on stage.
+This is the core insight of the section.
+Keep the two arrows clear:
+1. You calling the model.
+2. The AI assistant calling your app as an agent tool.
 -->
 
 ---
 layout: two-cols
 ---
 
-# The easy layer: ML Kit GenAI
+# The Shared System Model: Android AICore
 
-Fixed jobs, tuned by Google, a few lines each — **summarize, proofread, rewrite, describe an image, transcribe speech.** No ML knowledge required.
+Bundling a 2GB model inside every APK would destroy phone storage. **AICore** solves this.
+
+<div class="pr-4 mt-2">
+
+<v-clicks class="text-sm">
+
+- **System-Level Service:** Gemini Nano is managed by the Android operating system, not bundled inside your APK.
+- **One Shared Copy:** Every app on the device shares the same foundation model instance. Your APK stays compact.
+- **Private Compute Core:** Runs in an isolated sandbox with zero direct internet access.
+- **Background Updates:** Google updates model weights and hardware NPU optimizations through system updates.
+
+</v-clicks>
+
+</div>
+
+::right::
+
+<div class="pl-2 mt-2">
 
 ```kotlin
-val model = Generation.getClient()
+// The entire developer API is availability checking!
+val client = Generation.getClient()
 
-when (model.checkStatus()) {
-  FeatureStatus.UNAVAILABLE -> hideTheFeature()
-
-  FeatureStatus.DOWNLOADABLE ->
-    model.download().collect { /* progress UI */ }
-
+when (client.checkStatus()) {
   FeatureStatus.AVAILABLE -> {
-    val reply = model.generateContent(
-      "Summarise this note in one line: $note"
+    // Ready for instant offline inference
+    val summary = client.generateContent(
+      "Summarize in 10 words: $text"
     )
   }
-}
-```
-
-::right::
-
-<div class="pl-6">
-
-Streaming is a `Flow`, so it drops straight into Compose:
-
-```kotlin
-model.generateContentStream(prompt)
-  .collect { chunk ->
-    text += chunk.candidates[0].text
+  FeatureStatus.DOWNLOADABLE -> {
+    // Show download progress in UI
+    client.download().collect { progress -> ... }
   }
-```
-
-<v-clicks>
-
-- **`checkStatus()` is the API.** Availability is the hard part, not generation — notice the code is mostly branching on it
-- The model downloads **on first use**, not at install. Budget a progress state
-- `genai-prompt` is at **1.0.0-beta4**; the task APIs — summarization, rewriting, proofreading, image description — are **1.0.0-beta1**
-
-</v-clicks>
-
-</div>
-
-<div class="text-xs opacity-50 mt-2">
-com.google.mlkit:genai-* · versions checked on Google's Maven, Sept 2026
-</div>
-
-<!--
-Emphasise the shape: three branches, and only one of them does AI. That ratio is
-the honest picture of shipping an on-device feature.
--->
-
----
-layout: two-cols
----
-
-# When you need your own model: LiteRT-LM
-
-Gemini Nano is one model, chosen for you. **LiteRT-LM** is the runtime for when you need a *different* one — Gemma, Llama, Phi-4, Qwen, or something you fine-tuned.
-
-```kotlin
-val engine = Engine(
-  EngineConfig(
-    modelPath = "/data/.../gemma.litertlm",
-    backend = Backend.GPU(),
-  )
-)
-engine.initialize()
-
-engine.createConversation().use { chat ->
-  chat.sendMessageAsync("Summarise this note")
-      .collect { print(it) }
+  FeatureStatus.UNAVAILABLE -> {
+    // Fall back to cloud or hide feature
+  }
 }
 ```
 
-::right::
-
-<div class="pl-6">
-
-<v-clicks>
-
-- **You own the file.** No AICore, no device allowlist — it runs anywhere you can fit it
-- Which is the catch: **Gemma-4-E2B is ~2.6 GB.** That's a download and a storage conversation with your user, not a dependency
-- GPU and NPU acceleration, vision and audio models, and **function calling with constrained decoding** for agent-style work
-- Same runtime behind Chrome, ChromeOS, Pixel Watch and the AI Edge Gallery app
-- `litertlm-android` is at **0.17.0** — a fast-moving pre-1.0 library
-
-</v-clicks>
-
-</div>
-
-<div class="text-xs opacity-50 mt-2">
-Sources: developers.google.com/edge/litert-lm · google-ai-edge/LiteRT-LM
 </div>
 
 <!--
-The size number is the point. Students hear "on-device model" and picture
-something small; 2.6 GB reframes the whole decision. Gemini Nano's appeal is that
-the OS already paid that cost.
+Emphasize the defensive programming aspect:
+Notice that 80% of the code is handling status checks!
+On-device AI requires handling cases where the model is still downloading or unsupported.
 -->
 
 ---
 layout: two-cols
 ---
 
-# AppFunctions: your app as a tool
+# AppFunctions: Your App as an AI Tool
 
-Now the other arrow. You annotate what your app can do; the system indexes it; **Gemini calls it** when a user asks for something your app handles.
+The other arrow: making your app callable by system assistants (Gemini)
+
+<div class="pr-4 mt-1">
+
+<v-clicks class="text-sm">
+
+- **On-Device Agent Tools:** In Android 16+, apps can register `AppFunction` endpoints.
+- When a user asks Gemini: *"Book a cab to the airport"* or *"Create a task to buy groceries"*, Gemini identifies the right app tool and executes it locally.
+- **KDoc is the Prompt:** Notice how KDoc comments provide the schema and description that the model uses to understand your function!
+
+</v-clicks>
+
+</div>
+
+::right::
+
+<div class="pl-2 mt-1">
 
 ```kotlin
-/** The parameter to create the task. */
 @AppFunctionSerializable(isDescribedByKDoc = true)
 data class CreateTaskParams(
-  /** The title of the task. */
-  val title: String?,
-  /** The content of the task. */
-  val content: String?,
+  /** Title of the reminder task. */
+  val title: String,
+  /** Due date formatted as ISO-8601. */
+  val dueDate: String?
 )
-```
 
-<div class="text-sm opacity-75 mt-2">
-
-Your **KDoc is the prompt.** `isDescribedByKDoc = true` feeds those comments to the model as the tool description.
-
-</div>
-
-::right::
-
-<div class="pl-6">
-
-```kotlin
-@RequiresApi(36)
-@AppFunctionServiceEntryPoint(/* … */)
-abstract class TaskFunctions :
-  AppFunctionService() {
+@AppFunctionServiceEntryPoint
+abstract class TaskFunctions : AppFunctionService() {
 
   /**
-   * Creates a task based on [params].
-   * @param params How to create the task.
+   * Creates a new todo item in the user database.
+   * @param params Task parameters.
    */
   @AppFunction(isDescribedByKDoc = true)
-  suspend fun createTask(
-    params: CreateTaskParams,
-  ): Task = withContext(Dispatchers.IO) {
-    repo.createTask(params.title, params.content)
-  }
+  suspend fun createTask(params: CreateTaskParams): TaskResult =
+    withContext(Dispatchers.IO) {
+      repository.insert(params.title, params.dueDate)
+    }
 }
 ```
 
-<v-clicks>
-
-- Effectively **MCP, on-device** — your app is the server, the assistant is the client
-- Android **16+**; callers need `EXECUTE_APP_FUNCTIONS`
-
-</v-clicks>
-
-</div>
-
-<div class="text-xs opacity-50 mt-2">
-Source: developer.android.com/ai/appfunctions
 </div>
 
 <!--
-The KDoc detail lands well with students — it's the first time a comment is
-load-bearing. Write a vague KDoc and the model calls your function wrongly.
-
-Status matters here: you can implement and unit-test AppFunctions right now, but
-the Gemini end of the pipeline was still private preview with trusted testers as
-of I/O '26. Say that out loud rather than implying it works end to end.
--->
-
----
-
-# Read the version numbers before you believe the demo
-
-| What | Artifact | Today | Really means |
-|---|---|---|---|
-| Prompt API | `genai-prompt` | `1.0.0-beta4` | usable, API mostly settled |
-| Task APIs | `genai-summarization`, `-rewriting` | `1.0.0-beta1` | usable, expect churn |
-| Structured output | `genai-schema` | `1.0.0-alpha1` | prototype only |
-| Own model | `litertlm-android` | `0.17.0` | pre-1.0, moves weekly |
-| Agent tools | `androidx.appfunctions` | `1.0.0-alpha11` | Gemini side still private |
-
-<v-clicks>
-
-- **Nothing here has shipped 1.0** — know which parts you'd bet a release on
-- The boring choice today: **an ML Kit task API, with the feature hidden when the device says no**
-
-</v-clicks>
-
-<div class="text-xs opacity-50 mt-2">
-Versions read from Google's Maven repository, 6 Sept 2026
-</div>
-
-<style>
-/* Five rows plus two takeaways only fit at a smaller scale. */
-.slidev-page table { font-size: 0.72rem; }
-.slidev-page table :is(th, td) { padding: 0.3rem 0.6rem; }
-.slidev-page li { font-size: 0.86rem; }
-</style>
-
-<!--
-This is the slide that earns trust. Every other conference talk shows the demo
-and skips the version number. Say the quiet part: most of this is pre-1.0.
+Students find this fascinating: documentation comments are no longer just for developers—they are parsed by AI models at runtime to determine function arguments!
 -->
 
 ---
 layout: center
 ---
 
-# Takeaway
+# On-Device AI Takeaway
 
-AI stopped being a research project and became an Android API — with an Android API's paperwork.
+AI is becoming a standard Android platform API.
 
-<div class="mt-4 opacity-80">
+<div class="mt-4 opacity-80 text-base max-w-xl mx-auto leading-relaxed">
+The skill isn't prompt engineering—it's <strong>defensive engineering</strong>: checking device capability, budgeting for download progress, and designing seamless fallbacks.
+<br><br>
+Soon, an app's job isn't just to display a UI for humans, but to be a reliable tool for intelligent assistants.
+</div>
 
-Check availability, design for its absence, watch the download size.
-<br>
-And remember the second arrow: soon your app's job is to <em>be callable</em>, not just to call.
+---
+layout: section
+---
+
+# 05 · Putting It All Together
+
+Modern Android Architecture in production
+
+---
+
+# How the Pieces Connect: Architecture
+
+Here is how Google's official Modern Android Architecture (MAD) connects the entire stack:
+
+<div class="mt-4 flex justify-center">
+  <img
+    src="/images/mad-arch-overview.png"
+    alt="Official Modern Android Architecture Overview: UI Layer, Domain Layer, Data Layer"
+    style="max-height: 250px; width: auto; object-fit: contain;"
+    class="rounded-lg shadow-2xl bg-white p-2"
+  />
+</div>
+
+<div class="grid grid-cols-3 gap-4 mt-4 text-xs">
+  <div class="p-3 rounded-lg bg-zinc-950 border border-zinc-800">
+    <div class="font-bold text-indigo-400">1. UI Layer (Compose)</div>
+    <div class="text-zinc-400 mt-1">Composables observe UI state and emit user actions. Completely decoupled from business logic.</div>
+  </div>
+  <div class="p-3 rounded-lg bg-zinc-950 border border-zinc-800">
+    <div class="font-bold text-purple-400">2. Presentation (ViewModel)</div>
+    <div class="text-zinc-400 mt-1">Holds screen state using <code>StateFlow</code>. Survives screen rotations and window resize events.</div>
+  </div>
+  <div class="p-3 rounded-lg bg-zinc-950 border border-zinc-800">
+    <div class="font-bold text-emerald-400">3. Data Layer (Repository)</div>
+    <div class="text-zinc-400 mt-1">Coordinates local caching (Room), remote APIs (Ktor), and AI models. Highly testable and shareable in KMP!</div>
+  </div>
+</div>
+
+<div class="text-xs opacity-50 mt-2 text-center">
+Source: developer.android.com/topic/architecture
+</div>
+
+<!--
+Walk through the 3 layers clearly.
+This connects Compose, ViewModel, StateFlow, Room, and KMP into one cohesive picture.
+-->
+
+---
+layout: section
+---
+
+# 06 · Your Learning Roadmap
+
+Where to start if you are a student or beginner
+
+---
+
+# The 4-Step Learning Path for 2026
+
+If you want to build apps or land an Android role, follow this progression:
+
+<RoadmapVisual />
+
+<div class="grid grid-cols-2 gap-6 mt-4 text-xs">
+
+<div class="p-3 rounded-xl bg-zinc-950 border border-zinc-800">
+  <div class="font-bold text-indigo-400 mb-1">Phase 1 &amp; 2: The Core Foundation</div>
+  <div class="text-zinc-300 leading-relaxed">
+    Master Kotlin fundamentals (null safety, lambdas, coroutines) and Jetpack Compose. Focus on <strong>unidirectional data flow</strong> and managing UI state.
+  </div>
+</div>
+
+<div class="p-3 rounded-xl bg-zinc-950 border border-zinc-800">
+  <div class="font-bold text-emerald-400 mb-1">Phase 3 &amp; 4: Shipping Production Apps</div>
+  <div class="text-zinc-300 leading-relaxed">
+    Connect your UI to a ViewModel, Room database, and an API. Then build a portfolio project that shares logic via KMP or features an on-device ML Kit feature!
+  </div>
+</div>
 
 </div>
+
+<!--
+Give students a clear order of operations.
+Do not jump straight into AI or Multiplatform before you can build a clean Compose screen with a ViewModel.
+-->
+
+---
+
+# What to Ignore (Save Your Sanity!)
+
+When you search for Android tutorials online, you will find 15 years of legacy advice. **Here is what to safely skip:**
+
+<div class="grid grid-cols-2 gap-6 mt-6 text-sm">
+
+<div class="p-4 rounded-xl bg-rose-950/30 border border-rose-800/40">
+  <div class="font-bold text-rose-400 text-base mb-2">❌ Don't Waste Time On:</div>
+  <ul class="text-zinc-300 text-xs space-y-2 leading-relaxed">
+    <li>• <strong>XML Layouts &amp; findViewById:</strong> Skip them unless dealing with legacy code at an internship.</li>
+    <li>• <strong>Old Fragment Managers:</strong> Modern Compose handles navigation without Fragment transactions.</li>
+    <li>• <strong>Complex Gradle wizardry early on:</strong> Use the standard project templates and version catalogs.</li>
+    <li>• <strong>Trying to learn everything at once:</strong> Get confident with Compose before touching cross-platform.</li>
+  </ul>
+</div>
+
+<div class="p-4 rounded-xl bg-emerald-950/30 border border-emerald-800/40">
+  <div class="font-bold text-emerald-400 text-base mb-2">✅ Do Focus On:</div>
+  <ul class="text-zinc-300 text-xs space-y-2 leading-relaxed">
+    <li>• <strong>Building complete small apps:</strong> A habit tracker, student schedule app, or campus events feed.</li>
+    <li>• <strong>Installing it on your real phone:</strong> Nothing beats the feeling of tapping an app you wrote yourself.</li>
+    <li>• <strong>Reading modern official docs:</strong> Google's Android documentation is among the best in tech today.</li>
+    <li>• <strong>Publishing on GitHub:</strong> Clean code, READMEs with screenshots, and modern architecture.</li>
+  </ul>
+</div>
+
+</div>
+
+<!--
+Students love this slide because it filters out the noise.
+Most students get overwhelmed because they encounter 2017 tutorial content online and think they need to learn XML, Java, and adapters first.
+-->
+
+---
+
+# Essential Resources to Bookmark
+
+<div class="grid grid-cols-2 gap-5 mt-6 text-sm">
+
+<a href="https://developer.android.com/courses" target="_blank" class="p-4 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-indigo-500 transition block">
+  <div class="font-bold text-indigo-400 mb-1">📘 Android Basics with Compose</div>
+  <p class="text-zinc-400 text-xs leading-relaxed">
+    Official, free, step-by-step curriculum by Google. Starts from zero Kotlin to building real apps.
+  </p>
+</a>
+
+<a href="https://github.com/android/nowinandroid" target="_blank" class="p-4 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-indigo-500 transition block">
+  <div class="font-bold text-emerald-400 mb-1">🌟 Now in Android (GitHub)</div>
+  <p class="text-zinc-400 text-xs leading-relaxed">
+    Google's open-source reference production app. Demonstrates 100% modern best practices, testing, and architecture.
+  </p>
+</a>
+
+<a href="https://kotlinlang.org/multiplatform/" target="_blank" class="p-4 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-indigo-500 transition block">
+  <div class="font-bold text-purple-400 mb-1">🌐 Kotlin Multiplatform Portal</div>
+  <p class="text-zinc-400 text-xs leading-relaxed">
+    Interactive project wizard, documentation, and sample multiplatform apps by JetBrains.
+  </p>
+</a>
+
+<a href="https://github.com/android/compose-samples" target="_blank" class="p-4 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-indigo-500 transition block">
+  <div class="font-bold text-amber-400 mb-1">🎨 Jetpack Compose Samples</div>
+  <p class="text-zinc-400 text-xs leading-relaxed">
+    Jetsnack, Jetcaster, and Crane. Official sample apps showcasing animations, adaptive UI, and custom graphics.
+  </p>
+</a>
+
+</div>
+
+<!--
+Point students to these 4 links.
+If they only bookmark one repo, recommend "Now in Android" on GitHub.
+-->
+
+---
+layout: two-cols
+---
+
+# Thank You! Let's Connect
+
+<div class="pr-6 mt-4">
+
+There has genuinely never been a better time to build for Android.
+
+<v-clicks class="text-sm mt-4 space-y-3">
+
+- The declarative UI toolkit is mature and expressive.
+- Kotlin runs everywhere from mobile to servers.
+- The platform is expanding into exciting new hardware and on-device intelligence.
+
+</v-clicks>
+
+<div v-click class="mt-8 p-4 rounded-xl bg-indigo-950/40 border border-indigo-800/40">
+  <div class="font-bold text-indigo-300 text-base mb-1">Open Floor for Q&amp;A</div>
+  <div class="text-xs text-zinc-300">
+    Ask me anything: getting started, shipping apps at scale, Compose vs Flutter, career paths, or tech stacks!
+  </div>
+</div>
+
+</div>
+
+::right::
+
+<div class="flex flex-col items-center justify-center h-full pl-6">
+
+<img
+  src="/images/qr-linkedin.svg"
+  alt="QR code linking to linkedin.com/in/sanskar10100"
+  style="width: 200px; height: 200px;"
+  class="rounded-xl shadow-2xl"
+/>
+
+<div class="mt-3 text-sm font-semibold text-zinc-100">Sanskar</div>
+<div class="text-xs text-zinc-400 font-mono">linkedin.com/in/sanskar10100</div>
+
+<div class="mt-4 text-xs opacity-70 text-center font-mono">
+github.com/sanskar10100<br>
+roro.io
+</div>
+
+</div>
+
+<!--
+Wrap up with warmth and encouragement.
+Open the floor for questions from students and working devs.
+-->
