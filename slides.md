@@ -3,7 +3,7 @@ theme: seriph
 title: The State of Android Development
 info: |
   A talk on the current state of Android development —
-  Compose, the platform, Kotlin Multiplatform, and on-device AI.
+  Compose, the platform, Kotlin Multiplatform, and AI in Android development.
 class: text-center
 transition: slide-left
 mdc: true
@@ -13,7 +13,7 @@ drawings:
 
 # The State of Android Development
 
-Compose · Platform · KMP · On-Device AI
+Compose · Platform · KMP · AI
 
 <div class="pt-12 opacity-70 text-sm">
   Press <kbd>space</kbd> to start
@@ -90,8 +90,8 @@ transition: fade-out
 </div>
 
 <div class="p-4 rounded-xl bg-zinc-950/60 border border-zinc-800/80">
-  <div class="font-bold text-amber-400 text-base mb-1">04 · On-Device AI</div>
-  <div class="text-zinc-300">Running Gemini Nano and small models locally with AICore and ML Kit GenAI.</div>
+  <div class="font-bold text-amber-400 text-base mb-1">04 · AI in Android Development</div>
+  <div class="text-zinc-300">Part A: On-Device AI (AICore, Gemini Nano) · Part B: AI Developer Workflows (android-cli, Skills, debroid).</div>
 </div>
 
 </div>
@@ -1567,10 +1567,43 @@ Start small: share a validation helper or a Ktor API client for your next team p
 </div>
 
 ---
+layout: center
+class: text-center
+---
+
+# The Elephant in the Room
+
+<div class="mt-4 flex flex-col items-center justify-center">
+  <img
+    src="/images/ai/the-address-me-elephant-in-the-room-v0-qei5c408f8of1.webp"
+    alt="The Elephant in the Room meme"
+    style="max-height: 380px; width: auto; object-fit: contain;"
+    class="rounded-xl shadow-2xl border border-zinc-800"
+  />
+  <div class="mt-3 text-xs opacity-60">"We need to talk about AI in Android..."</div>
+</div>
+
+<!--
+Humorous transition into the AI section:
+Acknowledge the elephant in the room. Everyone is talking about AI, but how does it actually fit into Android?
+We are going to look at it from two concrete angles:
+1. On-Device AI inside your apps
+2. How you use AI tools as an Android Engineer to build faster and smarter.
+-->
+
+---
 layout: section
 ---
 
-# 04 · On-Device AI
+# 04 · AI in Android Development
+
+From on-device models to agentic developer tooling
+
+---
+layout: section
+---
+
+# Part A · On-Device AI
 
 AICore, Gemini Nano, and local intelligence
 
@@ -1841,6 +1874,252 @@ The skill isn't prompt engineering—it's <strong>defensive engineering</strong>
 <br><br>
 Soon, an app's job isn't just to display a UI for humans, but to be a reliable tool for intelligent assistants.
 </div>
+
+---
+layout: section
+---
+
+# Part B · Using AI as an Android Engineer
+
+Agent-first workflows, CLI tooling, Skills, and autonomous debugging
+
+---
+
+# The Shift: From Chatbots to Autonomous Agents
+
+Copilots in the IDE are handy for autocompletion, but modern engineering workflows are moving to **autonomous agentic loops**:
+
+<div class="grid grid-cols-2 gap-6 mt-6 text-sm">
+
+<div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
+  <div class="font-bold text-rose-400 text-base mb-2">💬 Traditional Chat Assistant</div>
+  <ul class="text-zinc-300 text-xs space-y-2">
+    <li>• You copy-paste errors or code snippets back and forth.</li>
+    <li>• LLM is <strong>blind</strong> to runtime emulator state and crashes.</li>
+    <li>• Relies on outdated generic training data (suggests deprecated APIs).</li>
+    <li>• Human developer does all manual compilation and verification.</li>
+  </ul>
+</div>
+
+<div class="p-4 rounded-xl bg-zinc-950 border border-indigo-500/40 bg-indigo-950/20">
+  <div class="font-bold text-emerald-400 text-base mb-2">🤖 Autonomous Agent Workflow</div>
+  <ul class="text-zinc-300 text-xs space-y-2">
+    <li>• Agent directly executes build commands and inspects emulator output.</li>
+    <li>• Guided by <strong>Skills</strong> containing official, modern Android patterns.</li>
+    <li>• Uses headless CLI tools to debug crashes and inspect UI trees.</li>
+    <li>• <strong>Closed-loop verification:</strong> Writes code &rarr; builds &rarr; runs &rarr; fixes errors autonomously.</li>
+  </ul>
+</div>
+
+</div>
+
+<!--
+Pivot cleanly from on-device AI in the app to AI developer tooling.
+Explain the paradigm shift: we are moving past copy-pasting code into ChatGPT.
+Modern Android engineers use agentic tools that actually interface with the Android toolchain.
+-->
+
+---
+layout: two-cols
+---
+
+# Google's Android CLI & Knowledge Base
+
+Google introduced a dedicated terminal-first, agent-friendly toolset for Android:
+
+<div class="pr-4 mt-2">
+
+<v-clicks class="text-sm space-y-3">
+
+- **Machine-Readable Interfaces:** Instead of parsing noisy Gradle logs or UI screens, `android-cli` outputs structured JSON.
+- **70% Token Savings & 3x Faster:** Agents don't burn context windows reading gigabytes of console spew.
+- **Headless Operations:** Scaffolding projects, managing SDKs, launching emulators, and running instrumented tests directly from the shell.
+- **Real-Time Knowledge Base:** Live, version-accurate documentation grounding for Gemini, Claude Code, and AGY.
+
+</v-clicks>
+
+</div>
+
+::right::
+
+<div class="pl-2 mt-2">
+
+```bash
+# Initialize project with agent tooling
+android init
+
+# Agent queries project structure & dependencies
+android project inspect --format=json
+
+# Launch & capture structured UI hierarchy
+android emulator capture-layout --output=ui.json
+
+# Run targeted checks with machine output
+android test run --target=:app:testDebugUnitTest \
+  --output-format=json
+```
+
+<div class="mt-3 p-3 rounded-lg bg-indigo-950/30 border border-indigo-800/40 text-xs text-indigo-300">
+  <strong>Why it matters:</strong> Bridges the gap between LLM reasoning and the Android SDK toolchain.
+</div>
+
+</div>
+
+<!--
+Explain android-cli:
+It was built specifically because AI coding agents struggle with huge human-readable log dumps.
+By providing structured JSON outputs and CLI hooks, agents can inspect apps efficiently.
+-->
+
+---
+layout: two-cols
+---
+
+# Grounding Agents: Android Skills
+
+LLMs hallucinate deprecated APIs (`findViewById`, old XML navigation) because 15 years of legacy code dominates their pretraining data.
+
+<div class="pr-4 mt-2">
+
+### What is a Skill?
+
+<v-clicks class="text-sm space-y-2">
+
+- **Modular Knowledge Bundles:** Specialized markdown instruction specs (`SKILL.md`) installed in `.agents/skills/`.
+- **Automatic Triggering:** Agents detect relevant tasks (e.g., *"Migrate this screen to Navigation 3"* or *"Implement predictive back"*).
+- **Enforces 2026 Standards:** Ensures the agent writes strict Modern Android Architecture, avoiding deprecated libraries.
+
+</v-clicks>
+
+</div>
+
+::right::
+
+<div class="pl-2 mt-2">
+
+```markdown
+<!-- .agents/skills/android-compose/SKILL.md -->
+---
+name: android-compose
+description: Rules and patterns for Jetpack Compose
+---
+
+# Jetpack Compose Rules
+1. Never mutate state inside composables.
+2. Use `rememberSaveable` for UI survival across recreate.
+3. Use Navigation 3 collection-based backstacks.
+4. Always handle WindowInsets with innerPadding.
+```
+
+<div class="mt-4 p-3 rounded-xl bg-zinc-950 border border-zinc-800 text-xs text-zinc-300">
+  💡 <strong>Skill + Tooling:</strong> The agent activates the skill, generates modern Compose code, and tests it with <code>android-cli</code>.
+</div>
+
+</div>
+
+<!--
+Explain how Skills solve the hallucination problem for Android.
+Since Android has changed so drastically, without Skills an LLM defaults to 2018 StackOverflow answers.
+Skills keep the AI aligned with modern best practices.
+-->
+
+---
+layout: two-cols
+---
+
+# Autonomous Runtime Debugging: Debroid
+
+AI agents could write code and read logs, but were historically blind to runtime execution state. **[debroid](https://github.com/PatilShreyas/debroid)** changes that.
+
+<div class="pr-4 mt-2">
+
+<v-clicks class="text-sm space-y-2">
+
+- **Created by [Shreyas Patil](https://github.com/PatilShreyas):** Android GDE & open-source developer.
+- **Headless Android Debugger:** Operates over JDWP (Java Debug Wire Protocol) completely without Android Studio GUI.
+- **Agent-Ready JSON Output:** Emits machine-readable debugging data tailored for LLMs.
+- **Full Debugging Loop:** AI agents can set breakpoints, catch unhandled exceptions, step through code, and inspect/mutate variable state in a running APK.
+
+</v-clicks>
+
+</div>
+
+::right::
+
+<div class="pl-2 mt-2">
+
+```bash
+# Start debroid session on target package
+debroid attach --package com.example.app --port 8700
+
+# Set breakpoint on ViewModel method
+debroid breakpoint set \
+  --class com.example.app.UserViewModel \
+  --line 42 --json
+
+# Agent inspects local variables at runtime
+debroid state inspect --frame 0 --json
+# Output:
+# {"status":"paused","vars":{"userId":"42","state":"Loading"}}
+
+# Resume execution
+debroid resume
+```
+
+<div class="mt-3 text-xs opacity-75">
+  <a href="https://github.com/PatilShreyas/debroid" target="_blank" class="text-indigo-400 underline">github.com/PatilShreyas/debroid</a> — Autonomous debugging for AI agents
+</div>
+
+</div>
+
+<!--
+Highlight Shreyas Patil's debroid:
+Explain how breakthrough this is: until debroid, if an app crashed with a cryptic NullPointerException or runtime race condition, the agent had to guess from stack traces.
+With debroid, the agent attaches to the JVM process via JDWP, inspects variables at breakpoints, and fixes the bug accurately.
+-->
+
+---
+layout: center
+---
+
+# The Future: The Full AI Engineering Loop
+
+How modern Android engineers supercharge their velocity:
+
+<div class="grid grid-cols-3 gap-4 mt-6 text-sm">
+
+<div class="p-4 rounded-xl bg-zinc-950 border border-indigo-500/40 bg-indigo-950/10">
+  <div class="font-bold text-indigo-400 mb-2">1. Grounding (Skills)</div>
+  <div class="text-xs text-zinc-300 leading-relaxed">
+    Agent consults official Android Skills and live knowledge bases to generate modern Jetpack Compose and KMP architecture.
+  </div>
+</div>
+
+<div class="p-4 rounded-xl bg-zinc-950 border border-purple-500/40 bg-purple-950/10">
+  <div class="font-bold text-purple-400 mb-2">2. Tooling (android-cli)</div>
+  <div class="text-xs text-zinc-300 leading-relaxed">
+    Agent runs builds, orchestrates emulators, and parses structured test results with zero token bloat.
+  </div>
+</div>
+
+<div class="p-4 rounded-xl bg-zinc-950 border border-emerald-500/40 bg-emerald-950/10">
+  <div class="font-bold text-emerald-400 mb-2">3. Debugging (debroid)</div>
+  <div class="text-xs text-zinc-300 leading-relaxed">
+    If a runtime crash occurs, the agent attaches headlessly via JDWP, inspects variables, and patches the bug autonomously.
+  </div>
+</div>
+
+</div>
+
+<div class="mt-6 text-xs text-center text-zinc-400">
+  You remain the architect making the product and design decisions; AI agents handle the repetitive plumbing and debugging.
+</div>
+
+<!--
+Summarize Part B:
+The engineer's role evolves to architect, system designer, and code reviewer.
+Skills ground the agent, android-cli operates the build/device, and debroid debugs runtime issues.
+-->
 
 ---
 layout: section
