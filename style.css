@@ -1,6 +1,7 @@
 /* Slidev's two-column layouts ship with no gutter — columns touch by default. */
 .two-cols-header,
-.two-cols {
+.two-cols,
+.two-columns {
   column-gap: 2.5rem;
 }
 

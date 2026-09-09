@@ -571,6 +571,50 @@ Explain that modern Compose with baseline profiles and pausable composition is e
 -->
 
 ---
+
+# Also Worth Knowing in Modern Compose
+
+Recent developer experience and quality-of-life improvements shipping in 2025/2026:
+
+<div class="grid grid-cols-2 gap-4 mt-6 text-sm">
+
+<div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
+  <div class="font-bold text-indigo-400 mb-1 font-mono text-xs">TextFieldState</div>
+  <p class="text-zinc-400 text-xs leading-relaxed">
+    Text fields redesigned around explicit state instead of asynchronous <code>value</code>/<code>onValueChange</code> callbacks. Eliminates cursor jumping and race conditions in formatted inputs.
+  </p>
+</div>
+
+<div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
+  <div class="font-bold text-emerald-400 mb-1 font-mono text-xs">retain { }</div>
+  <p class="text-zinc-400 text-xs leading-relaxed">
+    Survives activity recreation and screen rotation directly inside the composition tree without having to scaffold a full <code>ViewModel</code> class.
+  </p>
+</div>
+
+<div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
+  <div class="font-bold text-purple-400 mb-1 font-mono text-xs">Credential Manager</div>
+  <p class="text-zinc-400 text-xs leading-relaxed">
+    One-tap passkeys and Google Password Manager logins natively integrated directly into Compose input fields with zero boilerplate.
+  </p>
+</div>
+
+<div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
+  <div class="font-bold text-amber-400 mb-1 font-mono text-xs">Material 3 Expressive</div>
+  <p class="text-zinc-400 text-xs leading-relaxed">
+    Google's updated design language: spring-based physics motion, expressive asymmetric shapes, and versatile floating action menus.
+  </p>
+</div>
+
+</div>
+
+<!--
+Quick hits slide. Highlight TextFieldState:
+Every Android dev who ever wrote a phone number or currency field with onValueChange suffered through cursor jumping bugs.
+TextFieldState fixes it at the architectural level.
+-->
+
+---
 layout: center
 ---
 
@@ -778,52 +822,64 @@ With Scaffold and WindowInsets.safeDrawing, it is solved cleanly.
 -->
 
 ---
+layout: two-cols
+---
 
 # Predictive Back Gestures
 
 Navigation that feels physical and tactile
 
-<div class="grid gap-8 items-center mt-3" style="grid-template-columns: auto 1fr;">
-<div>
+<div class="pr-4 mt-1">
 
-<video
-  src="/videos/demo-predictive-back.mp4"
-  autoplay
-  loop
-  muted
-  playsinline
-  style="max-height: 330px; width: auto;"
-  class="rounded-xl shadow-2xl"></video>
+<v-clicks class="text-xs space-y-1.5">
 
-<div class="text-[11px] opacity-60 mt-2 text-center">
-User peeking at the previous screen
-</div>
-
-</div>
-<div>
-
-<v-clicks class="text-sm">
-
-- Users can **peek** at the previous screen mid-swipe before committing.
-- Eliminates accidental exits—just reverse the gesture to cancel.
-- Seamlessly supported in Compose with `PredictiveBackHandler`.
+- **Default Path (Nav 2.8.0+):** Predictive crossfade works out-of-the-box with zero gesture math.
+- **Declarative Transitions:** Customize via `popExitTransition` / `popEnterTransition` on `NavHost`.
+- **Material 3 Components:** `ModalBottomSheet` & `SearchBar` animate predictive exit natively.
+- **Custom Escape Hatch:** `PredictiveBackHandler` is only for manual sheets or canvas physics.
 
 </v-clicks>
 
 ```kotlin
-PredictiveBackHandler { progressFlow ->
-  progressFlow.collect { backEvent ->
-    sheetOffset = backEvent.progress
-  }
+// Default: Nav 2.8.0+ handles it automatically
+NavHost(
+  navController = navController,
+  startDestination = "home",
+  popExitTransition = { scaleOut(targetScale = 0.9f) }
+)
+
+// Custom escape hatch (e.g. custom sheet offset)
+PredictiveBackHandler { progress ->
+  progress.collect { sheetOffset = it.progress }
 }
 ```
 
 </div>
+
+::right::
+
+<div class="flex flex-col items-center justify-center h-full pl-2">
+  <video
+    src="/videos/demo-predictive-back.mp4"
+    poster="/images/predictive-back-poster.png"
+    autoplay
+    loop
+    muted
+    playsinline
+    style="width: 130px; height: 290px; object-fit: cover; display: block;"
+    class="rounded-xl shadow-xl border border-zinc-800"
+  ></video>
+  <div class="text-[11px] opacity-60 mt-2 text-center">
+    User peeking at the previous screen
+  </div>
 </div>
 
 <!--
-Let the video loop for a second so attendees see the fluid motion.
-Predictive back gives apps that premium, native feel that users instantly notice.
+Make sure the audience knows: you don't need manual gesture math for 95% of use cases.
+Navigation 2.8.0+ enables predictive crossfade automatically.
+Customize it declaratively with popExitTransition on your NavHost.
+Material3 components like ModalBottomSheet and SearchBar also animate out of the box.
+Only reach for PredictiveBackHandler when building custom sheets, drawers, or gestures.
 -->
 
 ---
@@ -1035,6 +1091,160 @@ KMP compiles down to native CPU instructions via LLVM for iOS.
 layout: two-cols
 ---
 
+# Platform APIs: `expect` / `actual`
+
+When shared code needs device capabilities (battery, camera, hardware info), Kotlin enforces compile-time contracts:
+
+<div class="pr-4 mt-2">
+
+**`commonMain` (Interface contract)**
+
+```kotlin
+// Declares the shape, no body
+expect fun getDeviceModel(): String
+```
+
+<div class="text-xs opacity-75 mt-3 leading-relaxed">
+Missing an <code>actual</code> implementation for any target? <strong>The compiler fails the build</strong> before you ever ship to production.
+</div>
+
+</div>
+
+::right::
+
+<div class="pl-2 mt-2">
+
+**`androidMain`**
+
+```kotlin
+actual fun getDeviceModel(): String =
+  "${Build.MANUFACTURER} ${Build.MODEL}"
+```
+
+**`iosMain`**
+
+```kotlin
+actual fun getDeviceModel(): String =
+  UIDevice.currentDevice.model
+```
+
+</div>
+
+<!--
+The compiler enforces that every platform supplies an implementation.
+JetBrains advice: use dependency injection and interfaces for business logic,
+and keep expect/actual for genuine platform-specific hardware or OS calls.
+-->
+
+---
+layout: two-cols
+---
+
+# Level 1: Share a Piece of Logic
+
+The smallest useful starting point: one function, no UI changes, zero risk.
+
+<div class="pr-4 mt-1">
+
+```kotlin
+// commonMain (Shared Kotlin)
+fun isValidUpiId(input: String): Boolean {
+  val parts = input.split("@")
+  return parts.size == 2 && 
+         parts.all { it.isNotBlank() }
+}
+```
+
+<div class="text-xs opacity-75 mt-3 leading-relaxed">
+Validation rules, pricing math, date formatting, and crypto helpers — code where <strong>the two platforms silently disagreeing is a real bug</strong>.
+</div>
+
+</div>
+
+::right::
+
+<div class="pl-2 mt-1">
+
+**Android calls it as Kotlin**
+
+```kotlin
+if (isValidUpiId(text)) {
+  submit()
+}
+```
+
+**iOS calls it natively as Swift**
+
+```swift
+// Swift calls into the compiled framework
+if ValidationKt.isValidUpiId(input: text) {
+  submit()
+}
+```
+
+</div>
+
+<!--
+Emphasize how low the barrier to entry is.
+You don't have to rewrite your whole app to get value from KMP.
+A single shared validation function gives you cross-platform consistency on day one.
+-->
+
+---
+layout: two-cols
+---
+
+# "I could've just copy-pasted that"
+
+Fair — for a five-line validator. The real ROI arrives once your shared code has **dependencies**.
+
+<div class="pr-4 mt-1">
+
+```kotlin
+// commonMain (Shared Kotlin)
+@Serializable
+data class ExchangeRate(val code: String, val rate: Double)
+
+class RatesRepository(private val client: HttpClient) {
+  suspend fun fetchRates(): List<ExchangeRate> =
+    client.get("https://api.example.com/rates").body()
+}
+```
+
+<div class="text-xs opacity-75 mt-3 leading-relaxed">
+<strong>Ktor</strong> and <strong>kotlinx.serialization</strong> are official multiplatform libraries. You don't need Retrofit on Android and Alamofire on iOS.
+</div>
+
+</div>
+
+::right::
+
+<div class="pl-2 mt-1">
+
+<v-clicks class="text-sm space-y-2">
+
+- **Zero API drift:** Both apps serialize identical network payloads, SSL pinning, and error models.
+- **Official Google KMP Libraries:** Google ships **Room**, **DataStore**, **ViewModel**, and **Lifecycle** as multiplatform artifacts.
+- **Coroutines & Flow:** Reactive concurrency logic written and unit-tested once.
+
+</v-clicks>
+
+<div v-click class="mt-4 p-3 rounded-lg bg-indigo-950/40 border border-indigo-800/40 text-xs text-indigo-200">
+You aren't sharing a trivial helper function — <strong>you are eliminating the entire parallel networking and persistence layer.</strong>
+</div>
+
+</div>
+
+<!--
+The counter to "I'll just write it twice" is dependencies, not lines of code.
+A developer can copy a validator function in 10 seconds.
+They cannot copy Room DB migrations, Ktor SSL pinning, or cache invalidation logic without continuous sync bugs.
+-->
+
+---
+layout: two-cols
+---
+
 # Level 2: Shared Logic, Native UI
 
 Write your data layer once, render with Compose on Android and SwiftUI on iOS.
@@ -1152,6 +1362,194 @@ fun UserProfileScreen(user: User) {
 
 <!--
 Tie this back to Section 01: every single thing students learn about Jetpack Compose transfers directly to iOS, Desktop, and Web with CMP!
+-->
+
+---
+
+# Where CMP Runs, and How Far to Trust It
+
+Compose Multiplatform stability matrix and platform readiness:
+
+<div class="grid grid-cols-2 gap-6 mt-4">
+
+<div>
+
+| Target | Renders Through | Production Status |
+|---|---|---|
+| **Android** | Jetpack Compose (direct) | **Stable** |
+| **iOS** | Skia → Metal (UIViewController) | **Stable** (1.8+) |
+| **Desktop** | Skia on JVM (macOS/Win/Linux) | **Stable** |
+| **Web** | Kotlin/Wasm → HTML Canvas | **Beta** |
+
+<div class="text-xs opacity-70 mt-3 leading-relaxed">
+iOS reached <strong>Stable</strong> in 1.8 (May 2025). That was the watershed moment turning CMP from an experimental demo into production-ready software.
+</div>
+
+</div>
+
+<div>
+
+**Recent Capabilities Landed:**
+
+<v-clicks class="text-sm space-y-2 mt-1">
+
+- **Shared Navigation 3:** Type-safe backstack running across Android, iOS, and Desktop.
+- **1.11 Concurrent Rendering:** Metal rendering pipeline overhauled for buttery 120Hz ProMotion on iPhones.
+- **1.12 Native iOS Text Input:** Real iOS selection handles, native magnifier, system copy/paste menu, and password autofill.
+
+</v-clicks>
+
+</div>
+
+</div>
+
+<!--
+Be honest about status: iOS is stable and shipping to tens of millions of users.
+Web is Beta because Kotlin/Wasm is still maturing.
+Text editing was the last hurdle on iOS, and JetBrains resolved it with native text field delegates in 1.11/1.12.
+-->
+
+---
+layout: two-cols
+---
+
+# The Code You Know, with Two Seams
+
+Sharing UI across platforms only introduces two minor differences from regular Android Compose:
+
+<div class="pr-4 mt-1">
+
+**`commonMain` — The Screen**
+
+```kotlin
+@Composable
+fun App() = MaterialTheme {
+  Column(Modifier.fillMaxSize()) {
+    // Seam 1: Res instead of R
+    Image(painterResource(Res.drawable.hero), null)
+    Text(stringResource(Res.string.welcome))
+  }
+}
+```
+
+<div class="text-xs opacity-75 mt-2">
+<strong>Seam 1 — Resources:</strong> Instead of Android-specific <code>R.string</code>, CMP auto-generates a multiplatform <code>Res</code> accessor from <code>composeResources/</code>.
+</div>
+
+</div>
+
+::right::
+
+<div class="pl-2 mt-1">
+
+**Seam 2 — Platform Entry Points**
+
+```kotlin
+// androidMain
+setContent { App() }
+```
+
+```kotlin
+// iosMain — standard UIViewController
+fun MainViewController() =
+  ComposeUIViewController { App() }
+```
+
+<div class="text-xs opacity-75 mt-3 leading-relaxed">
+<strong>Two-Way Interop:</strong> Because CMP compiles to a real <code>UIViewController</code>, SwiftUI can embed a Compose screen — and Compose can embed native iOS views via <code>UIKitView { MKMapView() }</code>.
+</div>
+
+</div>
+
+<!--
+This is the answer to "what if Compose can't do something on iOS?"
+You aren't trapped in a sandbox. You can drop down to a native UIKit or SwiftUI view whenever you need camera, maps, or Apple Pay.
+-->
+
+---
+layout: two-cols
+---
+
+# "But isn't cross-platform slow?"
+
+How Compose Multiplatform achieves native 60–120 FPS on iOS devices:
+
+<div class="pr-4 mt-2">
+
+<v-clicks class="text-sm space-y-3">
+
+- **Direct Metal Rendering:** Compose on iOS does **not** generate UIKit views and does not use a JavaScript bridge.
+- It renders directly via **Skia hardware-accelerated on Apple's Metal API**.
+- Skips UIKit layout passes and view hierarchies, avoiding Auto Layout bottleneck penalties on heavy lists.
+- Frame rates on iPhone 13 through 16 overlap within margin of error compared to native SwiftUI.
+
+</v-clicks>
+
+</div>
+
+::right::
+
+<div class="flex flex-col items-center justify-center h-full pl-2">
+
+<img
+  src="/images/kmp/cmp-ios-performance.png"
+  alt="Benchmark showing Compose Multiplatform vs SwiftUI scrolling performance on iOS"
+  style="max-height: 250px; width: auto; object-fit: contain;"
+  class="rounded-lg shadow-xl"
+/>
+
+<div class="text-[10px] opacity-60 mt-2 text-center">
+Source: JetBrains benchmarks — SwiftUI vs Compose Multiplatform FPS
+</div>
+
+</div>
+
+<!--
+Address the elephant in the room: developers remember Cordova, early React Native, or sluggish webviews.
+Explain Skia -> Metal. Compose draws pixels directly to the screen like a modern game engine.
+-->
+
+---
+
+# It's Not a Demo Anymore
+
+Major consumer and enterprise applications built on Compose Multiplatform:
+
+<div class="grid grid-cols-3 gap-4 mt-6 text-xs">
+
+<div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
+  <div class="font-bold text-indigo-400 text-sm mb-1">Physics Wallah</div>
+  <div class="text-zinc-300 font-semibold mb-1">17 Million+ Active Users</div>
+  <p class="text-zinc-400 leading-relaxed">
+    Complete ed-tech ecosystem with streaming, quizzes, and courseware sharing 80%+ UI and business logic across iOS and Android.
+  </p>
+</div>
+
+<div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
+  <div class="font-bold text-emerald-400 text-sm mb-1">Markaz</div>
+  <div class="text-zinc-300 font-semibold mb-1">5 Million+ Downloads</div>
+  <p class="text-zinc-400 leading-relaxed">
+    E-commerce social marketplace with 100+ production screens written 100% in Compose Multiplatform.
+  </p>
+</div>
+
+<div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
+  <div class="font-bold text-purple-400 text-sm mb-1">Wrike & Bilibili</div>
+  <div class="text-zinc-300 font-semibold mb-1">Enterprise & Social Scale</div>
+  <p class="text-zinc-400 leading-relaxed">
+    Complex enterprise dashboards, Gantt charts, and high-concurrency instant messaging modules shipped cross-platform.
+  </p>
+</div>
+
+</div>
+
+<div v-click class="mt-6 p-3 rounded-lg bg-zinc-950 border border-zinc-800 text-xs text-zinc-300 text-center">
+<strong>Pattern Notice:</strong> Content, forms, dashboards, and media-rich transactional apps benefit most. You get 90% code reuse without sacrificing native feel.
+</div>
+
+<!--
+These real examples establish credibility.
+Physics Wallah is particularly relatable in India — millions of students use it daily on budget Android phones and premium iPhones alike.
 -->
 
 ---
@@ -1351,6 +1749,83 @@ abstract class TaskFunctions : AppFunctionService() {
 
 <!--
 Students find this fascinating: documentation comments are no longer just for developers—they are parsed by AI models at runtime to determine function arguments!
+-->
+
+---
+layout: two-cols
+---
+
+# When You Need Your Own Model: LiteRT-LM
+
+Gemini Nano is chosen for you by Google. **LiteRT-LM** is the runtime when you need to bring your *own* model.
+
+<div class="pr-4 mt-2">
+
+```kotlin
+val engine = Engine(
+  EngineConfig(
+    modelPath = "/data/.../gemma-2b.litertlm",
+    backend = Backend.GPU(),
+  )
+)
+engine.initialize()
+
+engine.createConversation().use { chat ->
+  chat.sendMessageAsync("Analyze transaction")
+    .collect { token -> print(token) }
+}
+```
+
+</div>
+
+::right::
+
+<div class="pl-2 mt-2">
+
+<v-clicks class="text-sm space-y-2">
+
+- **You own the model file:** Runs on any Android device meeting hardware requirements — no AICore or Pixel allowlist needed.
+- **Hardware Acceleration:** Native NPU and GPU acceleration via Qualcomm, MediaTek, and Tensor delegates.
+- **The Catch — Download Size:** Gemma 2B is **~2.6 GB**. That is a serious storage discussion with your user, not a typical Gradle dependency.
+- **LiteRT runtime:** The same engine powering on-device AI across Chrome, ChromeOS, and Pixel Watch.
+
+</v-clicks>
+
+</div>
+
+<!--
+Students and engineers often ask: "Can I run Llama 3 or my own fine-tuned model?"
+Yes, through LiteRT-LM. But emphasize the storage cost — 2.6 GB is a huge barrier for mobile users.
+-->
+
+---
+
+# Read the Version Numbers Before Believing the Demo
+
+A reality check on where the Android on-device AI stack stands today:
+
+<div class="mt-4">
+
+| Capability | Artifact | Status (2026) | Practical Reality |
+|---|---|---|---|
+| **Prompt API** | `com.google.mlkit:genai-prompt` | `1.0.0-beta4` | Usable today; API mostly stabilized |
+| **Task APIs** | `genai-summarization`, `genai-rewriting` | `1.0.0-beta1` | Functional; minor API churn expected |
+| **Custom Local Models** | `com.google.ai.edge.litert:litertlm-android` | `0.17.0` | Pre-1.0; rapid weekly updates |
+| **Agent / Tools** | `androidx.appfunctions:appfunctions` | `1.0.0-alpha11` | Gemini assistant caller in private preview |
+
+</div>
+
+<v-clicks class="text-sm space-y-2 mt-6">
+
+- **Nothing here has hit 1.0 GA yet:** Know which parts to bet a production app release on.
+- **The boring, reliable choice today:** Use an ML Kit Task API, with the feature hidden if `checkStatus()` says no.
+- Design your UI for the **absence** of AI — it should be an enhancement, not a blocker.
+
+</v-clicks>
+
+<!--
+This is the slide that builds ultimate trust with senior engineers in the audience.
+Every conference keynote shows flashy demos. Be the speaker who tells them the actual version numbers and production readiness.
 -->
 
 ---
