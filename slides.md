@@ -953,17 +953,35 @@ Clicks:
 
 ---
 layout: center
+class: text-center
 ---
 
 # Platform Takeaway
 
-The Android platform has clear design and behavioral guidelines.
-
-<div class="mt-4 opacity-80 text-base max-w-xl mx-auto leading-relaxed">
-Stop assuming a fixed portrait rectangle. Assume your app will be resized, rotated, and put next to other windows.
-<br><br>
-Build responsive layouts with Window Size Classes, draw cleanly edge-to-edge, and design assuming permissions can be denied.
+<div class="text-zinc-400 text-base max-w-xl mx-auto mt-2 mb-8">
+  The Android platform has clear design and behavioral guidelines.
 </div>
+
+<div class="space-y-3.5 max-w-xl mx-auto">
+  <div v-click class="p-4 rounded-xl bg-zinc-950 border border-zinc-800 text-zinc-200 text-sm md:text-base font-medium shadow-md">
+    Try to make your apps adaptive.
+  </div>
+
+  <div v-click class="p-4 rounded-xl bg-zinc-950 border border-zinc-800 text-zinc-200 text-sm md:text-base font-medium shadow-md">
+    Build clean interfaces and use insets instead of just handling them.
+  </div>
+
+  <div v-click class="p-4 rounded-xl bg-zinc-950 border border-zinc-800 text-zinc-200 text-sm md:text-base font-medium shadow-md">
+    Update to Nav 2.8.0+ so that you get the benefit of predictive back.
+  </div>
+</div>
+
+<!--
+Key Platform Takeaways (Section 02 wrap-up):
+1. Adaptability: Don't lock orientation; support multi-window and folding displays.
+2. Insets: Embrace edge-to-edge as a design feature, not a bug to hack around.
+3. Predictive Back: Upgrade navigation to get tactile gesture physics for free.
+-->
 
 ---
 layout: section
