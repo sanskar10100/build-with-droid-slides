@@ -1033,23 +1033,27 @@ You don't have to rewrite your entire app on day one. JetBrains designed KMP for
 </div>
 
 <div class="grid grid-cols-3 gap-4 mt-4 text-xs">
-  <div class="p-3 rounded-lg bg-zinc-950 border border-zinc-800">
+  <div v-click class="p-3 rounded-lg bg-zinc-950 border border-zinc-800">
     <div class="font-bold text-indigo-400">Level 1: Share a Piece of Logic</div>
     <div class="text-zinc-400 mt-1">Share complex validation, pricing algorithms, or encryption helpers in a single shared file.</div>
   </div>
-  <div class="p-3 rounded-lg bg-zinc-950 border border-zinc-800">
+  <div v-click class="p-3 rounded-lg bg-zinc-950 border border-zinc-800">
     <div class="font-bold text-emerald-400">Level 2: Share Data &amp; Logic</div>
     <div class="text-zinc-400 mt-1">Share Ktor networking, Room database, and ViewModels. Keep native Compose on Android &amp; SwiftUI on iOS.</div>
   </div>
-  <div class="p-3 rounded-lg bg-zinc-950 border border-zinc-800">
+  <div v-click class="p-3 rounded-lg bg-zinc-950 border border-zinc-800">
     <div class="font-bold text-purple-400">Level 3: Share the UI (CMP)</div>
     <div class="text-zinc-400 mt-1">Use Compose Multiplatform to share screens across Android, iOS, desktop, and web.</div>
   </div>
 </div>
 
 <!--
-This is the most comforting slide for students and devs.
-You do not have to commit to 100% cross-platform. You can start with a single shared helper module.
+Clicks:
+1. Level 1: Share a piece of logic (zero risk, start with a single helper).
+2. Level 2: Share data & logic (Ktor, Room, ViewModels, keep UI 100% native).
+3. Level 3: Share the UI (Compose Multiplatform across Android, iOS, Desktop, Web).
+
+Emphasize: You do not have to commit to 100% cross-platform on day one.
 -->
 
 ---
@@ -1100,14 +1104,91 @@ KMP compiles down to native CPU instructions via LLVM for iOS.
 -->
 
 ---
-layout: two-cols
+layout: default
 ---
+
+# Why KMP? (vs Flutter & React Native)
+
+Why teams with existing native codebases choose Kotlin Multiplatform:
+
+<div class="grid grid-cols-3 gap-5 mt-5 text-xs">
+
+<div v-click class="p-4 rounded-xl bg-zinc-950 border border-zinc-800 flex flex-col justify-between">
+  <div>
+    <div class="text-xs font-mono uppercase tracking-wider text-emerald-400 font-semibold mb-2 flex items-center gap-1.5">
+      <span>🌱</span>
+      <span>Incremental Adoption</span>
+    </div>
+    <div class="text-sm font-bold text-white mb-2">Not an All-or-Nothing Bet</div>
+    <p class="text-zinc-300 leading-relaxed text-[11.5px]">
+      Flutter and React Native require you to buy into their entire universe. With KMP, you don't rewrite your app—you share a single validation helper, repository, or network client in your existing native repo.
+    </p>
+  </div>
+  <div class="mt-4 pt-3 border-t border-zinc-800/80 text-[10.5px] text-zinc-400 font-mono">
+    Start with 5% shared code, scale at your own pace.
+  </div>
+</div>
+
+<div v-click class="p-4 rounded-xl bg-zinc-950 border border-zinc-800 flex flex-col justify-between">
+  <div>
+    <div class="text-xs font-mono uppercase tracking-wider text-indigo-400 font-semibold mb-2 flex items-center gap-1.5">
+      <span>📱</span>
+      <span>Native-First Foundation</span>
+    </div>
+    <div class="text-sm font-bold text-white mb-2">Fits Existing Mobile Codebases</div>
+    <p class="text-zinc-300 leading-relaxed text-[11.5px]">
+      If you already write native Android in Kotlin, half your team is already trained. To iOS, KMP compiles directly to an ordinary <code>.framework</code> with zero JavaScript bridges, zero VM overhead, and zero C++ runtime wrappers.
+    </p>
+  </div>
+  <div class="mt-4 pt-3 border-t border-zinc-800/80 text-[10.5px] text-zinc-400 font-mono">
+    Swift imports it like any native dependency.
+  </div>
+</div>
+
+<div v-click class="p-4 rounded-xl bg-zinc-950 border border-zinc-800 flex flex-col justify-between">
+  <div>
+    <div class="text-xs font-mono uppercase tracking-wider text-purple-400 font-semibold mb-2 flex items-center gap-1.5">
+      <span>⚡</span>
+      <span>Developer Experience</span>
+    </div>
+    <div class="text-sm font-bold text-white mb-2">The Power of Modern Kotlin</div>
+    <p class="text-zinc-300 leading-relaxed text-[11.5px]">
+      Kotlin offers vastly superior DevEx compared to Dart or JavaScript. Structured Coroutines, type-safe flows, rich sealed class hierarchies, null safety, and first-party IDE tooling (Android Studio &amp; Fleet).
+    </p>
+  </div>
+  <div class="mt-4 pt-3 border-t border-zinc-800/80 text-[10.5px] text-zinc-400 font-mono">
+    A language developers actually love writing in.
+  </div>
+</div>
+
+</div>
+
+<div v-click class="mt-4 p-3 rounded-xl bg-zinc-950/80 border border-zinc-800 text-xs text-zinc-300 flex items-center justify-between">
+  <span><strong>The Bottom Line:</strong> Flutter and React Native try to replace native development. KMP enhances native development.</span>
+</div>
+
+<!--
+Presenter Notes:
+- Address the elephant in the room: "Why not just use Flutter or React Native?"
+- Point 1 (The biggest one): Incremental adoption is KMP's superpower. You don't have to convince leadership to throw away 5 years of native code.
+- Point 2: If you already have a Kotlin Android app, 50% of the cross-platform work is already written in Kotlin!
+- Point 3: DevEx — Kotlin is loved by developers worldwide for coroutines and ergonomics, unlike Dart which feels like Java 7 with modern syntax.
+- Wrap up: "Flutter and React Native replace your stack. KMP augments your stack."
+-->
+
+---
+layout: default
+---
+
+<div class="flex flex-col h-full">
 
 # Platform APIs: `expect` / `actual`
 
 When shared code needs device capabilities (battery, camera, hardware info), Kotlin enforces compile-time contracts:
 
-<div class="pr-4 mt-2">
+<div class="grid grid-cols-2 gap-8 flex-1 items-center">
+
+<div>
 
 **`commonMain` (Interface contract)**
 
@@ -1122,9 +1203,9 @@ Missing an <code>actual</code> implementation for any target? <strong>The compil
 
 </div>
 
-::right::
+<div class="space-y-3">
 
-<div class="pl-2 mt-2">
+<div>
 
 **`androidMain`**
 
@@ -1132,6 +1213,10 @@ Missing an <code>actual</code> implementation for any target? <strong>The compil
 actual fun getDeviceModel(): String =
   "${Build.MANUFACTURER} ${Build.MODEL}"
 ```
+
+</div>
+
+<div>
 
 **`iosMain`**
 
@@ -1142,6 +1227,12 @@ actual fun getDeviceModel(): String =
 
 </div>
 
+</div>
+
+</div>
+
+</div>
+
 <!--
 The compiler enforces that every platform supplies an implementation.
 JetBrains advice: use dependency injection and interfaces for business logic,
@@ -1149,14 +1240,18 @@ and keep expect/actual for genuine platform-specific hardware or OS calls.
 -->
 
 ---
-layout: two-cols
+layout: default
 ---
+
+<div class="flex flex-col h-full">
 
 # Level 1: Share a Piece of Logic
 
 The smallest useful starting point: one function, no UI changes, zero risk.
 
-<div class="pr-4 mt-1">
+<div class="grid grid-cols-2 gap-8 flex-1 items-center">
+
+<div>
 
 ```kotlin
 // commonMain (Shared Kotlin)
@@ -1173,9 +1268,9 @@ Validation rules, pricing math, date formatting, and crypto helpers — code whe
 
 </div>
 
-::right::
+<div class="space-y-3">
 
-<div class="pl-2 mt-1">
+<div>
 
 **Android calls it as Kotlin**
 
@@ -1184,6 +1279,10 @@ if (isValidUpiId(text)) {
   submit()
 }
 ```
+
+</div>
+
+<div>
 
 **iOS calls it natively as Swift**
 
@@ -1196,6 +1295,12 @@ if ValidationKt.isValidUpiId(input: text) {
 
 </div>
 
+</div>
+
+</div>
+
+</div>
+
 <!--
 Emphasize how low the barrier to entry is.
 You don't have to rewrite your whole app to get value from KMP.
@@ -1203,14 +1308,18 @@ A single shared validation function gives you cross-platform consistency on day 
 -->
 
 ---
-layout: two-cols
+layout: default
 ---
+
+<div class="flex flex-col h-full">
 
 # "I could've just copy-pasted that"
 
 Fair — for a five-line validator. The real ROI arrives once your shared code has **dependencies**.
 
-<div class="pr-4 mt-1">
+<div class="grid grid-cols-2 gap-8 flex-1 items-center">
+
+<div>
 
 ```kotlin
 // commonMain (Shared Kotlin)
@@ -1229,9 +1338,7 @@ class RatesRepository(private val client: HttpClient) {
 
 </div>
 
-::right::
-
-<div class="pl-2 mt-1">
+<div>
 
 <v-clicks class="text-sm space-y-2">
 
@@ -1247,6 +1354,10 @@ You aren't sharing a trivial helper function — <strong>you are eliminating the
 
 </div>
 
+</div>
+
+</div>
+
 <!--
 The counter to "I'll just write it twice" is dependencies, not lines of code.
 A developer can copy a validator function in 10 seconds.
@@ -1254,14 +1365,18 @@ They cannot copy Room DB migrations, Ktor SSL pinning, or cache invalidation log
 -->
 
 ---
-layout: two-cols
+layout: default
 ---
+
+<div class="flex flex-col h-full">
 
 # Level 2: Shared Logic, Native UI
 
 Write your data layer once, render with Compose on Android and SwiftUI on iOS.
 
-<div class="pr-4 mt-1">
+<div class="grid grid-cols-2 gap-8 flex-1 items-center">
+
+<div>
 
 ```kotlin
 // commonMain (Shared Kotlin)
@@ -1284,9 +1399,9 @@ Ktor (HTTP), kotlinx.serialization (JSON), and Room (Database) are all official 
 
 </div>
 
-::right::
+<div class="space-y-3">
 
-<div class="pl-2 mt-1">
+<div v-click>
 
 **Android — Jetpack Compose**
 
@@ -1296,6 +1411,10 @@ when (val state = uiState) {
   is Success -> WeatherCard(state.temp)
 }
 ```
+
+</div>
+
+<div v-click>
 
 **iOS — SwiftUI**
 
@@ -1311,10 +1430,19 @@ var body: some View {
 
 </div>
 
+</div>
+
+</div>
+
+</div>
+
 <!--
-This is where the real commercial ROI is for companies.
-The data layer, business rules, caching, and network models are written and unit-tested once.
-The UI can still be 100% native if your team prefers SwiftUI on iOS.
+Clicks:
+1. Reveal Android implementation (Compose reading StateFlow with collectAsState).
+2. Reveal iOS implementation (SwiftUI observing ViewModel with @ObservedObject).
+
+Emphasize: The data layer, business rules, caching, and network models are written once.
+The UI remains 100% native on each platform.
 -->
 
 ---
@@ -1382,32 +1510,63 @@ Tie this back to Section 01: every single thing students learn about Jetpack Com
 
 Compose Multiplatform stability matrix and platform readiness:
 
-<div class="grid grid-cols-2 gap-6 mt-4">
+<div class="grid grid-cols-2 gap-6 mt-4 items-start">
 
 <div>
 
-| Target | Renders Through | Production Status |
-|---|---|---|
-| **Android** | Jetpack Compose (direct) | **Stable** |
-| **iOS** | Skia → Metal (UIViewController) | **Stable** (1.8+) |
-| **Desktop** | Skia on JVM (macOS/Win/Linux) | **Stable** |
-| **Web** | Kotlin/Wasm → HTML Canvas | **Beta** |
+<div class="overflow-hidden rounded-xl border border-zinc-800 bg-zinc-950/80">
+  <table class="w-full text-xs text-left">
+    <thead class="bg-zinc-900/80 text-zinc-400 text-[11px] uppercase font-semibold border-b border-zinc-800">
+      <tr>
+        <th class="py-1.5 px-3">Target</th>
+        <th class="py-1.5 px-3">Renders Through</th>
+        <th class="py-1.5 px-3">Status</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-zinc-800/60 text-zinc-300 text-xs">
+      <tr>
+        <td class="py-1.5 px-3 font-semibold text-white">Android</td>
+        <td class="py-1.5 px-3">Jetpack Compose</td>
+        <td class="py-1.5 px-3"><span class="px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-400 font-medium text-[10px] border border-emerald-800/60">Stable</span></td>
+      </tr>
+      <tr>
+        <td class="py-1.5 px-3 font-semibold text-white">iOS</td>
+        <td class="py-1.5 px-3">Skia → Metal</td>
+        <td class="py-1.5 px-3"><span class="px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-400 font-medium text-[10px] border border-emerald-800/60">Stable (1.8+)</span></td>
+      </tr>
+      <tr>
+        <td class="py-1.5 px-3 font-semibold text-white">Desktop</td>
+        <td class="py-1.5 px-3">Skia on JVM</td>
+        <td class="py-1.5 px-3"><span class="px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-400 font-medium text-[10px] border border-emerald-800/60">Stable</span></td>
+      </tr>
+      <tr>
+        <td class="py-1.5 px-3 font-semibold text-white">Web</td>
+        <td class="py-1.5 px-3">Kotlin/Wasm → Canvas</td>
+        <td class="py-1.5 px-3"><span class="px-1.5 py-0.5 rounded bg-amber-950 text-amber-400 font-medium text-[10px] border border-amber-800/60">Beta</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
 <div class="text-xs opacity-70 mt-3 leading-relaxed">
-iOS reached <strong>Stable</strong> in 1.8 (May 2025). That was the watershed moment turning CMP from an experimental demo into production-ready software.
+iOS reached <strong>Stable</strong> in 1.8.0. That was the milestone turning CMP from experimental into production-ready software.
 </div>
 
 </div>
 
 <div>
 
-**Recent Capabilities Landed:**
+<div class="text-xs font-semibold uppercase tracking-wider text-indigo-400 mb-2">
+  Recent Capabilities Landed
+</div>
 
-<v-clicks class="text-sm space-y-2 mt-1">
+<v-clicks class="text-xs space-y-1.5 leading-relaxed">
 
-- **Shared Navigation 3:** Type-safe backstack running across Android, iOS, and Desktop.
-- **1.11 Concurrent Rendering:** Metal rendering pipeline overhauled for buttery 120Hz ProMotion on iPhones.
-- **1.12 Native iOS Text Input:** Real iOS selection handles, native magnifier, system copy/paste menu, and password autofill.
+- **Navigation Suite &amp; Nav 3:** Type-safe backstack &amp; adaptive navigation across all targets.
+- **Metal 120Hz &amp; ProMotion:** CADisplayLink synchronization eliminates frame pacing drops on iOS.
+- **Native iOS Text &amp; Autofill:** Real iOS selection handles, magnifier, and system autofill.
+- **Compose Hot Reload:** Sub-second stateful reloading (now Stable; includes MCP for AI agents).
+- **Accessibility &amp; VoiceOver:** Semantic tree maps directly to Apple's <code>UIAccessibility</code> protocol.
 
 </v-clicks>
 
@@ -1416,22 +1575,31 @@ iOS reached <strong>Stable</strong> in 1.8 (May 2025). That was the watershed mo
 </div>
 
 <!--
-Be honest about status: iOS is stable and shipping to tens of millions of users.
-Web is Beta because Kotlin/Wasm is still maturing.
-Text editing was the last hurdle on iOS, and JetBrains resolved it with native text field delegates in 1.11/1.12.
+- Be honest about status: iOS is stable (since 1.8.0) and shipping to tens of millions of users. Web is Beta (Wasm).
+- Highlight the big recent wins:
+  1. Metal 120Hz rendering solves the scroll jank criticism.
+  2. Native iOS text editing delegates solve the copy/paste/autofill hurdle.
+  3. Stable Hot Reload & Navigation 3 create parity with the best native developer experiences.
+  4. Full VoiceOver/Accessibility support makes it viable for enterprise apps.
 -->
 
 ---
-layout: two-cols
+layout: default
 ---
+
+<div class="flex flex-col h-full">
 
 # The Code You Know, with Two Seams
 
 Sharing UI across platforms only introduces two minor differences from regular Android Compose:
 
-<div class="pr-4 mt-1">
+<div class="grid grid-cols-2 gap-8 flex-1 items-center">
 
-**`commonMain` — The Screen**
+<div v-click>
+
+<div class="text-xs font-mono font-bold text-indigo-400 mb-1.5">
+  commonMain — The Screen
+</div>
 
 ```kotlin
 @Composable
@@ -1444,22 +1612,24 @@ fun App() = MaterialTheme {
 }
 ```
 
-<div class="text-xs opacity-75 mt-2">
+<div class="text-xs opacity-75 mt-2.5 leading-relaxed">
 <strong>Seam 1 — Resources:</strong> Instead of Android-specific <code>R.string</code>, CMP auto-generates a multiplatform <code>Res</code> accessor from <code>composeResources/</code>.
 </div>
 
 </div>
 
-::right::
+<div v-click>
 
-<div class="pl-2 mt-1">
-
-**Seam 2 — Platform Entry Points**
+<div class="text-xs font-mono font-bold text-emerald-400 mb-1.5">
+  Seam 2 — Platform Entry Points
+</div>
 
 ```kotlin
 // androidMain
 setContent { App() }
 ```
+
+<div class="mt-2.5">
 
 ```kotlin
 // iosMain — standard UIViewController
@@ -1467,15 +1637,24 @@ fun MainViewController() =
   ComposeUIViewController { App() }
 ```
 
-<div class="text-xs opacity-75 mt-3 leading-relaxed">
+</div>
+
+<div class="text-xs opacity-75 mt-2.5 leading-relaxed">
 <strong>Two-Way Interop:</strong> Because CMP compiles to a real <code>UIViewController</code>, SwiftUI can embed a Compose screen — and Compose can embed native iOS views via <code>UIKitView { MKMapView() }</code>.
 </div>
 
 </div>
 
+</div>
+
+</div>
+
 <!--
-This is the answer to "what if Compose can't do something on iOS?"
-You aren't trapped in a sandbox. You can drop down to a native UIKit or SwiftUI view whenever you need camera, maps, or Apple Pay.
+Clicks:
+1. Reveal Seam 1 — Multiplatform Resources (Res instead of R.drawable, generated from composeResources/).
+2. Reveal Seam 2 — Platform Entry Points (setContent on Android, UIViewController on iOS, plus two-way UIKitView interop).
+
+Emphasize: 98% of Compose code is identical. You only think about these two seams.
 -->
 
 ---
@@ -1525,58 +1704,93 @@ Explain Skia -> Metal. Compose draws pixels directly to the screen like a modern
 
 # It's Not a Demo Anymore
 
-Major consumer and enterprise applications built on Compose Multiplatform:
+Major consumer and enterprise applications built on Kotlin &amp; Compose Multiplatform:
 
 <div class="grid grid-cols-3 gap-4 mt-6 text-xs">
 
-<div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
-  <div class="font-bold text-indigo-400 text-sm mb-1">Physics Wallah</div>
-  <div class="text-zinc-300 font-semibold mb-1">17 Million+ Active Users</div>
-  <p class="text-zinc-400 leading-relaxed">
-    Complete ed-tech ecosystem with streaming, quizzes, and courseware sharing 80%+ UI and business logic across iOS and Android.
-  </p>
+<div v-click class="p-4 rounded-xl bg-zinc-950 border border-zinc-800 flex flex-col justify-between">
+  <div>
+    <div class="font-bold text-indigo-400 text-sm mb-1">Physics Wallah</div>
+    <div class="text-zinc-300 font-semibold mb-1">10 Million+ Students</div>
+    <p class="text-zinc-400 leading-relaxed text-[11px]">
+      Migrated high-traffic modules (like Pitara) sharing 100% of UI &amp; logic across iOS &amp; Android. Built new apps (Acadfly &amp; Parent) entirely on CMP from scratch.
+    </p>
+  </div>
+  <div class="mt-3 pt-2.5 border-t border-zinc-800/80 text-[10px] text-zinc-500 font-mono">
+    Official JetBrains Case Study
+  </div>
 </div>
 
-<div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
-  <div class="font-bold text-emerald-400 text-sm mb-1">Markaz</div>
-  <div class="text-zinc-300 font-semibold mb-1">5 Million+ Downloads</div>
-  <p class="text-zinc-400 leading-relaxed">
-    E-commerce social marketplace with 100+ production screens written 100% in Compose Multiplatform.
-  </p>
+<div v-click class="p-4 rounded-xl bg-zinc-950 border border-zinc-800 flex flex-col justify-between">
+  <div>
+    <div class="font-bold text-rose-400 text-sm mb-1">Netflix</div>
+    <div class="text-zinc-300 font-semibold mb-1">Studio Production Apps</div>
+    <p class="text-zinc-400 leading-relaxed text-[11px]">
+      Powers on-set film &amp; TV production apps (Prodicle), sharing ~50% of production code—including complex offline synchronization and API caching—across iOS and Android.
+    </p>
+  </div>
+  <div class="mt-3 pt-2.5 border-t border-zinc-800/80 text-[10px] text-zinc-500 font-mono">
+    Netflix TechBlog Case Study
+  </div>
 </div>
 
-<div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
-  <div class="font-bold text-purple-400 text-sm mb-1">Wrike & Bilibili</div>
-  <div class="text-zinc-300 font-semibold mb-1">Enterprise & Social Scale</div>
-  <p class="text-zinc-400 leading-relaxed">
-    Complex enterprise dashboards, Gantt charts, and high-concurrency instant messaging modules shipped cross-platform.
-  </p>
+<div v-click class="p-4 rounded-xl bg-zinc-950 border border-zinc-800 flex flex-col justify-between">
+  <div>
+    <div class="font-bold text-emerald-400 text-sm mb-1">Forbes &amp; McDonald's</div>
+    <div class="text-zinc-300 font-semibold mb-1">Global Consumer Reach</div>
+    <p class="text-zinc-400 leading-relaxed text-[11px]">
+      Forbes rebuilt its flagship mobile app sharing 80%+ of its UI using Compose Multiplatform. McDonald's scales mobile food ordering across 60+ countries powered by KMP.
+    </p>
+  </div>
+  <div class="mt-3 pt-2.5 border-t border-zinc-800/80 text-[10px] text-zinc-500 font-mono">
+    Forbes &amp; McDonald's Engineering
+  </div>
 </div>
 
 </div>
 
 <div v-click class="mt-6 p-3 rounded-lg bg-zinc-950 border border-zinc-800 text-xs text-zinc-300 text-center">
-<strong>Pattern Notice:</strong> Content, forms, dashboards, and media-rich transactional apps benefit most. You get 90% code reuse without sacrificing native feel.
+  <strong>Also in production at scale:</strong> Cash App (Block), Duolingo, Philips, 9GAG, and Baidu.
 </div>
 
 <!--
-These real examples establish credibility.
-Physics Wallah is particularly relatable in India — millions of students use it daily on budget Android phones and premium iPhones alike.
+Presenter Notes:
+- Physics Wallah: Hyper-relatable in India. Flagship app migrated ~20% of high-traffic features (Pitara) sharing 100% UI & logic, and new apps are 100% CMP.
+- Netflix: Highlight reliability. On-set studio crews in remote filming locations rely on shared offline syncing and state machines on both iPhones and Androids.
+- Forbes & McDonald's: Proof that household names are shipping CMP UI to App Store and Google Play millions of times daily.
 -->
 
 ---
 layout: center
+class: text-center
 ---
 
 # KMP Takeaway
 
-Kotlin is no longer just "the Android language."
-
-<div class="mt-4 opacity-80 text-base max-w-xl mx-auto leading-relaxed">
-KMP allows you to share what makes sense (networking, databases, viewmodels) while preserving complete native access to platform APIs.
-<br><br>
-Start small: share a validation helper or a Ktor API client for your next team project.
+<div class="text-zinc-400 text-base max-w-xl mx-auto mt-2 mb-8">
+  Kotlin is no longer just "the Android language."
 </div>
+
+<div class="space-y-3.5 max-w-xl mx-auto">
+  <div v-click class="p-4 rounded-xl bg-zinc-950 border border-zinc-800 text-zinc-200 text-sm md:text-base font-medium shadow-md">
+    Share as much as you like — start small and adopt incrementally.
+  </div>
+
+  <div v-click class="p-4 rounded-xl bg-zinc-950 border border-zinc-800 text-zinc-200 text-sm md:text-base font-medium shadow-md">
+    Production grade, not a prototype — trusted at massive scale.
+  </div>
+
+  <div v-click class="p-4 rounded-xl bg-zinc-950 border border-zinc-800 text-zinc-200 text-sm md:text-base font-medium shadow-md">
+    Superior DevEx — one modern language, native tooling, zero bridge overhead.
+  </div>
+</div>
+
+<!--
+Presenter Notes:
+1. Share as much as you like, start small: You do not need a complete rewrite. Start with a single data model, repository, or shared feature like Physics Wallah did.
+2. Production grade, not a prototype: Proven at scale by Netflix, Cash App, McDonald's, Forbes, and Google.
+3. Superior DevEx: First-class IDE support, expressive modern syntax, compile-time safety, and direct native binaries with zero bridge penalty.
+-->
 
 ---
 layout: center
