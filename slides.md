@@ -506,7 +506,7 @@ Recent developer experience and quality-of-life improvements shipping in 2025/20
     <span class="text-zinc-600 group-hover:text-indigo-400 text-xs transition">↗</span>
   </div>
   <p class="text-zinc-400 text-xs leading-relaxed">
-    Text fields redesigned around explicit state instead of asynchronous <code>value</code>/<code>onValueChange</code> callbacks. Eliminates cursor jumping and race conditions in formatted inputs.
+    Text fields redesigned around explicit state instead of asynchronous <code>value</code>/<code>onValueChange</code> callbacks. Eliminates cursor jumping and race conditions in formatted inputs. Easier to init with exisiting text and place cursor at end.
   </p>
 </a>
 
@@ -550,18 +550,60 @@ Quick hits slide. Highlight TextFieldState and Shared Transitions:
 -->
 
 ---
-layout: center
+layout: default
 ---
 
-# Compose Takeaway
+# The Official Compose Roadmap
 
-Jetpack Compose is now the default, undisputed standard for Android UI.
+What's done, and what's next:  
 
-<div class="mt-4 opacity-80 text-base max-w-xl mx-auto leading-relaxed">
-If you invest time into one concept, master <strong>State Management</strong> (<code>remember</code>, <code>mutableStateOf</code>, and <code>StateFlow</code>).
-<br><br>
-Once you understand how state drives the UI, building complex, expressive animations and responsive layouts becomes second nature.
+<div class="grid grid-cols-2 gap-6 mt-4 text-xs">
+
+<div>
+  <div class="font-bold text-emerald-400 text-sm mb-2.5 flex items-center gap-1.5">
+    <span>🟢</span>
+    <span>Already Shipped (Done)</span>
+  </div>
+  <ul class="space-y-2.5 text-zinc-300 leading-relaxed">
+    <li><strong>Scroll Performance:</strong> Jank and frame pacing on par with <code>RecyclerView</code> (since 1.9).</li>
+    <li><strong>Expressive Styling:</strong> Native drop shadows, inner shadows, blur, and mesh gradients.</li>
+    <li><strong>LazyList Animations:</strong> Built-in item placement animations and multi-screen Drag &amp; Drop.</li>
+    <li><strong>Compiler Defaults:</strong> Strong Skipping mode and stability inference enabled by default.</li>
+  </ul>
 </div>
+
+<div>
+  <div class="font-bold text-amber-400 text-sm mb-2.5 flex items-center gap-1.5">
+    <span>🎯</span>
+    <span>What's Next (In Focus)</span>
+  </div>
+  <ul class="space-y-2.5 text-zinc-300 leading-relaxed">
+    <li><strong>Startup Performance:</strong> Optimizing cold-start composition and initialization time.</li>
+    <li><strong>Built-in Scrollbars:</strong> First-party scrollbars for Lazy layouts and scroll containers.</li>
+    <li><strong>GenAI &amp; UI Tooling:</strong> First-party experiments integrating AI into UI authoring.</li>
+    <li><strong>Advanced Text &amp; Inputs:</strong> Multistyle text editing, full IME flags, and focus indicators.</li>
+    <li><strong>Testing &amp; Inspection:</strong> Visual animation debugger and screenshot testing improvements.</li>
+  </ul>
+</div>
+
+</div>
+
+<div class="mt-6 pt-3 border-t border-zinc-800/80 flex items-center justify-between text-xs">
+  <span class="text-zinc-400">Compose is the default now.</span>
+  <a href="https://developer.android.com/jetpack/androidx/compose-roadmap" target="_blank" class="text-indigo-400 hover:underline font-mono no-underline flex items-center gap-1">
+    <span>developer.android.com/compose-roadmap</span>
+    <span>↗</span>
+  </a>
+</div>
+
+<!--
+Presenter Notes:
+- Conclude Section 01: Connect the journey from Compose's launch to where it is today.
+- Highlight the official AndroidX roadmap categories:
+  1. What is solved: scroll jank parity with Views, layout animations, shadows, and strong skipping.
+  2. What is in focus next: cold startup optimization, built-in scrollbars, multistyle text/IME, and GenAI UI tooling experiments.
+- Direct audience to the official link to track roadmap milestones as upcoming Jetpack releases drop.
+-->
 
 ---
 layout: section
