@@ -1257,6 +1257,59 @@ Presenter Notes:
 - Point 2: If you already have a Kotlin Android app, 50% of the cross-platform work is already written in Kotlin!
 - Point 3: DevEx — Kotlin is loved by developers worldwide for coroutines and ergonomics, unlike Dart which feels like Java 7 with modern syntax.
 - Wrap up: "Flutter and React Native replace your stack. KMP augments your stack."
+- Bridge to next slide: "And there's an even bigger macro shift happening right now: writing code is no longer the constraint."
+-->
+
+---
+layout: two-cols
+---
+
+# The Shift: Back to Native & KMP
+
+When writing code is no longer the bottleneck, the cross-platform calculus flips:
+
+<div class="pr-4 mt-2">
+
+<v-clicks class="text-xs space-y-2">
+
+- **Code is No Longer the Constraint:** Teams originally picked RN/Flutter because maintaining two separate native codebases was too expensive. With modern declarative UI (Compose &amp; SwiftUI) and AI tools, 1–2 developers can easily build native apps.
+- **Trade-Offs Stop Making Sense:** When writing code is cheap, bridge overhead, runtime bloat, and non-native quirks aren't worth it. Bellwethers like <a href="https://shopify.engineering/back-to-native" target="_blank" class="text-indigo-400 underline font-semibold">Shopify</a> are moving from React Native back to native Swift &amp; Kotlin.
+- **Why KMP Wins:** Kotlin Multiplatform is the natural winner—zero bridge overhead, full platform fidelity, and shared Kotlin logic where it actually matters.
+
+</v-clicks>
+
+<div v-click class="mt-3 p-2.5 rounded-lg bg-indigo-950/40 border border-indigo-800/40 text-[11px] text-indigo-200">
+  <strong>The Macro Trend:</strong> Cross-platform was an engineering workaround for team capacity. When tooling solves capacity, teams choose native fidelity + KMP.
+</div>
+
+</div>
+
+::right::
+
+<div class="flex flex-col items-center justify-start pl-2 -mt-6">
+
+<img
+  src="/images/kmp/shopify-rn-to-native.png"
+  alt="Tweet on Shopify moving from React Native back to native and the rise of KMP"
+  style="max-height: 330px; width: auto; object-fit: contain;"
+  class="rounded-xl shadow-2xl border border-zinc-800"
+/>
+
+<div class="text-[10px] opacity-70 mt-1.5 text-center font-mono">
+  <a href="https://shopify.engineering/back-to-native" target="_blank" class="text-indigo-400 underline hover:text-indigo-300">Shopify: Moving back to Native</a> · Arnav Gupta (@championswimmer)
+</div>
+
+</div>
+
+<!--
+Presenter Notes:
+- Connect directly to the previous slide: Why did React Native and Flutter win in the first place?
+- Because writing code twice was expensive. Teams tolerated jank, bridges, and missing APIs to save headcount.
+- But today, writing code is no longer the constraint. With AI tools and modern declarative UI, teams of 1 or 2 devs can easily write native apps.
+- When writing code isn't the bottleneck, why accept the architectural compromises of RN or Flutter?
+- Show the Shopify example: Shopify was the biggest poster child of React Native in 2020. Now they're migrating back to Swift and Kotlin.
+- Reference: https://shopify.engineering/back-to-native
+- And KMP is the ideal architecture: you keep 100% native quality and platform fidelity while sharing the heavy business logic.
 -->
 
 ---
