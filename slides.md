@@ -1,6 +1,6 @@
 ---
 theme: seriph
-title: The State of Android Development
+title: The State of Android Engineering
 info: |
   A talk on the current state of Android development —
   Compose, the platform, Kotlin Multiplatform, and AI in Android development.
@@ -11,13 +11,9 @@ drawings:
   persist: false
 ---
 
-# The State of Android Development
+# The State of Android Engineering
 
 Compose · Platform · KMP · AI
-
-<div class="pt-12 opacity-70 text-sm">
-  Press <kbd>space</kbd> to start
-</div>
 
 ---
 layout: two-cols
@@ -25,20 +21,16 @@ layout: two-cols
 
 # Hi, I'm Sanskar
 
-**Senior Software Engineer at [Roro](https://roro.io)**, a product studio.
-I've shipped Android apps used by millions of people across fintech, consumer, and health.
+**Engineer at [Roro](https://roro.io)**, a product studio.
+I've shipped Android apps used by millions of people across edtech, retail and social media.
 
 <v-clicks>
 
-- **2016** — Built my first Android app in Java with XML layouts, `RelativeLayout`, and runtime crashes on screen rotation.
-- **Today** — Pure Kotlin, declarative Jetpack Compose, and reactive unidirectional data flow.
+- **2016** — Built my first Android app in Java with XML layouts, `RelativeLayout`
+- **Today** — Pure Kotlin and Jetpack Compose
 - **Lately** — Sharing production code across platforms with KMP, and exploring on-device AI capabilities.
 
 </v-clicks>
-
-<div v-click class="mt-5 text-sm opacity-85 leading-relaxed">
-If you are learning Android today, you are stepping in at the best possible time. The modern stack is expressive, clean, and genuinely fun to build with. This talk is the practical map I wish I had when starting out.
-</div>
 
 ::right::
 
@@ -96,11 +88,6 @@ transition: fade-out
 
 </div>
 
-<div class="mt-6 p-3.5 rounded-xl bg-indigo-950/40 border border-indigo-800/40 text-xs text-indigo-200 flex justify-between items-center">
-  <span><strong>Bonus Sections:</strong> Modern Architecture (how it connects) &amp; A Practical Student Learning Roadmap</span>
-  <span class="font-mono opacity-80">~50 min + Q&amp;A</span>
-</div>
-
 <!--
 Give a clear birds-eye view of the talk.
 Let the audience know: this is a conceptual and architectural map, not a dry syntax lecture.
@@ -156,7 +143,7 @@ fun Greeting(name: String) {
 }
 ```
 
-<div class="pane-aside">You describe what the screen looks like for a given state. When state changes, Compose redraws.</div>
+<div class="pane-aside">You describe what the screen looks like for a given state. When input changes, Compose redraws.</div>
 
 </div>
 
@@ -179,9 +166,9 @@ Keep this simple for students:
 clicks: 3
 ---
 
-# Why Developers Refused to Look Back: Lists
+# Lists
 
-If you ever learned Android before 2021, you remember the boilerplate of building a scrolling list.
+If you learned Android before 2021, you remember the boilerplate of building a scrolling list.
 
 <div class="cmp cmp-lists" :class="'cmp-' + Math.min($clicks, 3)">
 
@@ -236,7 +223,7 @@ LazyColumn {
 }
 ```
 
-<div class="pane-aside">No adapters, no viewholders, no XML inflation. Heterogeneous layouts are just another Kotlin block.</div>
+<div class="pane-aside">No adapters, no viewholders, no XML inflation. Heterogeneous layouts are easy to add.</div>
 
 </div>
 
@@ -271,9 +258,8 @@ Box(
 
 <v-clicks>
 
-- **Why it matters:** Previously, Compose only supported Material elevation shadows—rigid, one look, directionless.
+- **Why it matters:** Previously, Compose only supported Material elevation shadows. Not possible to draw uniformly around egdes.
 - **Figma fidelity:** Designers hand you precise Figma specs (soft colored glows, neumorphic bevels, inset pressed states).
-- **Zero hackiness:** You no longer need nested `Box` hierarchies or manual Canvas blur shaders to match design specs.
 
 </v-clicks>
 
@@ -289,7 +275,7 @@ With dropShadow and innerShadow, you can implement exact Figma specs in a single
 <ShadowPlayground class="mt-4" />
 
 <div class="mt-4 text-xs opacity-70">
-Credit: Sina Samaki (sinasamaki.com/new-shadow-api-for-jetpack-compose)
+Credit: sinasamaki.com/new-shadow-api-for-jetpack-compose
 </div>
 
 <!--
@@ -307,36 +293,57 @@ layout: two-cols
 Gradients that blend across a 2D mesh, not just a straight line.
 
 ```kotlin
-val painter = rememberMeshGradientPainter {
-  setVertex(0, 0, Offset(0f, 0f), Color.Red)
-  setVertex(1, 0, Offset(1f, 0f), Color.Yellow)
-  setVertex(0, 1, Offset(0f, 1f), Color.Blue)
-  setVertex(1, 1, Offset(1f, 1f), Color.Green)
+val rows = 1; val columns = 1 // Simplest mesh: 4 vertices
+
+val gradientPainter = remember {
+  MeshGradientPainter(rows, columns) {
+    // Parameters: row, col, normalized offset, color
+    setVertex(0, 0, Offset(0f, 0f), Color.Red)     // Top-Left
+    setVertex(0, 1, Offset(1f, 0f), Color.Blue)    // Top-Right
+    setVertex(1, 0, Offset(0f, 1f), Color.Green)   // Bottom-Left
+    setVertex(1, 1, Offset(1f, 1f), Color.Yellow)  // Bottom-Right
+  }
 }
 
-Box(Modifier.fillMaxSize().paint(painter))
+Box(Modifier.aspectRatio(16/9f).fillMaxWidth().paint(gradientPainter))
 ```
 
-<v-clicks class="text-sm mt-3">
+<v-clicks class="text-xs mt-3 space-y-1">
 
-- Shipped officially in **Compose 1.12** via GPU-accelerated `drawVertices`.
-- Vertex coordinates and colors can be animated smoothly over time.
-- Ideal for hero cards, dynamic album art, and ambient backgrounds.
+- **Simplest form:** A 1×1 mesh creates 1 patch with 4 corner vertices.
+- Shipped officially in **Compose 1.12** via `MeshGradientPainter`.
+- Vertex coordinates and colors can be animated dynamically on the GPU.
 
 </v-clicks>
 
 ::right::
 
-<div class="pl-4 pt-2">
-  <MeshGradient height="260px" class="mt-2" />
-  <div class="text-xs opacity-70 mt-3 text-center">
-    4 color points blended across a coordinate grid on the GPU
+<div class="pl-4 pt-2 flex flex-col items-center">
+  <img
+    src="/images/mesh_gradient_basic.png"
+    alt="Simple Mesh Gradient sample from official Android documentation"
+    class="rounded-xl shadow-xl border border-zinc-800 w-full"
+  />
+  <div class="text-xs opacity-70 mt-2 text-center">
+    Official Android sample: 1×1 mesh (4 corner vertices)
+  </div>
+
+  <div class="mt-3 p-3 rounded-xl bg-zinc-950/80 border border-zinc-800 text-[11px] text-zinc-300 leading-relaxed w-full">
+    <div class="font-bold text-indigo-400 mb-1">📐 Grid Vertex Formula</div>
+    Total vertices = <code>(rows + 1) × (columns + 1)</code>
+    <ul class="mt-1 space-y-0.5 text-zinc-400">
+      <li>• <strong>1×1 mesh:</strong> (1+1) × (1+1) = <strong>4 vertices</strong> (simplest)</li>
+      <li>• <strong>2×2 mesh:</strong> (2+1) × (2+1) = <strong>9 vertices</strong> (3×3 grid)</li>
+    </ul>
   </div>
 </div>
 
 <!--
-Mesh gradients give apps that modern, fluid lighting feel (like iOS Lock Screen or Spotify player backgrounds).
-Mention that this is now built into first-party Compose without third-party OpenGL hacks.
+Presenter Notes:
+- Explain MeshGradientPainter introduced in Compose 1.12.
+- Point out this is the simplest possible mesh: 1 row by 1 column, creating a single patch with 4 vertices.
+- Mention the formula: total vertices = (rows + 1) * (columns + 1). So if you specify 2 rows and 2 columns, you get a 3x3 grid of 9 vertices.
+- Note how each vertex defines an Offset(x, y) normalized (0f..1f) and a Color, rendered via GPU-accelerated drawMesh.
 -->
 
 ---
