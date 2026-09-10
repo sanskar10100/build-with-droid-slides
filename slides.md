@@ -834,18 +834,16 @@ layout: two-cols
 
 # Predictive Back Gestures
 
-Navigation that feels physical and tactile
-
 <div class="pr-4 mt-1">
 
 <v-clicks class="text-xs space-y-1.5">
 
-- **Default Path (Nav 2.8.0+):** Predictive crossfade works out-of-the-box with zero gesture math.
-- **Declarative Transitions:** Customize via `popExitTransition` / `popEnterTransition` on `NavHost`.
+- **Default Path (Nav 2.8.0+):** Predictive crossfade and slide works out of the box. You don't need to do anything for 95% of the cases.
 - **Material 3 Components:** `ModalBottomSheet` & `SearchBar` animate predictive exit natively.
-- **Custom Escape Hatch:** `PredictiveBackHandler` is only for manual sheets or canvas physics.
+- **Declarative:** Customize via `popExitTransition` / `popEnterTransition` on `NavHost`.
 
 </v-clicks>
+<br>
 
 ```kotlin
 // Default: Nav 2.8.0+ handles it automatically
@@ -865,19 +863,37 @@ PredictiveBackHandler { progress ->
 
 ::right::
 
-<div class="flex flex-col items-center justify-center h-full pl-2">
-  <video
-    src="/videos/demo-predictive-back.mp4"
-    poster="/images/predictive-back-poster.png"
-    autoplay
-    loop
-    muted
-    playsinline
-    style="width: 130px; height: 290px; object-fit: cover; display: block;"
-    class="rounded-xl shadow-xl border border-zinc-800"
-  ></video>
-  <div class="text-[11px] opacity-60 mt-2 text-center">
-    User peeking at the previous screen
+<div class="flex items-center justify-center h-full gap-3 pl-1">
+  <div class="flex flex-col items-center">
+    <video
+      src="/videos/demo-predictive-back.webm"
+      autoplay
+      loop
+      muted
+      playsinline
+      controls
+      style="max-height: 380px; width: auto; aspect-ratio: 9/20; display: block;"
+      class="rounded-xl shadow-xl border border-zinc-800"
+    ></video>
+    <div class="text-[10px] opacity-60 mt-1.5 text-center font-medium">
+      Screen Navigation
+    </div>
+  </div>
+
+  <div class="flex flex-col items-center">
+    <video
+      src="/videos/demo-predictive-sheet.mp4"
+      autoplay
+      loop
+      muted
+      playsinline
+      controls
+      style="max-height: 380px; width: auto; aspect-ratio: 9/20; display: block;"
+      class="rounded-xl shadow-xl border border-zinc-800"
+    ></video>
+    <div class="text-[10px] opacity-60 mt-1.5 text-center font-medium">
+      Modal Bottom Sheet
+    </div>
   </div>
 </div>
 
