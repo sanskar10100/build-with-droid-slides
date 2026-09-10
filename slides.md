@@ -1838,36 +1838,7 @@ engine.createConversation().use { chat ->
 <!--
 Students and engineers often ask: "Can I run Llama 3 or my own fine-tuned model?"
 Yes, through LiteRT-LM. But emphasize the storage cost — 2.6 GB is a huge barrier for mobile users.
--->
-
----
-
-# Read the Version Numbers Before Believing the Demo
-
-A reality check on where the Android on-device AI stack stands today:
-
-<div class="mt-4">
-
-| Capability | Artifact | Status (2026) | Practical Reality |
-|---|---|---|---|
-| **Prompt API** | `com.google.mlkit:genai-prompt` | `1.0.0-beta4` | Usable today; API mostly stabilized |
-| **Task APIs** | `genai-summarization`, `genai-rewriting` | `1.0.0-beta1` | Functional; minor API churn expected |
-| **Custom Local Models** | `com.google.ai.edge.litert:litertlm-android` | `0.17.0` | Pre-1.0; rapid weekly updates |
-| **Agent / Tools** | `androidx.appfunctions:appfunctions` | `1.0.0-alpha11` | Gemini assistant caller in private preview |
-
-</div>
-
-<v-clicks class="text-sm space-y-2 mt-6">
-
-- **Nothing here has hit 1.0 GA yet:** Know which parts to bet a production app release on.
-- **The boring, reliable choice today:** Use an ML Kit Task API, with the feature hidden if `checkStatus()` says no.
-- Design your UI for the **absence** of AI — it should be an enhancement, not a blocker.
-
-</v-clicks>
-
-<!--
-This is the slide that builds ultimate trust with senior engineers in the audience.
-Every conference keynote shows flashy demos. Be the speaker who tells them the actual version numbers and production readiness.
+Note for audience: Mention verbally that all of this is currently beta, with AppFunctions being alpha.
 -->
 
 ---
