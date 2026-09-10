@@ -913,7 +913,7 @@ A dedicated notification channel for things **happening right now** in the real 
 
 <div class="grid grid-cols-2 gap-6 mt-4">
 
-<div>
+<div v-click>
   <img
     src="/images/live-update-shade.png"
     alt="Food delivery order Live Update in notification shade"
@@ -923,7 +923,7 @@ A dedicated notification channel for things **happening right now** in the real 
   <div class="text-xs opacity-70 mt-2 text-center">In the shade: Live progress bar, ETA, and actions</div>
 </div>
 
-<div>
+<div v-click>
   <img
     src="/images/live-update-chip.jpg"
     alt="Live Update collapsed into status bar chip"
@@ -935,49 +935,20 @@ A dedicated notification channel for things **happening right now** in the real 
 
 </div>
 
-<div class="mt-4 p-3 rounded-xl bg-zinc-950 border border-zinc-800 text-xs text-zinc-300 leading-relaxed">
-Shipped in Android 16 QPR / Android 17. Instead of spamming users with 10 separate notifications, an ongoing activity (cab tracking, food delivery, workout, flight status) stays updated in-place on the lock screen and status bar.
+<div v-click class="mt-4 p-3 rounded-xl bg-zinc-950 border border-zinc-800 text-xs text-zinc-300 leading-relaxed flex items-center justify-between gap-4">
+  <span>
+    Shipped in Android 16 QPR / Android 17. Instead of spamming users with 10 separate notifications, an ongoing activity (cab tracking, food delivery, workout, flight status) stays updated in-place on the lock screen and status bar.
+  </span>
+  <a href="https://developer.android.com/develop/ui/compose/notifications/live-update" target="_blank" class="text-indigo-400 hover:underline font-mono no-underline shrink-0 flex items-center gap-1 font-semibold text-[11px] bg-indigo-950/50 px-2.5 py-1.5 rounded-lg border border-indigo-800/60">
+    <span>Live Updates Guide ↗</span>
+  </a>
 </div>
 
 <!--
-These are real screenshots from active food deliveries and rides.
-Notice the persistent chip in the status bar: tap it, and it expands directly back to the app.
--->
-
----
-
-# Modern Privacy: Respecting the User
-
-Android's security model has evolved from all-or-nothing permissions to fine-grained, contextual access.
-
-<div class="grid grid-cols-3 gap-5 mt-6 text-sm">
-
-<div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
-  <div class="font-bold text-indigo-400 mb-2">📸 Photo Picker</div>
-  <p class="text-zinc-300 text-xs leading-relaxed">
-    No need for `READ_MEDIA_IMAGES`! The system Photo Picker lets users grant access to only the 2 photos they picked, without exposing their entire camera roll.
-  </p>
-</div>
-
-<div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
-  <div class="font-bold text-emerald-400 mb-2">🌐 Local Network Access</div>
-  <p class="text-zinc-300 text-xs leading-relaxed">
-    Targeting Android 17 requires explicit user permission (`ACCESS_LOCAL_NETWORK`) before discovering IoT devices, smart TVs, or casting on local Wi-Fi.
-  </p>
-</div>
-
-<div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
-  <div class="font-bold text-purple-400 mb-2">🛡️ Defensive UX</div>
-  <p class="text-zinc-300 text-xs leading-relaxed">
-    Users can deny any permission or revoke it in settings. <strong>Never assume permission is granted.</strong> Always design a graceful fallback flow.
-  </p>
-</div>
-
-</div>
-
-<!--
-Teach the students good engineering hygiene: never write code that crashes if a permission is denied.
-Use modern system pickers wherever possible so you don't even need to ask for permissions in the manifest.
+Clicks:
+1. Reveal Notification Shade view (rich live progress bar, ETA, action buttons).
+2. Reveal Status Bar chip view (persistent pill visible across other apps).
+3. Reveal Takeaway box with link to Live Updates docs.
 -->
 
 ---
