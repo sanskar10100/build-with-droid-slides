@@ -398,60 +398,6 @@ Presenter Notes:
 layout: two-cols
 ---
 
-# Shared Element Transitions
-
-Connecting screens with continuous visual motion
-
-<div class="pr-3">
-
-<p class="text-xs text-zinc-300 leading-relaxed mb-2">
-Instead of a jarring cut between screens, shared elements morph seamlessly across navigation routes.
-</p>
-
-```kotlin
-// Inside SharedTransitionLayout
-Modifier.sharedElement(
-  state = rememberSharedContentState(key = "snack-${item.id}"),
-  animatedVisibilityScope = animatedVisibilityScope,
-)
-```
-
-<v-clicks class="text-xs space-y-1.5 mt-2">
-
-- **Shared Key:** Pairs composables across routes (`"snack-${item.id}"`).
-- **Fluid Animation:** Bounds, scale, and clip shape animate continuously.
-- **Stable in Compose 1.11+** with layout inspection tooling.
-
-</v-clicks>
-
-</div>
-
-::right::
-
-<div class="flex flex-col items-center justify-center h-full pl-2">
-
-<img
-  src="/images/basic_shared_element_jetsnack.gif"
-  alt="Official Google Jetsnack shared element transition animation"
-  style="max-height: 275px; width: auto; object-fit: contain;"
-  class="rounded-xl shadow-xl border border-zinc-800"
-/>
-
-<div class="text-[10px] opacity-60 mt-1.5 text-center">
-Official Jetsnack sample — thumbnail expands into hero banner
-</div>
-
-</div>
-
-<!--
-This is one of the most requested features in modern mobile UI.
-Notice the key: "item-${item.id}". When the user taps, Compose links the thumbnail on Screen A with the hero image on Screen B and smoothly morphs the bounds.
--->
-
----
-layout: two-cols
----
-
 # Navigation 3: Backstack as a Plain List
 
 Navigation was historically one of the most frustrating parts of Android. **Navigation 3** re-architected it around plain Kotlin collections.
@@ -548,86 +494,59 @@ It completely removes the performance penalty of nested layout passes.
 
 ---
 
-# Tooling & Performance Under the Hood
-
-Compose is not just syntax; the runtime has matured tremendously.
-
-<div class="grid grid-cols-3 gap-5 mt-6 text-sm">
-
-<div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
-  <div class="font-bold text-indigo-400 text-base mb-2">⚡ Pausable Composition</div>
-  <p class="text-zinc-300 text-xs leading-relaxed">
-    If rendering a complex screen takes longer than the 16ms frame deadline, Compose pauses, yields to the Android OS to deliver the frame on time, and resumes on the next frame. Dropped frames are drastically reduced.
-  </p>
-</div>
-
-<div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
-  <div class="font-bold text-emerald-400 text-base mb-2">📦 SlotTable Rewrite</div>
-  <p class="text-zinc-300 text-xs leading-relaxed">
-    The internal data structure tracking composables was re-architected to avoid unnecessary memory allocations. Reordering long lists and animated layouts recomposes up to <strong>2× faster</strong>.
-  </p>
-</div>
-
-<div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
-  <div class="font-bold text-purple-400 text-base mb-2">🔥 Compose Hot Reload</div>
-  <p class="text-zinc-300 text-xs leading-relaxed">
-    Edit UI code in Android Studio and watch it update immediately on your running emulator or phone—without restarting the app and without losing your navigation state or typed form inputs.
-  </p>
-</div>
-
-</div>
-
-<div v-click class="mt-6 p-3 rounded-xl bg-zinc-900 border border-zinc-800 text-xs text-center text-zinc-300">
-<strong>The takeaway:</strong> The outdated 2021 criticism that "Compose is slower than XML" is completely obsolete today.
-</div>
-
-<!--
-Address the elephant in the room: students often read outdated Reddit threads claiming Compose has performance issues.
-Explain that modern Compose with baseline profiles and pausable composition is exceptionally fast.
--->
-
----
-
 # Also Worth Knowing in Modern Compose
 
 Recent developer experience and quality-of-life improvements shipping in 2025/2026:
 
 <div class="grid grid-cols-2 gap-4 mt-6 text-sm">
 
-<div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
-  <div class="font-bold text-indigo-400 mb-1 font-mono text-xs">TextFieldState</div>
+<a href="https://developer.android.com/develop/ui/compose/text/user-input" target="_blank" class="p-4 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-indigo-500/70 transition block no-underline !decoration-none group">
+  <div class="flex items-center justify-between mb-1">
+    <div class="font-bold text-indigo-400 font-mono text-xs">TextFieldState</div>
+    <span class="text-zinc-600 group-hover:text-indigo-400 text-xs transition">↗</span>
+  </div>
   <p class="text-zinc-400 text-xs leading-relaxed">
     Text fields redesigned around explicit state instead of asynchronous <code>value</code>/<code>onValueChange</code> callbacks. Eliminates cursor jumping and race conditions in formatted inputs.
   </p>
-</div>
+</a>
 
-<div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
-  <div class="font-bold text-emerald-400 mb-1 font-mono text-xs">retain { }</div>
+<a href="https://developer.android.com/develop/ui/compose/state-saving" target="_blank" class="p-4 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-emerald-500/70 transition block no-underline !decoration-none group">
+  <div class="flex items-center justify-between mb-1">
+    <div class="font-bold text-emerald-400 font-mono text-xs">retain { }</div>
+    <span class="text-zinc-600 group-hover:text-emerald-400 text-xs transition">↗</span>
+  </div>
   <p class="text-zinc-400 text-xs leading-relaxed">
     Survives activity recreation and screen rotation directly inside the composition tree without having to scaffold a full <code>ViewModel</code> class.
   </p>
-</div>
+</a>
 
-<div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
-  <div class="font-bold text-purple-400 mb-1 font-mono text-xs">Credential Manager</div>
+<a href="https://developer.android.com/identity/sign-in/credential-manager" target="_blank" class="p-4 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-purple-500/70 transition block no-underline !decoration-none group">
+  <div class="flex items-center justify-between mb-1">
+    <div class="font-bold text-purple-400 font-mono text-xs">Credential Manager</div>
+    <span class="text-zinc-600 group-hover:text-purple-400 text-xs transition">↗</span>
+  </div>
   <p class="text-zinc-400 text-xs leading-relaxed">
     One-tap passkeys and Google Password Manager logins natively integrated directly into Compose input fields with zero boilerplate.
   </p>
-</div>
+</a>
 
-<div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
-  <div class="font-bold text-amber-400 mb-1 font-mono text-xs">Material 3 Expressive</div>
+<a href="https://developer.android.com/develop/ui/compose/animation/shared-elements" target="_blank" class="p-4 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-amber-500/70 transition block no-underline !decoration-none group">
+  <div class="flex items-center justify-between mb-1">
+    <div class="font-bold text-amber-400 font-mono text-xs">Shared Transitions</div>
+    <span class="text-zinc-600 group-hover:text-amber-400 text-xs transition">↗</span>
+  </div>
   <p class="text-zinc-400 text-xs leading-relaxed">
-    Google's updated design language: spring-based physics motion, expressive asymmetric shapes, and versatile floating action menus.
+    Smooth spatial continuity across navigation routes with <code>SharedTransitionLayout</code>. Morphs element bounds and clip shapes instead of abrupt screen cuts.
   </p>
-</div>
+</a>
 
 </div>
 
 <!--
-Quick hits slide. Highlight TextFieldState:
-Every Android dev who ever wrote a phone number or currency field with onValueChange suffered through cursor jumping bugs.
-TextFieldState fixes it at the architectural level.
+Quick hits slide. Highlight TextFieldState and Shared Transitions:
+- TextFieldState: fixes cursor jumping bugs in formatted text at the architectural level.
+- Shared Transitions: provides seamless bounds morphing across navigation routes without manual coordinate math.
+- All 4 cards link directly to official Android documentation.
 -->
 
 ---
