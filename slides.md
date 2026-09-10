@@ -340,42 +340,51 @@ Mention that this is now built into first-party Compose without third-party Open
 -->
 
 ---
-layout: two-cols
+layout: center
+clicks: 2
+class: text-center p-0
 ---
 
-# Mesh Gradients in Production
+<div class="relative w-full h-[520px] flex items-center justify-center">
 
-<div class="mt-4 pr-4">
-
-**Dynamic Ambient UI from Cover Art**
-
-In this reading app, the background is not a static flat color or a blurry box.
-
-<v-clicks class="text-sm mt-4">
-
-- The book cover image is sampled across a 4x4 coordinate grid.
-- Dominant colors are extracted from each quadrant.
-- Compose constructs a live mesh gradient that matches the artwork seamlessly.
-- Produces an organic, magazine-quality aesthetic with minimal performance overhead.
-
-</v-clicks>
-
+<!-- Step 0 & Step 1: Side-by-side comparison (iOS Prod vs Android Standard Blur Prod) -->
+<div v-if="$clicks < 2" class="flex items-center justify-center gap-16">
+<div class="flex flex-col items-center">
+<img
+src="/images/mesh-gradient-app.png"
+alt="iOS Production Mesh Gradient"
+style="max-height: 480px; width: auto; object-fit: contain;"
+class="rounded-xl shadow-2xl border border-zinc-800"
+/>
 </div>
 
-::right::
+<div v-click="1" class="flex flex-col items-center">
+<img
+src="/images/android-standard-blur.png"
+alt="Android Production Standard Blur"
+style="max-height: 480px; width: auto; object-fit: contain;"
+class="rounded-xl shadow-2xl border border-zinc-800"
+/>
+</div>
+</div>
 
-<div class="flex justify-center items-center h-full">
-  <img
-    src="/images/mesh-gradient-app.png"
-    alt="Reading app showing ambient mesh gradient derived from book cover"
-    style="max-height: 420px; width: auto; object-fit: contain;"
-    class="rounded-xl shadow-2xl"
-  />
+<!-- Step 2: Final reveal of how we actually do it on Android (hides previous two on click 2) -->
+<div v-if="$clicks >= 2" class="flex flex-col items-center justify-center animate-fade-in">
+<img
+src="/images/android-how-we-actually-do-it.png"
+alt="How we actually do it on Android"
+style="max-height: 480px; width: auto; object-fit: contain;"
+class="rounded-xl shadow-2xl border border-zinc-800"
+/>
+</div>
+
 </div>
 
 <!--
-Show the real-world screenshot.
-Point out how dynamic styling helps apps stand out on the Play Store.
+Presenter Notes:
+- Initial view (Click 0): iOS Production app using authentic mesh gradient for the dynamic ambient cover background.
+- Click 1: Reveal Android with standard blur — explain what happens when we tried to replicate this on Android before mesh gradients (muddy, washed out, high GPU fill rate).
+- Click 2: Reveal how we actually built it on Android before first-party mesh gradients: layered ambient composition with color sampling, blurred texture, and contrast scrims!
 -->
 
 ---
@@ -2119,6 +2128,105 @@ How modern Android engineers supercharge their velocity:
 Summarize Part B:
 The engineer's role evolves to architect, system designer, and code reviewer.
 Skills ground the agent, android-cli operates the build/device, and debroid debugs runtime issues.
+-->
+
+---
+layout: two-cols
+---
+
+# Practical Prompts: Root Cause vs Symptoms
+
+How you formulate the prompt determines whether the agent hacks a workaround or actually fixes the bug.
+
+<div class="pr-4 mt-2">
+
+<div class="text-xs text-zinc-300 leading-relaxed mb-4">
+I was recently reviewing a pull request and noticed that in Spanish translations, the text was off vertical center.
+</div>
+
+<div class="p-3 rounded-xl bg-rose-950/30 border border-rose-800/40 mb-3 text-xs">
+  <div class="font-bold text-rose-400 mb-1">❌ Asking for the symptom:</div>
+  <div class="font-mono text-zinc-300">"Fix the text not being vertically aligned"</div>
+  <div class="text-zinc-400 mt-1.5 text-[11px]">
+    The agent might add hardcoded paddings, manual offsets (<code>offset(y = -8.dp)</code>), or quick hacks that break in other locales and screen sizes!
+  </div>
+</div>
+
+<div class="p-3 rounded-xl bg-emerald-950/30 border border-emerald-800/40 text-xs">
+  <div class="font-bold text-emerald-400 mb-1">✅ Asking to investigate the cause:</div>
+  <div class="font-mono text-zinc-200">"Pull up the current layout and fix the issue causing the vertical misalignment of the title text"</div>
+  <div class="text-zinc-300 mt-1.5 text-[11px]">
+    Directs the agent to inspect the layout structure, font metrics, line heights, or constraint chains rather than patching the symptom.
+  </div>
+</div>
+
+</div>
+
+::right::
+
+<div class="flex flex-col items-center justify-center h-full pl-4">
+
+<img
+  src="/images/ai/647967014-7b3a96af-3b50-4d8b-8d11-691ac109129d.png"
+  alt="Spanish translation UI showing vertical text misalignment"
+  style="max-height: 420px; width: auto; object-fit: contain;"
+  class="rounded-xl shadow-2xl border border-zinc-800"
+/>
+
+<div class="mt-2 text-[11px] opacity-60 text-center">
+  Real PR review: Multi-line Spanish title pushing vertical alignment
+</div>
+
+</div>
+
+<!--
+Personal, highly practical story:
+Reviewing a PR where localization broke vertical centering.
+Explain prompt precision:
+If you tell an agent "make the text vertically aligned", it might add a hacky padding or hardcoded offset.
+If you instruct it to "pull up the current layout and fix the issue causing the vertical misalignment", it checks the hierarchy, wraps, and baseline alignment properly.
+-->
+
+---
+layout: center
+---
+
+# 3 Rules for Prompting Coding Agents
+
+Concrete principles for getting clean, senior-engineer-grade code from AI agents:
+
+<div class="grid grid-cols-3 gap-5 mt-6 text-sm">
+
+<div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
+  <div class="font-bold text-indigo-400 mb-2">1. Point to the Root Cause</div>
+  <div class="text-xs text-zinc-300 leading-relaxed">
+    Don't prescribe UI bandaids (e.g. <em>"add 8dp padding"</em>). Ask the agent to inspect the container layout and resolve the fundamental structural constraint.
+  </div>
+</div>
+
+<div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
+  <div class="font-bold text-purple-400 mb-2">2. Anchor to Existing Patterns</div>
+  <div class="text-xs text-zinc-300 leading-relaxed">
+    Prompt with codebase references: <em>"Follow the MVI pattern used in FeatureX"</em> or <em>"Use our design system's AppButton"</em> so it doesn't reinvent the wheel.
+  </div>
+</div>
+
+<div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
+  <div class="font-bold text-emerald-400 mb-2">3. Require Verification Steps</div>
+  <div class="text-xs text-zinc-300 leading-relaxed">
+    Instruct the agent to verify: <em>"Build the debug variant and run unit tests to confirm no regression"</em> or check with <code>android-cli</code>.
+  </div>
+</div>
+
+</div>
+
+<div class="mt-6 text-xs text-center text-zinc-400">
+  Clear intent + structural investigation + verification = high-quality, maintainable code.
+</div>
+
+<!--
+Wrap up prompting advice:
+Senior engineers don't write vague prompts. They treat the agent like a junior pair programmer: clear context, right file pointers, and requirement to verify.
 -->
 
 ---
