@@ -15,47 +15,81 @@ drawings:
 
 Compose · Platform · KMP · AI
 
+<div class="mt-8 flex flex-col items-center justify-center">
+  <img
+    src="/images/qr-slides.svg"
+    alt="QR code for slides.sanskar10100.dev"
+    class="w-36 h-36 rounded-xl shadow-lg bg-white p-1.5"
+  />
+  <div class="mt-2 text-xs font-semibold text-zinc-200 whitespace-nowrap">Get the slides</div>
+  <div class="mt-1">
+    <a href="https://slides.sanskar10100.dev" target="_blank" class="text-[10px] font-mono text-indigo-300 underline font-semibold hover:text-indigo-200 transition">
+      slides.sanskar10100.dev
+    </a>
+  </div>
+</div>
+
 ---
 layout: two-cols
 ---
 
 # Hi, I'm Sanskar
 
-**Engineer at [Roro](https://roro.io)**, a product studio.
-I've shipped Android apps used by millions of people across edtech, retail and social media.
+**Engineer at Roro**, building **[Hypelist](https://play.google.com/store/apps/details?id=com.hypelist)** for the past 2 years.
+Real production UI and demos from Hypelist are featured throughout this talk.
 
-<v-clicks>
+<v-clicks class="mt-4">
 
-- **2016** — Built my first Android app in Java with XML layouts, `RelativeLayout`
-- **Today** — Pure Kotlin and Jetpack Compose
-- **Lately** — Sharing production code across platforms with KMP, and exploring on-device AI capabilities.
+- **2016** — Built my first Android app in Java with XML layouts and `RelativeLayout`
+- **Past 2 Years** — 100% Jetpack Compose in production on Hypelist
+- **Today** — Multiplatform code-sharing with KMP and on-device AI capabilities
 
 </v-clicks>
 
 ::right::
 
-<div class="flex flex-col items-center justify-center h-full pl-6">
+<div class="flex flex-col items-center justify-center h-full pl-2">
 
-<img
-  src="/images/qr-linkedin.svg"
-  alt="QR code linking to linkedin.com/in/sanskar10100"
-  style="width: 180px; height: 180px;"
-  class="rounded-lg shadow-md"
-/>
+<div class="grid grid-cols-2 gap-4 text-center">
 
-<div class="mt-3 text-sm font-medium opacity-90">linkedin.com/in/sanskar10100</div>
+  <!-- Hypelist QR -->
+  <div class="flex flex-col items-center">
+    <img
+      src="/images/qr-hypelist.svg"
+      alt="QR code for Hypelist on Google Play"
+      class="w-36 h-36 rounded-xl shadow-lg bg-white p-1.5"
+    />
+    <div class="mt-2 text-xs font-semibold text-zinc-200 whitespace-nowrap">Hypelist</div>
+    <div class="mt-1">
+      <a href="https://play.google.com/store/apps/details?id=com.hypelist" target="_blank" class="text-[10px] font-mono text-indigo-300 underline font-semibold hover:text-indigo-200 transition">
+        Google Play
+      </a>
+    </div>
+  </div>
 
-<div class="mt-4 text-xs opacity-70 text-center font-mono">
-github.com/sanskar10100<br>
-roro.io
+  <!-- LinkedIn QR -->
+  <div class="flex flex-col items-center">
+    <img
+      src="/images/qr-linkedin.svg"
+      alt="QR code for linkedin.com/in/sanskar10100"
+      class="w-36 h-36 rounded-xl shadow-lg bg-white p-1.5"
+    />
+    <div class="mt-2 text-xs font-semibold text-zinc-200 whitespace-nowrap">LinkedIn</div>
+    <div class="mt-1">
+      <a href="https://linkedin.com/in/sanskar10100" target="_blank" class="text-[10px] font-mono text-indigo-300 underline font-semibold hover:text-indigo-200 transition">
+        linkedin.com/in/sanskar10100
+      </a>
+    </div>
+  </div>
+
 </div>
 
 </div>
 
 <!--
-Introduce yourself in ~30 seconds.
-The key point: highlight the shift from 2016 (manual boilerplate and fragility) to today.
-Reassure the college students: Android is no longer the intimidating, fragmented beast it used to be.
+Introduce yourself in ~30 seconds:
+- Introduce Hypelist: "For the past 2 years, I've been building Hypelist with 100% Jetpack Compose. The video recordings, insets handling, and edge-cases you'll see today come straight from shipping Hypelist in production."
+- Highlight the shift from 2016 (manual boilerplate and fragility) to today's modern Android stack.
 -->
 
 ---
@@ -66,25 +100,37 @@ transition: fade-out
 
 <div class="grid grid-cols-2 gap-6 mt-6 text-sm">
 
-<div class="p-4 rounded-xl bg-zinc-950/60 border border-zinc-800/80">
-  <div class="font-bold text-indigo-400 text-base mb-1">01 · Jetpack Compose</div>
+<Link to="4" class="p-4 rounded-xl bg-zinc-950/60 border border-zinc-800/80 hover:border-indigo-500 hover:bg-zinc-900/80 transition block text-left group cursor-pointer">
+  <div class="font-bold text-indigo-400 text-base mb-1 flex items-center justify-between">
+    <span>01 · Jetpack Compose</span>
+    <span class="text-xs text-zinc-500 group-hover:text-indigo-400 transition font-mono">→</span>
+  </div>
   <div class="text-zinc-300">Modern declarative UI, state management, shared element animations, and 2D Grid layouts.</div>
-</div>
+</Link>
 
-<div class="p-4 rounded-xl bg-zinc-950/60 border border-zinc-800/80">
-  <div class="font-bold text-emerald-400 text-base mb-1">02 · The Android Platform</div>
+<Link to="16" class="p-4 rounded-xl bg-zinc-950/60 border border-zinc-800/80 hover:border-emerald-500 hover:bg-zinc-900/80 transition block text-left group cursor-pointer">
+  <div class="font-bold text-emerald-400 text-base mb-1 flex items-center justify-between">
+    <span>02 · The Android Platform</span>
+    <span class="text-xs text-zinc-500 group-hover:text-emerald-400 transition font-mono">→</span>
+  </div>
   <div class="text-zinc-300">Adaptive layouts for foldables and tablets, mandatory edge-to-edge, and predictive gestures.</div>
-</div>
+</Link>
 
-<div class="p-4 rounded-xl bg-zinc-950/60 border border-zinc-800/80">
-  <div class="font-bold text-purple-400 text-base mb-1">03 · Kotlin Multiplatform</div>
+<Link to="25" class="p-4 rounded-xl bg-zinc-950/60 border border-zinc-800/80 hover:border-purple-500 hover:bg-zinc-900/80 transition block text-left group cursor-pointer">
+  <div class="font-bold text-purple-400 text-base mb-1 flex items-center justify-between">
+    <span>03 · Kotlin Multiplatform</span>
+    <span class="text-xs text-zinc-500 group-hover:text-purple-400 transition font-mono">→</span>
+  </div>
   <div class="text-zinc-300">Sharing business logic, networking, and UI across Android, iOS, desktop, and web.</div>
-</div>
+</Link>
 
-<div class="p-4 rounded-xl bg-zinc-950/60 border border-zinc-800/80">
-  <div class="font-bold text-amber-400 text-base mb-1">04 · AI in Android Development</div>
+<Link to="41" class="p-4 rounded-xl bg-zinc-950/60 border border-zinc-800/80 hover:border-amber-500 hover:bg-zinc-900/80 transition block text-left group cursor-pointer">
+  <div class="font-bold text-amber-400 text-base mb-1 flex items-center justify-between">
+    <span>04 · AI in Android Development</span>
+    <span class="text-xs text-zinc-500 group-hover:text-amber-400 transition font-mono">→</span>
+  </div>
   <div class="text-zinc-300">Part A: On-Device AI (AICore, Gemini Nano) · Part B: AI Developer Workflows (android-cli, Skills, debroid).</div>
-</div>
+</Link>
 
 </div>
 
@@ -589,7 +635,7 @@ What's done, and what's next:
 </div>
 
 <div class="mt-6 pt-3 border-t border-zinc-800/80 flex items-center justify-between text-xs">
-  <span class="text-zinc-400">Compose is the default now.</span>
+  <span class="text-zinc-400">Official AndroidX Roadmap</span>
   <a href="https://developer.android.com/jetpack/androidx/compose-roadmap" target="_blank" class="text-indigo-400 hover:underline font-mono no-underline flex items-center gap-1">
     <span>developer.android.com/compose-roadmap</span>
     <span>↗</span>
@@ -602,7 +648,44 @@ Presenter Notes:
 - Highlight the official AndroidX roadmap categories:
   1. What is solved: scroll jank parity with Views, layout animations, shadows, and strong skipping.
   2. What is in focus next: cold startup optimization, built-in scrollbars, multistyle text/IME, and GenAI UI tooling experiments.
-- Direct audience to the official link to track roadmap milestones as upcoming Jetpack releases drop.
+  - Direct audience to the official link to track roadmap milestones as upcoming Jetpack releases drop.
+-->
+
+---
+layout: center
+class: text-center
+---
+
+# Compose Takeaway
+
+<div class="text-zinc-400 text-base max-w-xl mx-auto mt-2 mb-8">
+  Declarative UI is no longer the new frontier — it's the standard.
+</div>
+
+<div class="space-y-3.5 max-w-xl mx-auto">
+  <div v-click class="p-4 rounded-xl bg-zinc-950 border border-zinc-800 text-zinc-200 text-sm md:text-base font-medium shadow-md">
+    <strong class="text-indigo-400">5 years of maturity</strong> — from early experimental runtime to battle-tested across billions of devices.
+  </div>
+
+  <div v-click class="p-4 rounded-xl bg-zinc-950 border border-zinc-800 text-zinc-200 text-sm md:text-base font-medium shadow-md">
+    <strong class="text-indigo-400">70% of the top 1,000 apps</strong> on the Play Store actively ship with Compose in production.
+  </div>
+
+  <div v-click class="p-4 rounded-xl bg-zinc-950 border border-zinc-800 text-zinc-200 text-sm md:text-base font-medium shadow-md">
+    <strong class="text-indigo-400">Up to 50% less UI code</strong> — drastically fewer bugs, faster feature delivery, and multiplatform reach.
+  </div>
+
+  <div v-click class="p-4 rounded-xl bg-indigo-950/40 border border-indigo-500/40 text-indigo-300 text-base md:text-lg font-bold shadow-md tracking-wide">
+    Compose is the default.
+  </div>
+</div>
+
+<!--
+Presenter Notes:
+1. 5 years of maturity: Initial announcement in 2019, 1.0 in 2021. The API has stabilized, tooling has matured, and runtime jank parity is solved.
+2. 70% of top 1,000 apps: Industry giants like Google (Play Store, YouTube, Gmail), Spotify, Twitter/X, and Hypelist are built with Compose.
+3. 50% less code: Moving from XML + ViewBinding + imperative state to pure Kotlin functions cuts boilerplate dramatically.
+4. Compose is the default: Starting an Android app or feature in XML Views in 2026 is immediate technical debt.
 -->
 
 ---
@@ -1839,6 +1922,8 @@ AICore, Gemini Nano, and local intelligence
 
 Everyone wants to add intelligence to their apps, but cloud-only models carry real trade-offs:
 
+<br>
+
 <div class="grid grid-cols-2 gap-6 mt-6 text-sm">
 
 <div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
@@ -1872,9 +1957,7 @@ On-device models are ideal for personal, local tasks: summarizing a private note
 ---
 
 # Two Directions of On-Device AI
-
-Most developers think "AI on Android" just means asking a model for text. In modern Android, it is **two opposite directions**:
-
+<br>
 <div class="mt-4 flex justify-center">
   <img
     src="/images/ai/two-directions.svg"
@@ -1914,12 +1997,16 @@ Bundling a 2GB model inside every APK would destroy phone storage. **AICore** so
 
 <v-clicks class="text-sm">
 
-- **System-Level Service:** Gemini Nano is managed by the Android operating system, not bundled inside your APK.
-- **One Shared Copy:** Every app on the device shares the same foundation model instance. Your APK stays compact.
-- **Private Compute Core:** Runs in an isolated sandbox with zero direct internet access.
-- **Background Updates:** Google updates model weights and hardware NPU optimizations through system updates.
+- **System-Level Service:** Gemini Nano is managed by the Android OS, not bundled in your APK.
+- **One Shared Copy:** Every app shares the same model weights; APK size remains unaffected.
+- **Private Compute Core:** Runs inside an isolated system sandbox with zero direct internet access.
+- **Background Updates:** Google silently delivers model weight and NPU updates via Google Play.
 
 </v-clicks>
+
+<div v-click class="mt-4 p-2.5 rounded-lg bg-amber-950/40 border border-amber-800/60 text-xs text-amber-300">
+  ⚠️ <strong>Device Availability Disclaimer:</strong> AICore &amp; Gemini Nano are currently restricted to select flagship silicon (Pixel 8+, Galaxy S24+). Most active Android devices will return <code>UNAVAILABLE</code>.
+</div>
 
 </div>
 
@@ -1943,7 +2030,9 @@ when (client.checkStatus()) {
     client.download().collect { progress -> ... }
   }
   FeatureStatus.UNAVAILABLE -> {
-    // Fall back to cloud or hide feature
+    // Expected on most devices today!
+    // Must fall back to cloud API or hide
+    fallbackToCloudApi(text)
   }
 }
 ```
@@ -1953,7 +2042,9 @@ when (client.checkStatus()) {
 <!--
 Emphasize the defensive programming aspect:
 Notice that 80% of the code is handling status checks!
-On-device AI requires handling cases where the model is still downloading or unsupported.
+Disclaimer: AICore is currently limited to select flagship hardware (Pixel 8/9, Galaxy S24/S25).
+On most active Android devices today, checkStatus() returns UNAVAILABLE.
+You must always design a defensive hybrid fallback.
 -->
 
 ---
@@ -2060,17 +2151,43 @@ Note for audience: Mention verbally that all of this is currently beta, with App
 
 ---
 layout: center
+class: text-center
 ---
 
 # On-Device AI Takeaway
 
-AI is becoming a standard Android platform API.
-
-<div class="mt-4 opacity-80 text-base max-w-xl mx-auto leading-relaxed">
-The skill isn't prompt engineering—it's <strong>defensive engineering</strong>: checking device capability, budgeting for download progress, and designing seamless fallbacks.
-<br><br>
-Soon, an app's job isn't just to display a UI for humans, but to be a reliable tool for intelligent assistants.
+<div class="text-zinc-400 text-base max-w-xl mx-auto mt-2 mb-6">
+  Intelligent mobile architecture balances user privacy, cost, and device diversity.
 </div>
+
+<div class="space-y-3 max-w-xl mx-auto">
+  <div v-click class="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 text-zinc-200 text-sm md:text-base font-medium shadow-md">
+    User priority: Private computer. Don't want to expose sensitive data like finance.
+  </div>
+
+  <div v-click class="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 text-zinc-200 text-sm md:text-base font-medium shadow-md">
+    Developer priority: Lower costs. AI APIs can rack up massive bills.
+  </div>
+
+  <div v-click class="p-3.5 rounded-xl bg-zinc-950 border border-indigo-500/40 bg-indigo-950/20 text-zinc-200 text-sm shadow-md text-left">
+    <div class="font-bold text-indigo-400 text-xs md:text-sm mb-1 text-center md:text-left">💡 Case Study: The Hybrid Strategy (Hypelist)</div>
+    <div class="text-zinc-300 text-xs leading-relaxed">
+      Like twitter, we introduced an automatic translate system for our feed at Hypelist, powered by Google Cloud Translation. Per-day cost shot upwards of $300, leading to a shift to a mixed strategy: Auto translate on devices with AICore available, on-demand translation via API where unavailable.
+    </div>
+  </div>
+</div>
+
+<!--
+Presenter Notes:
+1. Private Compute: A priority for users. Sensitive notes, messages, health data, and camera feeds never leave the phone.
+2. Cheap Compute: A priority for app developers. Cloud LLM token costs compound fast with active users; local inference has zero marginal cost per query.
+3. The Hypelist Story:
+   - In Hypelist, we introduced an auto-translate feature (like Twitter/X) powered by Google's Cloud Translation API.
+   - Translation bills skyrocketed to $300 a day before we pivoted to a hybrid architecture:
+     * If the user is on a supported device with local model availability, auto-translate feeds silently on-device for free.
+     * If not supported, make translation an on-demand button calling the cloud API only when requested.
+   - Key takeaway: Don't choose cloud OR on-device—build defensive, hybrid fallbacks.
+-->
 
 ---
 layout: section
@@ -2079,42 +2196,6 @@ layout: section
 # Part B · Using AI as an Android Engineer
 
 Agent-first workflows, CLI tooling, Skills, and autonomous debugging
-
----
-
-# The Shift: From Chatbots to Autonomous Agents
-
-Copilots in the IDE are handy for autocompletion, but modern engineering workflows are moving to **autonomous agentic loops**:
-
-<div class="grid grid-cols-2 gap-6 mt-6 text-sm">
-
-<div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
-  <div class="font-bold text-rose-400 text-base mb-2">💬 Traditional Chat Assistant</div>
-  <ul class="text-zinc-300 text-xs space-y-2">
-    <li>• You copy-paste errors or code snippets back and forth.</li>
-    <li>• LLM is <strong>blind</strong> to runtime emulator state and crashes.</li>
-    <li>• Relies on outdated generic training data (suggests deprecated APIs).</li>
-    <li>• Human developer does all manual compilation and verification.</li>
-  </ul>
-</div>
-
-<div class="p-4 rounded-xl bg-zinc-950 border border-indigo-500/40 bg-indigo-950/20">
-  <div class="font-bold text-emerald-400 text-base mb-2">🤖 Autonomous Agent Workflow</div>
-  <ul class="text-zinc-300 text-xs space-y-2">
-    <li>• Agent directly executes build commands and inspects emulator output.</li>
-    <li>• Guided by <strong>Skills</strong> containing official, modern Android patterns.</li>
-    <li>• Uses headless CLI tools to debug crashes and inspect UI trees.</li>
-    <li>• <strong>Closed-loop verification:</strong> Writes code &rarr; builds &rarr; runs &rarr; fixes errors autonomously.</li>
-  </ul>
-</div>
-
-</div>
-
-<!--
-Pivot cleanly from on-device AI in the app to AI developer tooling.
-Explain the paradigm shift: we are moving past copy-pasting code into ChatGPT.
-Modern Android engineers use agentic tools that actually interface with the Android toolchain.
--->
 
 ---
 layout: two-cols
@@ -2281,7 +2362,7 @@ layout: center
 
 # The Future: The Full AI Engineering Loop
 
-How modern Android engineers supercharge their velocity:
+<br>
 
 <div class="grid grid-cols-3 gap-4 mt-6 text-sm">
 
@@ -2418,61 +2499,6 @@ Senior engineers don't write vague prompts. They treat the agent like a junior p
 -->
 
 ---
-layout: section
----
-
-# 05 · Putting It All Together
-
-Modern Android Architecture in production
-
----
-
-# How the Pieces Connect: Architecture
-
-Here is how Google's official Modern Android Architecture (MAD) connects the entire stack:
-
-<div class="mt-4 flex justify-center">
-  <img
-    src="/images/mad-arch-overview.png"
-    alt="Official Modern Android Architecture Overview: UI Layer, Domain Layer, Data Layer"
-    style="max-height: 250px; width: auto; object-fit: contain;"
-    class="rounded-lg shadow-2xl bg-white p-2"
-  />
-</div>
-
-<div class="grid grid-cols-3 gap-4 mt-4 text-xs">
-  <div class="p-3 rounded-lg bg-zinc-950 border border-zinc-800">
-    <div class="font-bold text-indigo-400">1. UI Layer (Compose)</div>
-    <div class="text-zinc-400 mt-1">Composables observe UI state and emit user actions. Completely decoupled from business logic.</div>
-  </div>
-  <div class="p-3 rounded-lg bg-zinc-950 border border-zinc-800">
-    <div class="font-bold text-purple-400">2. Presentation (ViewModel)</div>
-    <div class="text-zinc-400 mt-1">Holds screen state using <code>StateFlow</code>. Survives screen rotations and window resize events.</div>
-  </div>
-  <div class="p-3 rounded-lg bg-zinc-950 border border-zinc-800">
-    <div class="font-bold text-emerald-400">3. Data Layer (Repository)</div>
-    <div class="text-zinc-400 mt-1">Coordinates local caching (Room), remote APIs (Ktor), and AI models. Highly testable and shareable in KMP!</div>
-  </div>
-</div>
-
-<div class="text-xs opacity-50 mt-2 text-center">
-Source: developer.android.com/topic/architecture
-</div>
-
-<!--
-Walk through the 3 layers clearly.
-This connects Compose, ViewModel, StateFlow, Room, and KMP into one cohesive picture.
--->
-
----
-layout: section
----
-
-# 06 · Your Learning Roadmap
-
-Where to start if you are a student or beginner
-
----
 
 # The 4-Step Learning Path for 2026
 
@@ -2505,42 +2531,64 @@ Do not jump straight into AI or Multiplatform before you can build a clean Compo
 
 ---
 
-# What to Ignore (Save Your Sanity!)
+# Keeping Up with the Ecosystem
 
-When you search for Android tutorials online, you will find 15 years of legacy advice. **Here is what to safely skip:**
+As developers, keeping up with rapid changes across the ecosystem is essential. These curated weekly newsletters are the highest-signal way to stay current:
 
-<div class="grid grid-cols-2 gap-6 mt-6 text-sm">
+<div class="grid grid-cols-2 gap-5 mt-6 text-sm">
 
-<div class="p-4 rounded-xl bg-rose-950/30 border border-rose-800/40">
-  <div class="font-bold text-rose-400 text-base mb-2">❌ Don't Waste Time On:</div>
-  <ul class="text-zinc-300 text-xs space-y-2 leading-relaxed">
-    <li>• <strong>XML Layouts &amp; findViewById:</strong> Skip them unless dealing with legacy code at an internship.</li>
-    <li>• <strong>Old Fragment Managers:</strong> Modern Compose handles navigation without Fragment transactions.</li>
-    <li>• <strong>Complex Gradle wizardry early on:</strong> Use the standard project templates and version catalogs.</li>
-    <li>• <strong>Trying to learn everything at once:</strong> Get confident with Compose before touching cross-platform.</li>
-  </ul>
-</div>
+<a href="https://androidweekly.net" target="_blank" class="p-4 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-emerald-500 transition block">
+  <div class="font-bold text-emerald-400 mb-1 flex items-center justify-between">
+    <span>🤖 Android Weekly</span>
+    <span class="text-[11px] font-mono text-zinc-500">androidweekly.net</span>
+  </div>
+  <p class="text-zinc-400 text-xs leading-relaxed">
+    The classic weekly digest since 2012. Platform releases, Jetpack updates, architectural patterns, and community tutorials.
+  </p>
+</a>
 
-<div class="p-4 rounded-xl bg-emerald-950/30 border border-emerald-800/40">
-  <div class="font-bold text-emerald-400 text-base mb-2">✅ Do Focus On:</div>
-  <ul class="text-zinc-300 text-xs space-y-2 leading-relaxed">
-    <li>• <strong>Building complete small apps:</strong> A habit tracker, student schedule app, or campus events feed.</li>
-    <li>• <strong>Installing it on your real phone:</strong> Nothing beats the feeling of tapping an app you wrote yourself.</li>
-    <li>• <strong>Reading modern official docs:</strong> Google's Android documentation is among the best in tech today.</li>
-    <li>• <strong>Publishing on GitHub:</strong> Clean code, READMEs with screenshots, and modern architecture.</li>
-  </ul>
-</div>
+<a href="https://kotlinweekly.net" target="_blank" class="p-4 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-purple-500 transition block">
+  <div class="font-bold text-purple-400 mb-1 flex items-center justify-between">
+    <span>🟣 Kotlin Weekly</span>
+    <span class="text-[11px] font-mono text-zinc-500">kotlinweekly.net</span>
+  </div>
+  <p class="text-zinc-400 text-xs leading-relaxed">
+    Everything Kotlin: language features, K2 compiler progress, coroutines, ecosystem libraries, and server-side developments.
+  </p>
+</a>
+
+<a href="https://jetc.dev" target="_blank" class="p-4 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-indigo-500 transition block">
+  <div class="font-bold text-indigo-400 mb-1 flex items-center justify-between">
+    <span>🎨 jetc.dev</span>
+    <span class="text-[11px] font-mono text-zinc-500">jetc.dev</span>
+  </div>
+  <p class="text-zinc-400 text-xs leading-relaxed">
+    Curated by Mark Murphy. 100% focused on Jetpack Compose tutorials, UI components, animations, and multiplatform UI.
+  </p>
+</a>
+
+<a href="https://commonmain.dev" target="_blank" class="p-4 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-amber-500 transition block">
+  <div class="font-bold text-amber-400 mb-1 flex items-center justify-between">
+    <span>🌐 commonmain.dev</span>
+    <span class="text-[11px] font-mono text-zinc-500">commonmain.dev</span>
+  </div>
+  <p class="text-zinc-400 text-xs leading-relaxed">
+    The dedicated home for Kotlin Multiplatform &amp; Compose Multiplatform: case studies, tooling, and ecosystem libraries.
+  </p>
+</a>
 
 </div>
 
 <!--
-Students love this slide because it filters out the noise.
-Most students get overwhelmed because they encounter 2017 tutorial content online and think they need to learn XML, Java, and adapters first.
+Presenter Notes:
+- Emphasize to the audience: Social media feeds are noisy, but these four newsletters provide curated, high-signal digests every Sunday/Monday.
+- Reading these weekly is how senior developers stay ahead of deprecations and upcoming platform shifts without feeling overwhelmed.
 -->
 
 ---
 
-# Essential Resources to Bookmark
+# Best places to learn
+<br>
 
 <div class="grid grid-cols-2 gap-5 mt-6 text-sm">
 
@@ -2580,54 +2628,125 @@ If they only bookmark one repo, recommend "Now in Android" on GitHub.
 -->
 
 ---
+
+# There's Never Been a Better Time to Build
+
+<div class="text-zinc-400 text-sm mt-1 mb-6">
+  The fragmented, boilerplate-heavy Android of 2016 is history. Today's ecosystem is unified, expressive, and boundless.
+</div>
+
+<div class="grid grid-cols-3 gap-4 mt-6">
+
+<div v-click class="p-4 rounded-xl bg-zinc-950 border border-zinc-800 flex flex-col justify-between">
+  <div>
+    <div class="text-xs font-mono uppercase tracking-wider text-indigo-400 font-semibold mb-2">01 · Declarative UI</div>
+    <div class="font-bold text-zinc-100 text-base mb-2">Compose is Mature &amp; Expressive</div>
+    <p class="text-zinc-400 text-xs leading-relaxed">
+      Gone are the days of XML, <code>findViewById</code>, and Fragment lifecycle bugs. Modern Compose gives you 120fps fluid physics, custom shaders, and declarative state out of the box.
+    </p>
+  </div>
+  <div class="mt-4 pt-3 border-t border-zinc-800/80 text-[11px] text-zinc-500 font-mono">
+    Up to 50% less UI code
+  </div>
+</div>
+
+<div v-click class="p-4 rounded-xl bg-gradient-to-b from-purple-950/40 to-zinc-950 border border-purple-500/40 flex flex-col justify-between shadow-lg">
+  <div>
+    <div class="text-xs font-mono uppercase tracking-wider text-purple-400 font-semibold mb-2">02 · The Big Shift</div>
+    <div class="font-bold text-zinc-100 text-base mb-2">Kotlin Runs Everywhere</div>
+    <p class="text-zinc-300 text-xs leading-relaxed">
+      Kotlin is no longer just "the Android language." One expressive language now powers your <strong>Android app, iOS client, desktop, Web via Wasm, and backend services</strong> with zero bridge tax.
+    </p>
+  </div>
+  <div class="mt-4 pt-3 border-t border-purple-800/50 text-[11px] text-purple-300 font-mono font-medium">
+    Learn once, ship to every screen
+  </div>
+</div>
+
+<div v-click class="p-4 rounded-xl bg-zinc-950 border border-zinc-800 flex flex-col justify-between">
+  <div>
+    <div class="text-xs font-mono uppercase tracking-wider text-emerald-400 font-semibold mb-2">03 · The Frontier</div>
+    <div class="font-bold text-zinc-100 text-base mb-2">Adaptive Screens &amp; AI</div>
+    <p class="text-zinc-400 text-xs leading-relaxed">
+      Foldables, tablets, wearables, and auto share the same modern platform APIs. Pair that with zero-latency on-device AI (AICore) and AI-assisted dev tooling—the velocity ceiling has never been higher.
+    </p>
+  </div>
+  <div class="mt-4 pt-3 border-t border-zinc-800/80 text-[11px] text-zinc-500 font-mono">
+    New hardware + Private compute
+  </div>
+</div>
+
+</div>
+
+<div v-click class="mt-6 p-3 rounded-xl bg-zinc-950/80 border border-zinc-800 text-center text-xs text-zinc-300">
+  You're not just an Android developer anymore — you are a product engineer equipped to build for any platform.
+</div>
+
+<!--
+Presenter Notes:
+- Deliver this with genuine energy and passion—this is the philosophical summary of the whole talk.
+- 1. Declarative UI: Remind them of 2016 (XML, manual state sync, findViewById nullability). Compose wiped all of that out.
+- 2. Kotlin Runs Everywhere (The Big Punch): Emphasize this strongly. If you master Kotlin and Compose today, you are not trapped in a silo. You can write your iOS app, share logic with desktop/web, and write backend services. You are building universal software.
+- 3. Adaptive & AI: Hardware is exciting again (foldables, dual screens, wearables). Plus on-device AI gives native mobile apps capabilities web apps simply cannot replicate.
+-->
+
+---
 layout: two-cols
 ---
 
-# Thank You! Let's Connect
+<div class="flex flex-col justify-center h-full pl-4 pr-6">
 
-<div class="pr-6 mt-4">
+# Thank you!
 
-There has genuinely never been a better time to build for Android.
-
-<v-clicks class="text-sm mt-4 space-y-3">
-
-- The declarative UI toolkit is mature and expressive.
-- Kotlin runs everywhere from mobile to servers.
-- The platform is expanding into exciting new hardware and on-device intelligence.
-
-</v-clicks>
-
-<div v-click class="mt-8 p-4 rounded-xl bg-indigo-950/40 border border-indigo-800/40">
-  <div class="font-bold text-indigo-300 text-base mb-1">Open Floor for Q&amp;A</div>
-  <div class="text-xs text-zinc-300">
-    Ask me anything: getting started, shipping apps at scale, Compose vs Flutter, career paths, or tech stacks!
-  </div>
+<div class="text-2xl text-zinc-400 mt-2 font-medium">
+  Ask me anything.
 </div>
 
 </div>
 
 ::right::
 
-<div class="flex flex-col items-center justify-center h-full pl-6">
+<div class="flex flex-col items-center justify-center h-full pl-2">
 
-<img
-  src="/images/qr-linkedin.svg"
-  alt="QR code linking to linkedin.com/in/sanskar10100"
-  style="width: 200px; height: 200px;"
-  class="rounded-xl shadow-2xl"
-/>
+<div class="grid grid-cols-2 gap-6 text-center">
 
-<div class="mt-3 text-sm font-semibold text-zinc-100">Sanskar</div>
-<div class="text-xs text-zinc-400 font-mono">linkedin.com/in/sanskar10100</div>
+  <!-- Left: LinkedIn -->
+  <div class="flex flex-col items-center">
+    <img
+      src="/images/qr-linkedin.svg"
+      alt="QR code for linkedin.com/in/sanskar10100"
+      class="w-44 h-44 rounded-2xl shadow-xl bg-white p-2"
+    />
+    <div class="mt-3 text-sm font-semibold text-zinc-200 whitespace-nowrap">LinkedIn</div>
+    <div class="mt-1">
+      <a href="https://linkedin.com/in/sanskar10100" target="_blank" class="text-[11px] font-mono text-indigo-300 underline font-semibold hover:text-indigo-200 transition">
+        linkedin.com/in/sanskar10100
+      </a>
+    </div>
+  </div>
 
-<div class="mt-4 text-xs opacity-70 text-center font-mono">
-github.com/sanskar10100<br>
-roro.io
+  <!-- Right: Slides -->
+  <div class="flex flex-col items-center">
+    <img
+      src="/images/qr-slides.svg"
+      alt="QR code for slides.sanskar10100.dev"
+      class="w-44 h-44 rounded-2xl shadow-xl bg-white p-2"
+    />
+    <div class="mt-3 text-sm font-semibold text-zinc-200 whitespace-nowrap">Get the slides</div>
+    <div class="mt-1">
+      <a href="https://slides.sanskar10100.dev" target="_blank" class="text-[11px] font-mono text-indigo-300 underline font-semibold hover:text-indigo-200 transition">
+        slides.sanskar10100.dev
+      </a>
+    </div>
+  </div>
+
 </div>
 
 </div>
 
 <!--
-Wrap up with warmth and encouragement.
-Open the floor for questions from students and working devs.
+Presenter Notes:
+- Wrap up with warm gratitude.
+- Open floor for questions from students and working devs.
+- Remind audience that the entire slidedeck, links, and code samples are available via the QR code on the right.
 -->
