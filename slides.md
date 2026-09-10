@@ -797,6 +797,41 @@ With Scaffold and WindowInsets.safeDrawing, it is solved cleanly.
 layout: two-cols
 ---
 
+<div class="flex flex-col justify-center h-full pr-4">
+  <h1 class="!text-4xl md:!text-5xl font-extrabold tracking-tight text-white leading-tight">
+    A practical<br>example
+  </h1>
+  <p class="mt-4 text-base text-zinc-400">
+    Proper inset handling in production
+  </p>
+</div>
+
+::right::
+
+<div class="flex flex-col items-center justify-center h-full pl-2">
+  <video
+    src="/videos/insets-practical-example.mp4"
+    autoplay
+    loop
+    muted
+    playsinline
+    controls
+    style="max-height: 450px; width: auto; aspect-ratio: 9/20; display: block;"
+    class="rounded-xl shadow-2xl border border-zinc-800"
+  ></video>
+</div>
+
+<!--
+Presenter Notes:
+- Walk through the recording: show how the app draws edge-to-edge behind both system bars.
+- Point out how header media reaches the top edge while controls stay within safe insets.
+- Highlight the floating bottom bar positioned above gesture insets.
+-->
+
+---
+layout: two-cols
+---
+
 # Predictive Back Gestures
 
 Navigation that feels physical and tactile
