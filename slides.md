@@ -614,49 +614,32 @@ layout: section
 Adaptive screens, modern UX, and platform behavior
 
 ---
-
-# How Android Ships Today
-
-<v-clicks>
-
-- **Predictable Annual Releases:** Android 15 (2024), Android 16 (2025), Android 17 (2026).
-- **Quarterly Platform Releases (QPRs):** Google now rolls out meaningful developer APIs and system enhancements throughout the year, not just in summer releases.
-- **Google Play Target SDK Policy:** Every year, Google Play mandates that updates target a recent API level to preserve user security and battery life.
-
-</v-clicks>
-
-<div v-click class="mt-6 p-4 rounded-xl bg-zinc-950 border border-zinc-800 text-sm">
-  <div class="font-bold text-indigo-400 mb-1">What this means for you:</div>
-  <div class="text-zinc-300 leading-relaxed">
-    You cannot rely on old habits forever. The platform pushes apps forward on a strict schedule. Understanding modern platform behavior is what differentiates a junior coder from a professional engineer.
-  </div>
-</div>
-
-<!--
-Explain why targeting modern SDKs matters. It is not just about version numbers; it is about building apps that follow modern battery, privacy, and display rules.
--->
-
+layout: center
+class: text-center
 ---
 
-# Beyond the 5-Inch Phone
+<div class="text-xs font-mono uppercase tracking-widest text-rose-400 mb-3 font-semibold">
+Platform Update
+</div>
 
-The assumption that Android runs solely on a vertical 5-inch phone is gone.
+<h1 class="!text-4xl md:!text-5xl font-extrabold tracking-tight text-white leading-tight">
+Android 17 ignores your <br>
+<span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 via-amber-300 to-orange-400 font-mono">orientation locks</span>
+</h1>
 
-<v-clicks class="text-sm">
-
-- **Form Factors Everywhere:** Foldables (Galaxy Z Fold, Pixel Fold), tablets, ChromeOS laptops, and Samsung DeX / Desktop Mode are widespread.
-- **No More Orientation Locks:** Starting with Android 16 and 17, the OS actively **ignores** `screenOrientation="portrait"` and non-resizable flags on displays wider than 600dp.
-- **The User Can Resize Anytime:** Your app will be snapped into split-screen, unfolded mid-use, or floated in a desktop window.
-
-</v-clicks>
-
-<div v-click class="mt-5 p-3.5 rounded-xl bg-amber-950/40 border border-amber-800/40 text-xs text-amber-200 leading-relaxed">
-<strong>Key Mindset Shift:</strong> Never assume your screen has a fixed width or height. Build responsive layouts that adapt fluidly to whatever window size the user gives you.
+<div class="mt-6 text-base text-zinc-300 max-w-xl mx-auto leading-relaxed">
+Hardcoded <code>screenOrientation="portrait"</code> is ignored on screens over 600dp.
+<br>
+Your app <em>will</em> be resized, unfolded, and split-screened. <br>
+You have to make it adaptive.
 </div>
 
 <!--
-Explain that foldables and tablets aren't edge cases anymore.
-If someone unfolds a phone while your app is open, your layout must reflow cleanly without restarting or crashing.
+Presenter Notes:
+- Deliver this with punch: For 15 years, developers "solved" tablets by sticking android:screenOrientation="portrait" in the AndroidManifest.
+- Android 16 and 17 actively ignore portrait-lock and non-resizable flags on displays wider than 600dp (tablets, foldables, freeform desktop mode).
+- Mention verbally: form factors are everywhere (Pixel Fold, Galaxy Fold, tablets, ChromeOS, Samsung DeX).
+- You can no longer pretend foldables don't exist. Your UI must adapt to window size, which brings us to Window Size Classes.
 -->
 
 ---
