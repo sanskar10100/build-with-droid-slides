@@ -708,23 +708,35 @@ ListDetailPaneScaffold(
 ```
 
 <div class="text-[11px] opacity-75 mt-1.5 leading-tight">
-Phone: navigates to full screen. Foldable/Tablet: renders dual panes side-by-side automatically.
+Phone: navigates to full screen. <br>
+Foldable/Tablet: renders dual panes side-by-side automatically.
 </div>
 
 </div>
 
 ::right::
 
-<div class="pl-2">
+<div class="pl-2 flex flex-col justify-center h-full pt-4">
   <AdaptiveVisual />
-  <div class="text-[10px] opacity-60 text-center mt-1">
-    Click the buttons above to preview how your UI reflows across breakpoints!
+
+  <div class="mt-3 p-3 rounded-xl bg-indigo-950/30 border border-indigo-500/30 text-xs">
+    <div class="flex items-center gap-1.5 font-bold text-indigo-400 text-[11px] mb-1">
+      <span>💡</span>
+      <span>Pro Tip: Scaffold with Android Skills</span>
+    </div>
+    <p class="text-zinc-300 text-[11px] leading-relaxed mb-1.5">
+      Install official adaptive guidelines for AI coding agents:
+    </p>
+    <code class="block font-mono text-[10.5px] bg-black/50 px-2 py-1 rounded text-indigo-200 border border-indigo-500/20">
+      android skills add adaptive
+    </code>
   </div>
 </div>
 
 <!--
 Point out that you do NOT need to write separate apps or duplicate Activities.
 ListDetailPaneScaffold handles the transition and back navigation between single-pane and dual-pane automatically.
+Mention the tip: You can teach coding agents modern adaptive patterns directly using the `adaptive` skill (`android skills add adaptive`).
 -->
 
 ---
