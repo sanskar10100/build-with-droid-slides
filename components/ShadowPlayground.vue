@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 
 const offsetX = ref(0)
 const offsetY = ref(12)
@@ -7,6 +7,43 @@ const blur = ref(24)
 const spread = ref(0)
 const alpha = ref(30)
 const inner = ref(false)
+
+let channel: BroadcastChannel | null = null
+let isRemoteUpdate = false
+
+onMounted(() => {
+  if (typeof BroadcastChannel === 'undefined') return
+  channel = new BroadcastChannel('slidev-sync-shadow')
+  channel.onmessage = (e) => {
+    if (!e.data) return
+    isRemoteUpdate = true
+    offsetX.value = e.data.offsetX
+    offsetY.value = e.data.offsetY
+    blur.value = e.data.blur
+    spread.value = e.data.spread
+    alpha.value = e.data.alpha
+    inner.value = e.data.inner
+    setTimeout(() => {
+      isRemoteUpdate = false
+    }, 20)
+  }
+})
+
+onUnmounted(() => {
+  channel?.close()
+})
+
+watch([offsetX, offsetY, blur, spread, alpha, inner], () => {
+  if (isRemoteUpdate || !channel) return
+  channel.postMessage({
+    offsetX: offsetX.value,
+    offsetY: offsetY.value,
+    blur: blur.value,
+    spread: spread.value,
+    alpha: alpha.value,
+    inner: inner.value,
+  })
+})
 
 const shadow = computed(() =>
   `${inner.value ? 'inset ' : ''}${offsetX.value}px ${offsetY.value}px ${blur.value}px ${spread.value}px rgba(0,0,0,${(alpha.value / 100).toFixed(2)})`,

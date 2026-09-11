@@ -819,7 +819,9 @@ Foldable/Tablet: renders dual panes side-by-side automatically.
 <!--
 Point out that you do NOT need to write separate apps or duplicate Activities.
 ListDetailPaneScaffold handles the transition and back navigation between single-pane and dual-pane automatically.
-Mention the tip: You can teach coding agents modern adaptive patterns directly using the `adaptive` skill (`android skills add adaptive`).
+Mention the tip: You can teach coding agents modern adaptive patterns directly using the `adaptive` skill (`android skills add adaptive`). Don't hardcode sizes into your apps. Use fractions of screen and other anchors to design your app.
+
+This reponsibility falls upon you, not the designer.
 -->
 
 ---
@@ -880,13 +882,34 @@ With Scaffold and WindowInsets.safeDrawing, it is solved cleanly.
 layout: two-cols
 ---
 
-<div class="flex flex-col justify-center h-full pr-4">
-  <h1 class="!text-4xl md:!text-5xl font-extrabold tracking-tight text-white leading-tight">
-    A practical<br>example
-  </h1>
-  <p class="mt-4 text-base text-zinc-400">
-    Proper inset handling in production
-  </p>
+# Edge-to-Edge in Practice
+
+Don't pad the root `Scaffold`—push insets down so lists can bleed to the edges.
+
+<div class="pr-2 mt-2 space-y-2 text-xs">
+
+- **Pad floating controls, not the screen root:**
+```kotlin
+ProfileHeader(modifier = Modifier.statusBarsPadding())
+NavBar(modifier = Modifier.navigationBarsPadding())
+```
+
+- **Bleed edge-to-edge with a top fade mask:**
+```kotlin
+LazyColumn(
+  modifier = Modifier
+    .fillMaxSize()
+    .graphicsLayer { compositingStrategy = CompositingStrategy.Offscreen }
+    .drawWithContent {
+      drawContent()
+      drawRect(
+        brush = Brush.verticalGradient(0f to topFade, 0.1f to Color.Black),
+        blendMode = BlendMode.DstIn
+      )
+    }
+) { /* items */ }
+```
+
 </div>
 
 ::right::
@@ -906,9 +929,10 @@ layout: two-cols
 
 <!--
 Presenter Notes:
-- Walk through the recording: show how the app draws edge-to-edge behind both system bars.
-- Point out how header media reaches the top edge while controls stay within safe insets.
-- Highlight the floating bottom bar positioned above gesture insets.
+- Highlight the problem with root Scaffold padding: if you pad innerPadding at the top level, your LazyColumn gets hard-clipped at the status/nav bar boundary.
+- Instead, zero out Scaffold insets and let the LazyColumn bleed edge-to-edge (fillMaxSize).
+- Apply insets selectively: statusBarsPadding() on the header, navigationBarsPadding() on the bottom bar.
+- The fade mask: uses graphicsLayer(Offscreen) + drawWithContent with BlendMode.DstIn to gracefully fade content before it collides with status bar icons.
 -->
 
 ---

@@ -1,7 +1,34 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch, onMounted, onUnmounted } from 'vue'
 
 const isDetail = ref(false)
+
+let channel: BroadcastChannel | null = null
+let isRemoteUpdate = false
+
+onMounted(() => {
+  if (typeof BroadcastChannel === 'undefined') return
+  channel = new BroadcastChannel('slidev-sync-shared-element')
+  channel.onmessage = (e) => {
+    if (typeof e.data?.isDetail === 'boolean') {
+      isRemoteUpdate = true
+      isDetail.value = e.data.isDetail
+      setTimeout(() => {
+        isRemoteUpdate = false
+      }, 20)
+    }
+  }
+})
+
+onUnmounted(() => {
+  channel?.close()
+})
+
+watch(isDetail, (val) => {
+  if (isRemoteUpdate || !channel) return
+  channel.postMessage({ isDetail: val })
+})
+
 function toggle() {
   isDetail.value = !isDetail.value
 }

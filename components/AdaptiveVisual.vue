@@ -1,7 +1,33 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch, onMounted, onUnmounted } from 'vue'
 
 const currentMode = ref<'compact' | 'medium' | 'expanded'>('compact')
+
+let channel: BroadcastChannel | null = null
+let isRemoteUpdate = false
+
+onMounted(() => {
+  if (typeof BroadcastChannel === 'undefined') return
+  channel = new BroadcastChannel('slidev-sync-adaptive')
+  channel.onmessage = (e) => {
+    if (e.data?.mode) {
+      isRemoteUpdate = true
+      currentMode.value = e.data.mode
+      setTimeout(() => {
+        isRemoteUpdate = false
+      }, 20)
+    }
+  }
+})
+
+onUnmounted(() => {
+  channel?.close()
+})
+
+watch(currentMode, (mode) => {
+  if (isRemoteUpdate || !channel) return
+  channel.postMessage({ mode })
+})
 </script>
 
 <template>
