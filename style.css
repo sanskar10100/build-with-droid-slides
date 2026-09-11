@@ -136,3 +136,18 @@
     filter: none;
   }
 }
+
+/* Fix fullscreen viewport height on systems where Slidev's --vh variable does not update cleanly */
+:fullscreen {
+  --vh: 1vh !important;
+}
+
+:fullscreen,
+:fullscreen #app,
+:fullscreen #page-root {
+  height: 100% !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  max-height: 100vh !important;
+}
+
