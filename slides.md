@@ -2239,7 +2239,7 @@ class: text-center
 
 <div class="space-y-3 max-w-xl mx-auto">
   <div v-click class="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 text-zinc-200 text-sm md:text-base font-medium shadow-md">
-    User priority: Private computer. Don't want to expose sensitive data like finance.
+    User priority: Private compute. Don't want to expose sensitive data like finance.
   </div>
 
   <div v-click class="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 text-zinc-200 text-sm md:text-base font-medium shadow-md">
@@ -2660,48 +2660,6 @@ As developers, keeping up with rapid changes across the ecosystem is essential. 
 Presenter Notes:
 - Emphasize to the audience: Social media feeds are noisy, but these four newsletters provide curated, high-signal digests every Sunday/Monday.
 - Reading these weekly is how senior developers stay ahead of deprecations and upcoming platform shifts without feeling overwhelmed.
--->
-
----
-
-# Best places to learn
-<br>
-
-<div class="grid grid-cols-2 gap-5 mt-6 text-sm">
-
-<a href="https://developer.android.com/courses" target="_blank" class="p-4 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-indigo-500 transition block">
-  <div class="font-bold text-indigo-400 mb-1">📘 Android Basics with Compose</div>
-  <p class="text-zinc-400 text-xs leading-relaxed">
-    Official, free, step-by-step curriculum by Google. Starts from zero Kotlin to building real apps.
-  </p>
-</a>
-
-<a href="https://github.com/android/nowinandroid" target="_blank" class="p-4 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-indigo-500 transition block">
-  <div class="font-bold text-emerald-400 mb-1">🌟 Now in Android (GitHub)</div>
-  <p class="text-zinc-400 text-xs leading-relaxed">
-    Google's open-source reference production app. Demonstrates 100% modern best practices, testing, and architecture.
-  </p>
-</a>
-
-<a href="https://kotlinlang.org/multiplatform/" target="_blank" class="p-4 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-indigo-500 transition block">
-  <div class="font-bold text-purple-400 mb-1">🌐 Kotlin Multiplatform Portal</div>
-  <p class="text-zinc-400 text-xs leading-relaxed">
-    Interactive project wizard, documentation, and sample multiplatform apps by JetBrains.
-  </p>
-</a>
-
-<a href="https://github.com/android/compose-samples" target="_blank" class="p-4 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-indigo-500 transition block">
-  <div class="font-bold text-amber-400 mb-1">🎨 Jetpack Compose Samples</div>
-  <p class="text-zinc-400 text-xs leading-relaxed">
-    Jetsnack, Jetcaster, and Crane. Official sample apps showcasing animations, adaptive UI, and custom graphics.
-  </p>
-</a>
-
-</div>
-
-<!--
-Point students to these 4 links.
-If they only bookmark one repo, recommend "Now in Android" on GitHub.
 -->
 
 ---
