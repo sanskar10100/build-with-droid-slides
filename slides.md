@@ -35,14 +35,13 @@ layout: two-cols
 
 # Hi, I'm Sanskar
 
-**Engineer at Roro**, building **[Hypelist](https://play.google.com/store/apps/details?id=com.hypelist)** for the past 2 years.
-Real production UI and demos from Hypelist are featured throughout this talk.
+**Engineer at Roro.** I've been building for Android professionally for the last 5 years, shipping apps to millions of users across edtech, retail, and social.
 
-<v-clicks class="mt-4">
+<v-clicks class="mt-4 space-y-2">
 
 - **2016** — Built my first Android app in Java with XML layouts and `RelativeLayout`
-- **Past 2 Years** — 100% Jetpack Compose in production on Hypelist
-- **Today** — Multiplatform code-sharing with KMP and on-device AI capabilities
+- **Current** — Full Compose, including at **[Hypelist](https://play.google.com/store/apps/details?id=com.hypelist)**, a social app which I have been building for the last 2 years
+- **Lately** — New avenues: Compose Multiplatform and On-Device AI
 
 </v-clicks>
 
@@ -88,8 +87,10 @@ Real production UI and demos from Hypelist are featured throughout this talk.
 
 <!--
 Introduce yourself in ~30 seconds:
-- Introduce Hypelist: "For the past 2 years, I've been building Hypelist with 100% Jetpack Compose. The video recordings, insets handling, and edge-cases you'll see today come straight from shipping Hypelist in production."
-- Highlight the shift from 2016 (manual boilerplate and fragility) to today's modern Android stack.
+- 5 years building for Android professionally across edtech, retail, and social apps with millions of users.
+- Evolution from 2016 (Java, XML, RelativeLayout) to modern Android.
+- Full Compose at Hypelist for the past 2 years (production UI demos and edge-cases featured throughout today's talk).
+- Exploring new frontiers: Compose Multiplatform (CMP) and On-Device AI.
 -->
 
 ---
@@ -278,6 +279,53 @@ LazyColumn {
 <!--
 Ask the audience: "How many of you have written a RecyclerView adapter?"
 Let the contrast speak for itself. All that old adapter code was plumbing that the framework can do for you.
+-->
+
+---
+layout: two-cols
+---
+
+# 2D Layouts: The Compose Grid
+
+Real two-dimensional layouts without nested hierarchy hell
+
+<div class="pr-3">
+
+```kotlin
+Grid(columns = 3, rows = 3, gap = 8.dp) {
+  // Spans 3 columns for header
+  HeaderCard(Modifier.gridCell(columnSpan = 3))
+
+  // Spans 2 rows for sidebar
+  SidebarCard(Modifier.gridCell(rowSpan = 2))
+
+  // Remaining cells fill slots
+  MetricCard()
+  MetricCard()
+}
+```
+
+<v-clicks class="text-xs space-y-1 mt-2">
+
+- **2D Tracks & Gaps:** Define columns, rows, and gutters directly.
+- **Cell Spanning:** Span multiple rows and columns with `gridCell()`.
+- **Named Areas:** Place items into named layout areas, just like CSS Grid.
+
+</v-clicks>
+
+</div>
+
+::right::
+
+<div class="pl-2">
+  <GridLayoutVisual />
+</div>
+
+<!--
+Presenter Notes:
+- Natural progression from 1D lists (LazyColumn) to 2D layouts.
+- Connect with web knowledge: if students know CSS Grid, Compose Grid will feel immediately familiar.
+- It completely removes the performance penalty of nested layout passes (Row inside Column inside Row).
 -->
 
 ---
@@ -491,51 +539,6 @@ NavDisplay(
 <!--
 Emphasize this to students: you do not need to memorize complex graph APIs anymore.
 If you know how to add and remove items from a Kotlin List, you know how Navigation 3 works.
--->
-
----
-layout: two-cols
----
-
-# 2D Layouts: The Compose Grid
-
-Real two-dimensional layouts without nested hierarchy hell
-
-<div class="pr-3">
-
-```kotlin
-Grid(columns = 3, rows = 3, gap = 8.dp) {
-  // Spans 3 columns for header
-  HeaderCard(Modifier.gridCell(columnSpan = 3))
-
-  // Spans 2 rows for sidebar
-  SidebarCard(Modifier.gridCell(rowSpan = 2))
-
-  // Remaining cells fill slots
-  MetricCard()
-  MetricCard()
-}
-```
-
-<v-clicks class="text-xs space-y-1 mt-2">
-
-- **2D Tracks & Gaps:** Define columns, rows, and gutters directly.
-- **Cell Spanning:** Span multiple rows and columns with `gridCell()`.
-- **Named Areas:** Place items into named layout areas, just like CSS Grid.
-
-</v-clicks>
-
-</div>
-
-::right::
-
-<div class="pl-2">
-  <GridLayoutVisual />
-</div>
-
-<!--
-Connect this with web knowledge: if students know CSS Grid, Compose Grid will feel immediately familiar.
-It completely removes the performance penalty of nested layout passes.
 -->
 
 ---
@@ -1205,9 +1208,17 @@ Source: kotlinlang.org — Multiplatform project architecture
 </div>
 
 <!--
-Contrast this with Flutter and React Native.
-React Native ships a JavaScript engine. Flutter ships a complete C++ engine.
-KMP compiles down to native CPU instructions via LLVM for iOS.
+Presenter Notes:
+- Contrast with Flutter & React Native:
+  - React Native bundles a JavaScript engine (Hermes). Flutter bundles a 30MB+ C++ Skia/Impeller engine.
+  - KMP compiles directly to native CPU instructions via LLVM for iOS.
+
+- Explain the Source Set Mental Model (crucial for the diagram):
+  1. commonMain: The shared root. Pure Kotlin logic, data models, and multiplatform libraries (Ktor, Room, Coroutines). Does NOT have access to Android SDK (android.*) or Apple Cocoa Touch (UIKit, Foundation) directly.
+  2. androidMain: Compiles with Kotlin/JVM. Has full, direct access to the Android SDK, AndroidX, and platform Context.
+  3. iosMain: Compiles with Kotlin/Native. Has direct, zero-overhead bidirectional interop with Objective-C / Apple frameworks (Foundation, UIKit, CoreBluetooth).
+  4. Compilation: Gradle merges commonMain + target source set into the final platform artifact (an .aar for Android, an .xcframework for Xcode).
+  5. Plant the seed: Later, we'll see how commonMain can safely access platform capabilities using expect/actual.
 -->
 
 ---
@@ -1298,7 +1309,7 @@ When writing code is no longer the bottleneck, the cross-platform calculus flips
 
 - **Code is No Longer the Constraint:** Teams originally picked RN/Flutter because maintaining two separate native codebases was too expensive. With modern declarative UI (Compose &amp; SwiftUI) and AI tools, 1–2 developers can easily build native apps.
 - **Trade-Offs Stop Making Sense:** When writing code is cheap, bridge overhead, runtime bloat, and non-native quirks aren't worth it. Bellwethers like <a href="https://shopify.engineering/back-to-native" target="_blank" class="text-indigo-400 underline font-semibold">Shopify</a> are moving from React Native back to native Swift &amp; Kotlin.
-- **Why KMP Wins:** Kotlin Multiplatform is the natural winner—zero bridge overhead, full platform fidelity, and shared Kotlin logic where it actually matters.
+- **Why KMP Wins:** Native code execution, lean binary sizes, and peak performance coupled with zero overhead, excellent static type checking, and shared Kotlin logic where it actually matters.
 
 </v-clicks>
 
@@ -1334,69 +1345,6 @@ Presenter Notes:
 - Show the Shopify example: Shopify was the biggest poster child of React Native in 2020. Now they're migrating back to Swift and Kotlin.
 - Reference: https://shopify.engineering/back-to-native
 - And KMP is the ideal architecture: you keep 100% native quality and platform fidelity while sharing the heavy business logic.
--->
-
----
-layout: default
----
-
-<div class="flex flex-col h-full">
-
-# Platform APIs: `expect` / `actual`
-
-When shared code needs device capabilities (battery, camera, hardware info), Kotlin enforces compile-time contracts:
-
-<div class="grid grid-cols-2 gap-8 flex-1 items-center">
-
-<div>
-
-**`commonMain` (Interface contract)**
-
-```kotlin
-// Declares the shape, no body
-expect fun getDeviceModel(): String
-```
-
-<div class="text-xs opacity-75 mt-3 leading-relaxed">
-Missing an <code>actual</code> implementation for any target? <strong>The compiler fails the build</strong> before you ever ship to production.
-</div>
-
-</div>
-
-<div class="space-y-3">
-
-<div>
-
-**`androidMain`**
-
-```kotlin
-actual fun getDeviceModel(): String =
-  "${Build.MANUFACTURER} ${Build.MODEL}"
-```
-
-</div>
-
-<div>
-
-**`iosMain`**
-
-```kotlin
-actual fun getDeviceModel(): String =
-  UIDevice.currentDevice.model
-```
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-<!--
-The compiler enforces that every platform supplies an implementation.
-JetBrains advice: use dependency injection and interfaces for business logic,
-and keep expect/actual for genuine platform-specific hardware or OS calls.
 -->
 
 ---
@@ -1606,6 +1554,76 @@ The UI remains 100% native on each platform.
 -->
 
 ---
+layout: default
+---
+
+<div class="flex flex-col h-full">
+
+# Platform APIs: `expect` / `actual`
+
+<p class="text-xs text-zinc-300 leading-relaxed mb-2">
+  This works for network calls and databases, but what happens when my shared ViewModel or Repository needs device hardware—like the camera, battery percentage, biometric auth, or secure enclave? Kotlin enforces <strong>compile-time contracts</strong>:
+</p>
+
+<div class="grid grid-cols-2 gap-8 flex-1 items-center">
+
+<div>
+
+**`commonMain` (Interface contract)**
+
+```kotlin
+// Declares the shape, no body
+expect fun getDeviceModel(): String
+```
+
+<div class="text-xs opacity-75 mt-3 leading-relaxed">
+Missing an <code>actual</code> implementation for any target? <strong>The compiler fails the build</strong> before you ever ship to production.
+</div>
+
+</div>
+
+<div class="space-y-3">
+
+<div>
+
+**`androidMain`**
+
+```kotlin
+actual fun getDeviceModel(): String =
+  "${Build.MANUFACTURER} ${Build.MODEL}"
+```
+
+</div>
+
+<div>
+
+**`iosMain`**
+
+```kotlin
+actual fun getDeviceModel(): String =
+  UIDevice.currentDevice.model
+```
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!--
+Presenter Notes:
+- Address the natural objection:
+  - "This works for network calls and databases, but what happens when my shared ViewModel or Repository needs device hardware—like the camera, battery percentage, biometric auth, or secure enclave?"
+  - Answer: You don't have to break your architecture or rewrite apps. Kotlin provides expect/actual compile-time contracts.
+- The compiler enforces that every platform target supplies an actual implementation before the build succeeds.
+- JetBrains recommendation: Use dependency injection and interfaces for application business logic, and reserve expect/actual for genuine platform-specific hardware/OS calls.
+- Bridge to Level 3:
+  - "Now that we know we can share logic, repositories, and seamlessly tap into platform hardware... what if we want to share the UI itself? That's Level 3: Compose Multiplatform."
+-->
+
+---
 layout: two-cols
 ---
 
@@ -1741,80 +1759,6 @@ iOS reached <strong>Stable</strong> in 1.8.0. That was the milestone turning CMP
   2. Native iOS text editing delegates solve the copy/paste/autofill hurdle.
   3. Stable Hot Reload & Navigation 3 create parity with the best native developer experiences.
   4. Full VoiceOver/Accessibility support makes it viable for enterprise apps.
--->
-
----
-layout: default
----
-
-<div class="flex flex-col h-full">
-
-# The Code You Know, with Two Seams
-
-Sharing UI across platforms only introduces two minor differences from regular Android Compose:
-
-<div class="grid grid-cols-2 gap-8 flex-1 items-center">
-
-<div v-click>
-
-<div class="text-xs font-mono font-bold text-indigo-400 mb-1.5">
-  commonMain — The Screen
-</div>
-
-```kotlin
-@Composable
-fun App() = MaterialTheme {
-  Column(Modifier.fillMaxSize()) {
-    // Seam 1: Res instead of R
-    Image(painterResource(Res.drawable.hero), null)
-    Text(stringResource(Res.string.welcome))
-  }
-}
-```
-
-<div class="text-xs opacity-75 mt-2.5 leading-relaxed">
-<strong>Seam 1 — Resources:</strong> Instead of Android-specific <code>R.string</code>, CMP auto-generates a multiplatform <code>Res</code> accessor from <code>composeResources/</code>.
-</div>
-
-</div>
-
-<div v-click>
-
-<div class="text-xs font-mono font-bold text-emerald-400 mb-1.5">
-  Seam 2 — Platform Entry Points
-</div>
-
-```kotlin
-// androidMain
-setContent { App() }
-```
-
-<div class="mt-2.5">
-
-```kotlin
-// iosMain — standard UIViewController
-fun MainViewController() =
-  ComposeUIViewController { App() }
-```
-
-</div>
-
-<div class="text-xs opacity-75 mt-2.5 leading-relaxed">
-<strong>Two-Way Interop:</strong> Because CMP compiles to a real <code>UIViewController</code>, SwiftUI can embed a Compose screen — and Compose can embed native iOS views via <code>UIKitView { MKMapView() }</code>.
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-<!--
-Clicks:
-1. Reveal Seam 1 — Multiplatform Resources (Res instead of R.drawable, generated from composeResources/).
-2. Reveal Seam 2 — Platform Entry Points (setContent on Android, UIViewController on iOS, plus two-way UIKitView interop).
-
-Emphasize: 98% of Compose code is identical. You only think about these two seams.
 -->
 
 ---
@@ -2128,6 +2072,57 @@ You must always design a defensive hybrid fallback.
 layout: two-cols
 ---
 
+# When You Need Your Own Model: LiteRT-LM
+
+Gemini Nano is chosen for you by Google. **LiteRT-LM** is the runtime when you need to bring your *own* model.
+
+<div class="pr-4 mt-2">
+
+```kotlin
+val engine = Engine(
+  EngineConfig(
+    modelPath = "/data/.../gemma-2b.litertlm",
+    backend = Backend.GPU(),
+  )
+)
+engine.initialize()
+
+engine.createConversation().use { chat ->
+  chat.sendMessageAsync("Analyze transaction")
+    .collect { token -> print(token) }
+}
+```
+
+</div>
+
+::right::
+
+<div class="pl-2 mt-2">
+
+<v-clicks class="text-sm space-y-2">
+
+- **You own the model file:** Runs on any Android device meeting hardware requirements — no AICore or Pixel allowlist needed.
+- **Hardware Acceleration:** Native NPU and GPU acceleration via Qualcomm, MediaTek, and Tensor delegates.
+- **The Catch — Download Size:** Gemma 2B is **~2.6 GB**. That is a serious storage discussion with your user, not a typical Gradle dependency.
+- **LiteRT runtime:** The same engine powering on-device AI across Chrome, ChromeOS, and Pixel Watch.
+
+</v-clicks>
+
+</div>
+
+<!--
+Presenter Notes:
+- Wrap up Direction 1 (App calls Model):
+  - AICore gives you the system-managed Gemini Nano (zero download, but restricted availability).
+  - LiteRT-LM lets you bring your own model (Gemma, Llama, Phi) on any hardware, but at the cost of storage (~2.6GB download).
+- Bridge to Direction 2: "That covers the first arrow: your app calling models. Now let's look at the second arrow: what if the AI assistant calls YOUR app?"
+- Note for audience: Mention verbally that all of this is currently beta, with AppFunctions being alpha.
+-->
+
+---
+layout: two-cols
+---
+
 # AppFunctions: Your App as an AI Tool
 
 The other arrow: making your app callable by system assistants (Gemini)
@@ -2175,55 +2170,10 @@ abstract class TaskFunctions : AppFunctionService() {
 </div>
 
 <!--
-Students find this fascinating: documentation comments are no longer just for developers—they are parsed by AI models at runtime to determine function arguments!
--->
-
----
-layout: two-cols
----
-
-# When You Need Your Own Model: LiteRT-LM
-
-Gemini Nano is chosen for you by Google. **LiteRT-LM** is the runtime when you need to bring your *own* model.
-
-<div class="pr-4 mt-2">
-
-```kotlin
-val engine = Engine(
-  EngineConfig(
-    modelPath = "/data/.../gemma-2b.litertlm",
-    backend = Backend.GPU(),
-  )
-)
-engine.initialize()
-
-engine.createConversation().use { chat ->
-  chat.sendMessageAsync("Analyze transaction")
-    .collect { token -> print(token) }
-}
-```
-
-</div>
-
-::right::
-
-<div class="pl-2 mt-2">
-
-<v-clicks class="text-sm space-y-2">
-
-- **You own the model file:** Runs on any Android device meeting hardware requirements — no AICore or Pixel allowlist needed.
-- **Hardware Acceleration:** Native NPU and GPU acceleration via Qualcomm, MediaTek, and Tensor delegates.
-- **The Catch — Download Size:** Gemma 2B is **~2.6 GB**. That is a serious storage discussion with your user, not a typical Gradle dependency.
-- **LiteRT runtime:** The same engine powering on-device AI across Chrome, ChromeOS, and Pixel Watch.
-
-</v-clicks>
-
-</div>
-
-<!--
-Students and engineers often ask: "Can I run Llama 3 or my own fine-tuned model?"
-Yes, through LiteRT-LM. But emphasize the storage cost — 2.6 GB is a huge barrier for mobile users.
-Note for audience: Mention verbally that all of this is currently beta, with AppFunctions being alpha.
+Presenter Notes:
+- Direction 2 (System calls App):
+  - Students find this fascinating: documentation comments are no longer just for developers—they are parsed by AI models at runtime to determine function arguments!
+  - Completes the two directions before moving to the section takeaway.
 -->
 
 ---
@@ -2433,48 +2383,6 @@ Explain how breakthrough this is: until debroid, if an app crashed with a crypti
 With debroid, the agent attaches to the JVM process via JDWP, inspects variables at breakpoints, and fixes the bug accurately.
 -->
 
----
-layout: center
----
-
-# The Future: The Full AI Engineering Loop
-
-<br>
-
-<div class="grid grid-cols-3 gap-4 mt-6 text-sm">
-
-<div class="p-4 rounded-xl bg-zinc-950 border border-indigo-500/40 bg-indigo-950/10">
-  <div class="font-bold text-indigo-400 mb-2">1. Grounding (Skills)</div>
-  <div class="text-xs text-zinc-300 leading-relaxed">
-    Agent consults official Android Skills and live knowledge bases to generate modern Jetpack Compose and KMP architecture.
-  </div>
-</div>
-
-<div class="p-4 rounded-xl bg-zinc-950 border border-purple-500/40 bg-purple-950/10">
-  <div class="font-bold text-purple-400 mb-2">2. Tooling (android-cli)</div>
-  <div class="text-xs text-zinc-300 leading-relaxed">
-    Agent runs builds, orchestrates emulators, and parses structured test results with zero token bloat.
-  </div>
-</div>
-
-<div class="p-4 rounded-xl bg-zinc-950 border border-emerald-500/40 bg-emerald-950/10">
-  <div class="font-bold text-emerald-400 mb-2">3. Debugging (debroid)</div>
-  <div class="text-xs text-zinc-300 leading-relaxed">
-    If a runtime crash occurs, the agent attaches headlessly via JDWP, inspects variables, and patches the bug autonomously.
-  </div>
-</div>
-
-</div>
-
-<div class="mt-6 text-xs text-center text-zinc-400">
-  You remain the architect making the product and design decisions; AI agents handle the repetitive plumbing and debugging.
-</div>
-
-<!--
-Summarize Part B:
-The engineer's role evolves to architect, system designer, and code reviewer.
-Skills ground the agent, android-cli operates the build/device, and debroid debugs runtime issues.
--->
 
 ---
 layout: two-cols
@@ -2529,50 +2437,87 @@ I was recently reviewing a pull request and noticed that in Spanish translations
 Personal, highly practical story:
 Reviewing a PR where localization broke vertical centering.
 Explain prompt precision:
-If you tell an agent "make the text vertically aligned", it might add a hacky padding or hardcoded offset.
-If you instruct it to "pull up the current layout and fix the issue causing the vertical misalignment", it checks the hierarchy, wraps, and baseline alignment properly.
+If you tell an agent "make the text vertically aligned", it might overengineer a solution (looking at you Opus 5) or add a hack.
+If you instruct it to "pull up the current layout and fix the issue causing the vertical misalignment", it checks the hierarchy, wraps, and baseline alignment properly. You're the decision maker, agent just implements.
 -->
 
 ---
-layout: center
+layout: default
 ---
 
-# 3 Rules for Prompting Coding Agents
+# The AI Engineering Loop: Ground, Validate, Review
 
-Concrete principles for getting clean, senior-engineer-grade code from AI agents:
+Moving beyond raw generation to disciplined, production-grade engineering:
 
-<div class="grid grid-cols-3 gap-5 mt-6 text-sm">
+<div class="grid grid-cols-3 gap-4 mt-5 text-xs">
 
-<div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
-  <div class="font-bold text-indigo-400 mb-2">1. Point to the Root Cause</div>
-  <div class="text-xs text-zinc-300 leading-relaxed">
-    Don't prescribe UI bandaids (e.g. <em>"add 8dp padding"</em>). Ask the agent to inspect the container layout and resolve the fundamental structural constraint.
+<div class="p-4 rounded-xl bg-zinc-950 border border-indigo-500/40 bg-indigo-950/10 flex flex-col justify-between">
+  <div>
+    <div class="text-xs font-mono uppercase tracking-wider text-indigo-400 font-semibold mb-1 flex items-center gap-1.5">
+      <span>🎯</span>
+      <span>1. Grounding</span>
+    </div>
+    <div class="text-sm font-bold text-white mb-2">Intent + Deep Context</div>
+    <div class="text-zinc-300 leading-relaxed text-[11px] space-y-1.5">
+      <div>• <strong>Target Root Causes:</strong> Don't prescribe UI band-aids; direct agents to investigate structural constraints.</div>
+      <div>• <strong>Anchor to Canonical Patterns:</strong> Explicitly point to existing design system components, MVI models, and repo conventions.</div>
+      <div>• <strong>Enforce Modern Standards:</strong> Equip agents with official <code>Android Skills</code> &amp; <code>android-cli</code> to avoid deprecated APIs.</div>
+    </div>
+  </div>
+  <div class="mt-3 pt-2.5 border-t border-zinc-800 text-[10.5px] text-zinc-400 font-mono">
+    Input: Clear intent + right constraints
   </div>
 </div>
 
-<div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
-  <div class="font-bold text-purple-400 mb-2">2. Anchor to Existing Patterns</div>
-  <div class="text-xs text-zinc-300 leading-relaxed">
-    Prompt with codebase references: <em>"Follow the MVI pattern used in FeatureX"</em> or <em>"Use our design system's AppButton"</em> so it doesn't reinvent the wheel.
+<div class="p-4 rounded-xl bg-zinc-950 border border-emerald-500/40 bg-emerald-950/10 flex flex-col justify-between">
+  <div>
+    <div class="text-xs font-mono uppercase tracking-wider text-emerald-400 font-semibold mb-1 flex items-center gap-1.5">
+      <span>🛠️</span>
+      <span>2. Validating</span>
+    </div>
+    <div class="text-sm font-bold text-white mb-2">Continuous Verification</div>
+    <div class="text-zinc-300 leading-relaxed text-[11px] space-y-1.5">
+      <div>• <strong>Mandate Build &amp; Tests:</strong> Never trust unverified diffs. Require debug compilation &amp; unit tests via <code>android-cli</code>.</div>
+      <div>• <strong>Autonomous Correction:</strong> Let the agent parse test failures, compile errors, and self-heal its mistakes.</div>
+      <div>• <strong>Headless Runtime Debugging:</strong> Use <code>debroid</code> over JDWP to inspect live variables at breakpoints and fix crashes.</div>
+    </div>
+  </div>
+  <div class="mt-3 pt-2.5 border-t border-zinc-800 text-[10.5px] text-zinc-400 font-mono">
+    Loop: Compile, test, runtime debug
   </div>
 </div>
 
-<div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
-  <div class="font-bold text-emerald-400 mb-2">3. Require Verification Steps</div>
-  <div class="text-xs text-zinc-300 leading-relaxed">
-    Instruct the agent to verify: <em>"Build the debug variant and run unit tests to confirm no regression"</em> or check with <code>android-cli</code>.
+<div class="p-4 rounded-xl bg-zinc-950 border border-purple-500/40 bg-purple-950/10 flex flex-col justify-between">
+  <div>
+    <div class="text-xs font-mono uppercase tracking-wider text-purple-400 font-semibold mb-1 flex items-center gap-1.5">
+      <span>🧠</span>
+      <span>3. Review</span>
+    </div>
+    <div class="text-sm font-bold text-white mb-2">Architectural Stewardship</div>
+    <div class="text-zinc-300 leading-relaxed text-[11px] space-y-1.5">
+      <div>• <strong>Own High-Level Decisions:</strong> You drive product engineering, UX nuances, system seams, and architectural trade-offs.</div>
+      <div>• <strong>Know Your Codebase Shape:</strong> Left unguided, AI agents drift code toward their own alien style that no human can maintain.</div>
+      <div>• <strong>Architect &gt; Typist:</strong> Agents handle the repetitive plumbing; your primary craft becomes rigorous review and system design.</div>
+    </div>
+  </div>
+  <div class="mt-3 pt-2.5 border-t border-zinc-800 text-[10.5px] text-zinc-400 font-mono">
+    Output: Coherent, maintainable systems
   </div>
 </div>
 
 </div>
 
-<div class="mt-6 text-xs text-center text-zinc-400">
-  Clear intent + structural investigation + verification = high-quality, maintainable code.
+<div class="mt-4 p-2.5 rounded-lg bg-zinc-900/80 border border-zinc-800 text-[11.5px] text-center text-zinc-300">
+  💡 <strong>The Core Takeaway:</strong> Ground agents with deep context, validate autonomously with terminal tooling, and maintain active human ownership over your codebase's architectural shape.
 </div>
 
 <!--
-Wrap up prompting advice:
-Senior engineers don't write vague prompts. They treat the agent like a junior pair programmer: clear context, right file pointers, and requirement to verify.
+Presenter Notes:
+- Connect back to the Spanish translation PR: Prompting is not just typing a question—it is driving an engineering lifecycle.
+- 1. Grounding (Intent + Context): If you prompt vaguely, the agent invents its own patterns or pulls 2018 StackOverflow code. Anchor it to existing canonical classes, official Skills, and android-cli knowledge.
+- 2. Validating (Execution): Never accept raw code generation without verification. Agents must compile debug APKs, run tests, and use tools like debroid to diagnose runtime crashes on their own.
+- 3. Review (Human Stewardship): The most critical takeaway of the entire AI section. If you don't deeply understand the shape and architecture of your codebase, AI agents will gradually drift it into an alien, inconsistent mess that no human can maintain. You are the architect.
+- Bridge to Conclusion: "With this mental model in place, how do you chart your own learning path in 2026? Let's look at the 4-step roadmap."
 -->
 
 ---
